@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD Dispatch Console</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+/* ================================================================
+   OPSLINK DISPATCH CONSOLE — SONORAN STYLE
+   Accent: #4e8cff
+   ================================================================ */
+
+:root {
+  --bg-main: #0c1118;
+  --bg-elevated: #131a24;
+  --bg-panel: #161e29;
+  --border: #1f2a38;
+  --accent: #4e8cff;
+  --accent-hover: #73a5ff;
+  --danger: #ff3b3b;
+  --text: #e8ecf5;
+  --text-soft: #9aa7b9;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text);
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ============================================
+   TOP NAV
+   ============================================ */
+#topnav {
+  height: 55px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--accent);
+  justify-content: space-between;
+}
+
+#topnav .right {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+/* ============================================
+   GRID LAYOUT
+   ============================================ */
+#layout {
+  display: grid;
+  grid-template-columns: 340px 1fr 340px;
+  height: calc(100vh - 55px);
+}
+
+/* ============================================
+   LEFT PANEL — CALL CREATION
+   ============================================ */
+#call-create {
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+#call-create h2 {
+  margin-top: 0;
+  color: var(--accent);
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+}
+
+textarea {
+  resize: vertical;
+  height: 80px;
+}
+
+.btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 15px;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+}
+
+/* ============================================
+   MIDDLE PANEL — ACTIVE CALLS
+   ============================================ */
+#call-board {
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.call-card {
+  background: var(--bg-panel);
+  margin-bottom: 18px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.call-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--accent);
+}
+
+.call-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.small-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.small-btn:hover {
+  background: var(--accent);
+}
+
+/* ============================================
+   RIGHT PANEL — UNIT BOARD
+   ============================================ */
+#unit-board {
+  background: var(--bg-elevated);
+  border-left: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.unit-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}
+
+.unit-title {
+  font-size: 17px;
+  color: var(--accent);
+}
+
+.status {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.panic {
+  background: var(--danger) !important;
+  border: 1px solid #ff7272 !important;
+}
+
+/* ==============================================
+   PANIC ALERT BANNER
+   ============================================== */
+#panic-banner {
+  display: none;
+  background: var(--danger);
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  animation: flash 0.6s infinite alternate;
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to { opacity: 0.4; }
+}
+</style>
+</head>
+<body>
+
+<div id="panic-banner">🚨 PANIC BUTTON ACTIVATED — UNIT NEEDS HELP!</div>
+
+<div id="topnav">
+  <div>OpsLinkCAD Dispatch</div>
+  <div class="right">Real-Time Dispatch Console</div>
+</div>
+
+<div id="layout">
+
+  <!-- ============================================
+       LEFT — CALL CREATION
+       ============================================ -->
+  <div id="call-create">
+    <h2>Create Call</h2>
+
+    <label>Call Type</label>
+    <input id="callType" placeholder="Example: Traffic Stop, Suspicious Person" />
+
+    <label>Priority</label>
+    <select id="priority">
+      <option value="1">Priority 1 - Emergency</option>
+      <option value="2">Priority 2 - Urgent</option>
+      <option value="3" selected>Priority 3 - Routine</option>
+    </select>
+
+    <label>Subtype (Optional)</label>
+    <input id="subtype" placeholder="Example: Vehicle Accident, Noise Complaint" />
+
+    <label>Location</label>
+    <input id="location" placeholder="Example: 123 Main St" />
+
+    <label>Cross Streets</label>
+    <input id="cross" placeholder="Example: 1st Ave / Pine St" />
+
+    <label>Description</label>
+    <textarea id="description"></textarea>
+
+    <label>Caller Name</label>
+    <input id="callerName" placeholder="John Doe" />
+
+    <label>Caller Phone</label>
+    <input id="callerPhone" placeholder="555-123-4567" />
+
+    <button class="btn" onclick="createCall()">Create Call</button>
+  </div>
+
+  <!-- ============================================
+       MIDDLE — CALL LIST
+       ============================================ -->
+  <div id="call-board">
+    <h2>Active Calls</h2>
+    <div id="callsContainer"></div>
+  </div>
+
+  <!-- ============================================
+       RIGHT — UNIT BOARD
+       ============================================ -->
+  <div id="unit-board">
+    <h2>Units</h2>
+    <div id="unitsContainer"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+// ======================================================
+// CONFIG
+// ======================================================
+const API = "https://opslink-api.onrender.com";
+const socket = io(API);
+
+let communityId = localStorage.getItem("communityId");
+
+// ======================================================
+// LOAD CALLS
+// ======================================================
+async function loadCalls() {
+  const res = await fetch(`${API}/calls/${communityId}`);
+  const calls = await res.json();
+
+  const container = document.getElementById("callsContainer");
+  container.innerHTML = "";
+
+  calls.forEach(call => {
+    const div = document.createElement("div");
+    div.className = "call-card";
+
+    div.innerHTML = `
+      <h3>Call #${call.callNumber}</h3>
+      <p><b>Type:</b> ${call.type}</p>
+      <p><b>Priority:</b> ${call.priority}</p>
+      <p><b>Location:</b> ${call.location}</p>
+      <p><b>Description:</b> ${call.description}</p>
+      <p><b>Caller:</b> ${call.callerName || "Unknown"} (${call.callerPhone || "N/A"})</p>
+
+      <div class="call-actions">
+        <button class="small-btn" onclick="openNotes('${call._id}')">Notes</button>
+        <button class="small-btn" onclick="detachUnit('${call._id}')">Detach Unit</button>
+        <button class="small-btn" onclick="closeCall('${call._id}')">Close</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+// ======================================================
+// LOAD UNITS
+// ======================================================
+async function loadUnits() {
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  const container = document.getElementById("unitsContainer");
+  container.innerHTML = "";
+
+  units.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "unit-card";
+    if (u.status === "PANIC") div.classList.add("panic");
+
+    div.innerHTML = `
+      <div class="unit-title">${u.callsign}</div>
+      <div class="status">Status: ${u.status}</div>
+      <div class="status">Dept: ${u.departmentName}</div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+// ======================================================
+// CREATE CALL
+// ======================================================
+async function createCall() {
+  const body = {
+    communityId,
+    type: document.getElementById("callType").value,
+    priority: document.getElementById("priority").value,
+    subtype: document.getElementById("subtype").value,
+    location: document.getElementById("location").value,
+    cross: document.getElementById("cross").value,
+    description: document.getElementById("description").value,
+    callerName: document.getElementById("callerName").value,
+    callerPhone: document.getElementById("callerPhone").value
+  };
+
+  await fetch(`${API}/calls/create`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  });
+
+  socket.emit("call:update", {});
+  loadCalls();
+}
+
+// ======================================================
+// CLOSE CALL
+// ======================================================
+async function closeCall(callId) {
+  await fetch(`${API}/calls/update/${callId}`, {
+    method: "PUT",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ status: "Closed" })
+  });
+
+  socket.emit("call:update", {});
+  loadCalls();
+}
+
+// ======================================================
+// DETACH UNIT
+// ======================================================
+async function detachUnit(callId) {
+  // Placeholder — real version will list units attached
+  alert("Detach unit system coming next.");
+}
+
+// ======================================================
+// NOTES PANEL (COMING NEXT BUILD)
+// ======================================================
+function openNotes(callId) {
+  alert("Notes system coming next build.");
+}
+
+// ======================================================
+// SOCKET EVENTS
+// ======================================================
+socket.on("unit:status", () => loadUnits());
+socket.on("call:update", () => loadCalls());
+socket.on("panic:button", (data) => {
+  document.getElementById("panic-banner").style.display = "block";
+  loadUnits();
+});
+
+// Initial load
+loadCalls();
+loadUnits();
+</script>
+</body>
+</html>
