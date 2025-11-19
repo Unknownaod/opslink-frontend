@@ -239,7 +239,7 @@ input, select {
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
-let stripe = Stripe("YOUR_PUBLISHABLE_KEY");
+let stripe = Stripe("pk_live_51SVFpBLQjsrxMZMFPhO41fNL37kau7u4uITjjmXKkBabyHvx30X16scvSFDHBJDZ1GGC71GFKI1tPWM...");
 
 let elements = stripe.elements();
 let card = elements.create("card", {
@@ -299,10 +299,11 @@ async function startPayment() {
     if (result.error) {
         document.getElementById("msg").innerText = result.error.message;
     } else {
-        window.location.href = "dashboard.html?upgraded=true";
+        window.location.href = "../dashboard.html?upgraded=true";
     }
 }
 </script>
 
 </body>
 </html>
+
