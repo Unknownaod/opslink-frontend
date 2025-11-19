@@ -1,72 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Register – OpsLinkCAD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* =============================
-   GLOBAL BASE THEME (D-3)
-   ============================= */
+/* SAME THEME AS LOGIN */
 body {
     margin: 0;
     background: #0b1119;
     font-family: "Segoe UI", sans-serif;
-
-    /* FIXED: FULL PAGE CENTERING */
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* Prevents shifting on mobile */
     min-height: 100vh;
 }
 
-/* =============================
-   GLASS CARD WRAPPER
-   ============================= */
 .card-wrapper {
     width: 100%;
-    max-width: 480px;  /* Perfect width */
+    max-width: 420px;
     padding: 20px;
-
-    display: flex;
-    justify-content: center;
 }
 
-/* =============================
-   CARD ITSELF
-   ============================= */
 .card {
-    width: 100%;
     background: rgba(255,255,255,0.05);
-    padding: 45px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.08);
+    padding: 35px 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
     backdrop-filter: blur(12px);
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
     color: #dbe4f3;
+    text-align: center;
 }
 
-/* LOGO */
 .logo {
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 5px;
-    text-align: center;
 }
 .logo span { color: #4e8cff; }
 
 .subtitle {
-    margin-bottom: 35px;
     opacity: 0.7;
-    text-align: center;
     font-size: 15px;
+    margin-bottom: 28px;
 }
 
-/* INPUT GROUPS */
 .input-group {
+    text-align: left;
     margin-bottom: 18px;
 }
 
@@ -81,8 +62,8 @@ label {
     padding: 14px;
     background: #0f1622;
     border: 1px solid #2b3545;
-    border-radius: 8px;
     color: #dbe4f3;
+    border-radius: 8px;
     font-size: 15px;
     transition: 0.2s;
 }
@@ -92,18 +73,13 @@ label {
     outline: none;
 }
 
-.input-error {
-    border-color: #ff4c4c !important;
-}
-
 .error-text {
     color: #ff4c4c;
-    font-size: 12px;
-    margin-top: 6px;
+    font-size: 13px;
+    margin-top: 4px;
     display: none;
 }
 
-/* SUBMIT BUTTON */
 .btn-primary {
     width: 100%;
     padding: 14px;
@@ -114,7 +90,7 @@ label {
     font-weight: 600;
     color: #fff;
     cursor: pointer;
-    transition: 0.25s;
+    transition: 0.2s;
     margin-top: 10px;
 }
 
@@ -122,17 +98,15 @@ label {
     background: #3675e9;
 }
 
-/* FOOTER LINKS */
 .bottom-links {
     margin-top: 25px;
-    text-align: center;
     font-size: 14px;
 }
 
 .bottom-links a {
-    margin: 0 8px;
     color: #4e8cff;
     text-decoration: none;
+    margin: 0 8px;
     font-weight: 600;
 }
 
@@ -150,31 +124,27 @@ label {
         <div class="logo">OpsLink<span>CAD</span></div>
         <div class="subtitle">Create your account</div>
 
-        <!-- FULL NAME -->
         <div class="input-group">
             <label>Full Name</label>
             <input id="name" class="input-box" type="text" placeholder="John Doe">
-            <div id="nameError" class="error-text">Please enter your name</div>
+            <div id="nameError" class="error-text">Name required</div>
         </div>
 
-        <!-- EMAIL -->
         <div class="input-group">
             <label>Email</label>
             <input id="email" class="input-box" type="email" placeholder="email@example.com">
-            <div id="emailError" class="error-text">Please enter a valid email</div>
+            <div id="emailError" class="error-text">Valid email required</div>
         </div>
 
-        <!-- PASSWORD -->
         <div class="input-group">
             <label>Password</label>
-            <input id="password" class="input-box" type="password" placeholder="Enter a password">
-            <div id="passwordError" class="error-text">Password must be at least 6 characters</div>
+            <input id="password" class="input-box" type="password" placeholder="Password">
+            <div id="passwordError" class="error-text">At least 6 characters required</div>
         </div>
 
-        <!-- CONFIRM PASSWORD -->
         <div class="input-group">
             <label>Confirm Password</label>
-            <input id="confirmPassword" class="input-box" type="password" placeholder="Re-enter your password">
+            <input id="confirmPassword" class="input-box" type="password" placeholder="Confirm password">
             <div id="confirmError" class="error-text">Passwords do not match</div>
         </div>
 
@@ -188,7 +158,6 @@ label {
     </div>
 </div>
 
-
 <script>
 async function register() {
     let name = document.getElementById("name");
@@ -196,36 +165,27 @@ async function register() {
     let pw = document.getElementById("password");
     let cpw = document.getElementById("confirmPassword");
 
-    let hasError = false;
-
+    let error = false;
     document.querySelectorAll(".error-text").forEach(e => e.style.display = "none");
-    document.querySelectorAll(".input-box").forEach(i => i.classList.remove("input-error"));
 
     if (!name.value) {
-        name.classList.add("input-error");
         document.getElementById("nameError").style.display = "block";
-        hasError = true;
+        error = true;
     }
-
     if (!email.value.includes("@")) {
-        email.classList.add("input-error");
         document.getElementById("emailError").style.display = "block";
-        hasError = true;
+        error = true;
     }
-
     if (pw.value.length < 6) {
-        pw.classList.add("input-error");
         document.getElementById("passwordError").style.display = "block";
-        hasError = true;
+        error = true;
     }
-
     if (pw.value !== cpw.value) {
-        cpw.classList.add("input-error");
         document.getElementById("confirmError").style.display = "block";
-        hasError = true;
+        error = true;
     }
 
-    if (hasError) return;
+    if (error) return;
 
     const res = await fetch("https://opslink-api.onrender.com/auth/register", {
         method: "POST",
