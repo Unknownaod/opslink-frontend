@@ -183,7 +183,14 @@
     <h1 class="dash-title">Dashboard</h1>
     <div class="user-tag">Logged in as <span id="username"></span></div>
 
-    <button class="create-btn" onclick="openModal()">+ Create Community</button>
+<button class="create-btn" onclick="openModal()">+ Create Community</button>
+
+<button class="create-btn" 
+        style="background:#1f2630;border:1px solid #4e8cff;color:#4e8cff;margin-left:10px;"
+        onclick="openJoinModal()">
+    Join Community
+</button>
+
 
     <h2 style="margin: 20px 0;">Your Communities</h2>
     <div id="commList" class="community-list">
@@ -202,6 +209,19 @@
 
         <button class="btn-primary" onclick="createCommunity()">Create</button>
         <button class="close-btn" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+
+    <!-- JOIN COMMUNITY MODAL -->
+<div id="joinModalBg" class="modal-bg">
+    <div class="modal">
+        <h2>Join Community</h2>
+
+        <input id="joinCommId" type="text" placeholder="Enter Community ID">
+
+        <button class="btn-primary" onclick="joinCommunity()">Join</button>
+        <button class="close-btn" onclick="closeJoinModal()">Cancel</button>
     </div>
 </div>
 
@@ -283,6 +303,50 @@ function openCommunity(id) {
     window.location.href = "community.html"; // next page we will build
 }
 
+// OPEN JOIN MODAL
+function openJoinModal() {
+    document.getElementById("joinModalBg").style.display = "flex";
+}
+
+// CLOSE JOIN MODAL
+function closeJoinModal() {
+    document.getElementById("joinModalBg").style.display = "none";
+}
+
+// JOIN COMMUNITY
+async function joinCommunity() {
+    const communityId = document.getElementById("joinCommId").value;
+
+    if (!communityId) return alert("Please enter a community ID.");
+
+    const res = await fetch("https://opslink-api.onrender.com/community/join", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            userId: user._id,
+            communityId
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Failed to join community");
+        return;
+    }
+
+    // Save selected community
+    localStorage.setItem("selectedCommunity", communityId);
+
+    closeJoinModal();
+    loadCommunities(); // refresh list
+
+    alert("Successfully joined community!");
+}
+    
 /* ===== LOGOUT ===== */
 function logout() {
     localStorage.clear();
@@ -294,3 +358,4 @@ loadCommunities();
 
 </body>
 </html>
+
