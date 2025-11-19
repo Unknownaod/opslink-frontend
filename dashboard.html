@@ -23,7 +23,6 @@
     --danger-hover: #ff6666;
 }
 
-/* LIGHT THEME */
 .light {
     --bg-main: #f1f3f5;
     --bg-sidebar: #e5e7eb;
@@ -46,18 +45,16 @@ body {
     transition: background 0.25s, color 0.25s;
 }
 
-/* =============================================
-   SIDEBAR — CAD STYLE
-============================================= */
+/* SIDEBAR */
 .sidebar {
     width: 250px;
     background: var(--bg-sidebar);
-    height: 100vh;
     position: fixed;
-    left: 0;
     top: 0;
-    border-right: 1px solid var(--border);
+    left: 0;
+    height: 100vh;
     padding: 25px 20px;
+    border-right: 1px solid var(--border);
 }
 
 .logo {
@@ -68,577 +65,411 @@ body {
 .logo span { color: var(--accent); }
 
 .nav-link {
-    display: block;
     padding: 12px 16px;
-    margin: 6px 0;
+    display: block;
     color: var(--text-soft);
     text-decoration: none;
     border-radius: 6px;
-    font-size: 15px;
-    transition: 0.2s;
+    margin: 6px 0;
 }
-
 .nav-link:hover {
     background: #1a222e;
     color: var(--accent);
 }
-
 .nav-link.active {
     background: #1a222e;
     color: var(--accent);
     font-weight: 600;
 }
 
-/* =============================================
-   MAIN SECTION WRAPPER
-============================================= */
+/* MAIN */
 .main {
     margin-left: 260px;
     padding: 40px;
 }
 
-/* PAGE SWITCHING */
+/* PAGES */
 .page { display: none; }
 .page.active { display: block; }
 
-/* =============================================
-   FREE TIER BANNER
-============================================= */
+/* BANNER */
 .banner {
     background: #1e293b;
     border: 1px solid var(--border);
     padding: 14px 18px;
     border-radius: 8px;
-    color: var(--text);
     margin-bottom: 20px;
 }
-.banner b { color: var(--accent); }
 
-/* =============================================
-   BUTTONS — CAD STYLE
-============================================= */
+/* BUTTONS */
 .btn {
-    padding: 12px 22px;
+    padding: 12px 20px;
     border-radius: 6px;
-    border: 1px solid transparent;
     cursor: pointer;
     font-weight: 600;
-    font-size: 14px;
-    transition: 0.2s;
 }
-
-.btn-primary {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-}
+.btn-primary { background: var(--accent); color: #fff; border: 0; }
 .btn-primary:hover { background: var(--accent-hover); }
-
-.btn-secondary {
-    background: #1c2430;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-}
+.btn-secondary { background: #1c2430; color: var(--accent); border: 1px solid var(--accent); }
 .btn-secondary:hover { background: var(--accent); color: #fff; }
-
-.btn-danger {
-    background: var(--danger);
-    color: #fff;
-}
+.btn-danger { background: var(--danger); border: 0; color: #fff; }
 .btn-danger:hover { background: var(--danger-hover); }
+.btn-disabled { background: #2a2e37; color: #6b7280; cursor: not-allowed; }
 
-.btn-disabled {
-    background: #1b1f27;
-    color: #6b7280;
-    border: 1px solid #2a303d;
-    cursor: not-allowed;
+/* CARDS */
+.settings-card,
+.community-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
 }
 
-/* =============================================
-   COMMUNITY CARDS — CLEAN CAD FORMAT
-============================================= */
 .community-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 25px;
 }
 
-.community-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 22px;
-    border-radius: 10px;
-    transition: 0.25s;
-}
-
-.community-card:hover {
-    border-color: var(--accent);
-}
-
 /* MODALS */
 .modal-bg {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: none;
-    justify-content: center;
-    align-items: center;
+    top:0; left:0;
+    width:100%; height:100%;
     background: rgba(0,0,0,0.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
 }
-
 .modal {
     background: var(--bg-card);
     padding: 30px;
     border-radius: 10px;
+    width: 350px;
     border: 1px solid var(--accent);
-    width: 360px;
+}
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
 }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">OpsLink<span>CAD</span></div>
-
-    <a class="nav-link active" id="nav-dashboard" onclick="switchPage('dashboard')">Dashboard</a>
-    <a class="nav-link" id="nav-settings" onclick="switchPage('settings')">Settings</a>
+    <a class="nav-link active" onclick="switchPage('dashboard')" id="nav-dashboard">Dashboard</a>
+    <a class="nav-link" onclick="switchPage('settings')" id="nav-settings">Settings</a>
     <a class="nav-link" onclick="logout()">Logout</a>
 </div>
 
-<!-- MAIN WRAPPER -->
 <div class="main">
 
-
-    <!-- ============================
-     PAGE: DASHBOARD (DEFAULT)
-============================ -->
+<!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
 
-    <!-- FREE TIER BANNER (Auto-hidden if Premier) -->
+    <!-- Free tier banner (dynamic) -->
     <div id="freeBanner" class="banner" style="display:none;">
-        <b>Free Tier:</b> You can create 1 community.  
-        Upgrade to <b>Premier Tier</b> for unlimited communities and premium tools.
+        <b>Free Tier:</b> You can create 1 community.
+        Upgrade to <b>Premier</b> for unlimited communities.
     </div>
 
-    <h1 class="page-title">Dashboard</h1>
+    <h1>Dashboard</h1>
+    <div style="opacity:0.7;">Logged in as <span id="username"></span></div>
 
-    <div style="opacity:0.7; margin-bottom:25px;">
-        Logged in as <span id="username"></span>
-    </div>
-
-    <div style="display:flex; gap:12px; margin-bottom:25px;">
-        <button id="createBtn" class="btn btn-primary" onclick="openModal()">+ Create Community</button>
+    <div style="display:flex; gap:12px; margin-top:20px;">
+        <button id="createBtn" class="btn btn-primary">+ Create Community</button>
         <button class="btn btn-secondary" onclick="openJoinModal()">Join Community</button>
     </div>
 
-    <h2 style="margin: 20px 0;">Your Communities</h2>
+    <h2 style="margin-top:25px;">Your Communities</h2>
     <div id="commList" class="community-list">Loading...</div>
 </div>
 
-
-
-
-<!-- ============================
-     PAGE: SETTINGS
-============================ -->
+<!-- SETTINGS -->
 <div id="page-settings" class="page">
 
-    <h1 class="page-title">Settings</h1>
+    <h1>Settings</h1>
 
-    <!-- SUBSCRIPTION CARD -->
-    <div class="settings-card" style="
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-    ">
-        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
-            Subscription Status
-        </div>
+    <!-- BILLING -->
+    <div class="settings-card">
+        <div style="font-size:20px; font-weight:600; color:var(--accent);">Subscription</div>
+        <p>Status: <b id="subStatusText"></b></p>
+        <p>Renews: <b id="subRenews"></b></p>
 
-        <p style="font-size:15px; opacity:0.8;">
-            Current Tier: <b id="subTierText"></b>
-        </p>
-
-        <div id="upgradeBox" style="margin-top:12px;">
-        <a href="pricing.html" class="btn btn-primary">Upgrade to Premier</a>
-
+        <div id="billingActions">
+            <!-- Autogenerated buttons -->
         </div>
     </div>
 
-
-    <!-- PROFILE CARD -->
-    <div class="settings-card" style="
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-    ">
-        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
-            Profile
-        </div>
-
+    <!-- PROFILE -->
+    <div class="settings-card">
+        <div style="font-size:20px; font-weight:600; color:var(--accent);">Profile</div>
         <p>Username: <b id="profileName"></b></p>
         <button class="btn btn-secondary" onclick="openProfileModal()">Edit Username</button>
     </div>
 
-
-    <!-- APPEARANCE CARD -->
-    <div class="settings-card" style="
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-    ">
-        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
-            Appearance
-        </div>
-
-        <button class="btn btn-secondary" onclick="toggleTheme()">Toggle Light / Dark Mode</button>
+    <!-- THEME -->
+    <div class="settings-card">
+        <div style="font-size:20px; font-weight:600; color:var(--accent);">Appearance</div>
+        <button class="btn btn-secondary" onclick="toggleTheme()">Toggle Light/Dark</button>
     </div>
 
-
-    <!-- ACCOUNT CARD -->
-    <div class="settings-card" style="
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-    ">
-        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
-            Account
-        </div>
-
+    <!-- ACCOUNT -->
+    <div class="settings-card">
+        <div style="font-size:20px; font-weight:600; color:var(--accent);">Account</div>
         <button class="btn btn-danger" onclick="logout()">Logout</button>
     </div>
 
 </div>
 
-
-
-
-<!-- ============================
-     CREATE COMMUNITY MODAL
-============================ -->
+<!-- CREATE COMMUNITY MODAL -->
 <div id="modalBg" class="modal-bg">
     <div class="modal">
         <h2>Create Community</h2>
-
-        <input id="commName" type="text" placeholder="Community Name">
-        <input id="commDesc" type="text" placeholder="Description">
-
+        <input id="commName" placeholder="Name">
+        <input id="commDesc" placeholder="Description">
         <button class="btn btn-primary" onclick="createCommunity()">Create</button>
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
-
-<!-- ============================
-     JOIN COMMUNITY MODAL
-============================ -->
+<!-- JOIN COMMUNITY MODAL -->
 <div id="joinModalBg" class="modal-bg">
     <div class="modal">
         <h2>Join Community</h2>
-
-        <input id="joinCommId" type="text" placeholder="Community ID">
-
+        <input id="joinCommId" placeholder="Community ID">
         <button class="btn btn-primary" onclick="joinCommunity()">Join</button>
         <button class="btn btn-secondary" onclick="closeJoinModal()">Cancel</button>
     </div>
 </div>
 
-
-<!-- ============================
-     EDIT PROFILE MODAL
-============================ -->
+<!-- PROFILE MODAL -->
 <div id="profileModalBg" class="modal-bg">
     <div class="modal">
         <h2>Edit Profile</h2>
-
-        <input id="editUsername" type="text" placeholder="New Username">
-
+        <input id="editUsername" placeholder="New Username">
         <button class="btn btn-primary" onclick="saveProfile()">Save</button>
         <button class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
     </div>
 </div>
 
-
-    <script>
-/* =====================================================
-   AUTH CHECK
-===================================================== */
-if (!localStorage.getItem("token")) {
-    window.location.href = "login.html";
-}
-
+<script>
+// =====================================================
+// AUTH
+// =====================================================
+if (!localStorage.getItem("token")) window.location = "login.html";
 const token = localStorage.getItem("token");
 let user = JSON.parse(localStorage.getItem("user"));
 
-document.getElementById("username").innerText = user?.name || user?.email;
-document.getElementById("profileName").innerText = user?.name || user?.email;
+document.getElementById("username").innerText = user.name;
+document.getElementById("profileName").innerText = user.name;
 
+// =====================================================
+// PAGE SWITCH
+// =====================================================
+function switchPage(p) {
+    document.querySelectorAll(".page").forEach(x => x.classList.remove("active"));
+    document.getElementById("page-" + p).classList.add("active");
 
-/* =====================================================
-   SUBSCRIPTION SYSTEM (LOCALSTORAGE)
-===================================================== */
-
-// Initialize subscription if not set
-if (!localStorage.getItem("subscription")) {
-    localStorage.setItem("subscription", "free");
+    document.querySelectorAll(".nav-link").forEach(x => x.classList.remove("active"));
+    document.getElementById("nav-" + p).classList.add("active");
 }
 
-let subscription = localStorage.getItem("subscription");
-
-/* Update text inside Settings */
-document.getElementById("subTierText").innerText =
-    subscription === "premier" ? "Premier Tier" : "Free Tier";
-
-/* Show upgrade box only if free */
-if (subscription === "premier") {
-    document.getElementById("upgradeBox").style.display = "none";
-}
-
-
-/* =====================================================
-   FREE TIER LIMIT: MAX 1 COMMUNITY
-===================================================== */
-
-function enforceCommunityLimit(communityCount) {
-    const createBtn = document.getElementById("createBtn");
-    const freeBanner = document.getElementById("freeBanner");
-
-    if (subscription === "premier") {
-        // Premier tier → unlimited communities
-        createBtn.classList.remove("btn-disabled");
-        createBtn.disabled = false;
-        freeBanner.style.display = "none";
-        return;
-    }
-
-    // FREE TIER LOGIC
-    if (communityCount >= 1) {
-        createBtn.classList.add("btn-disabled");
-        createBtn.disabled = true;
-        freeBanner.style.display = "block";
-    } else {
-        createBtn.classList.remove("btn-disabled");
-        createBtn.disabled = false;
-        freeBanner.style.display = "block";
-    }
-}
-
-
-/* =====================================================
-   PAGE SWITCHING (Dashboard <-> Settings)
-===================================================== */
-function switchPage(page) {
-    document.getElementById("page-dashboard").classList.remove("active");
-    document.getElementById("page-settings").classList.remove("active");
-
-    document.getElementById("nav-dashboard").classList.remove("active");
-    document.getElementById("nav-settings").classList.remove("active");
-
-    if (page === "dashboard") {
-        document.getElementById("page-dashboard").classList.add("active");
-        document.getElementById("nav-dashboard").classList.add("active");
-    } else {
-        document.getElementById("page-settings").classList.add("active");
-        document.getElementById("nav-settings").classList.add("active");
-    }
-}
-
-
-/* =====================================================
-   THEME TOGGLE
-===================================================== */
+// =====================================================
+// THEME
+// =====================================================
 function applyTheme() {
-    const theme = localStorage.getItem("theme") || "dark";
-    if (theme === "light") {
+    if (localStorage.getItem("theme") === "light") {
         document.body.classList.add("light");
-    } else {
-        document.body.classList.remove("light");
-    }
+    } else document.body.classList.remove("light");
 }
 applyTheme();
-
 function toggleTheme() {
-    const current = localStorage.getItem("theme") || "dark";
-    const next = current === "dark" ? "light" : "dark";
-    localStorage.setItem("theme", next);
+    localStorage.setItem("theme",
+        localStorage.getItem("theme") === "light" ? "dark" : "light"
+    );
     applyTheme();
 }
 
+// =====================================================
+// BILLING STATUS
+// =====================================================
+async function loadSubscriptionStatus() {
+    const res = await fetch("https://opslink-api.onrender.com/billing/status", {
+        headers: { "Authorization": "Bearer " + token }
+    });
+    const data = await res.json();
 
-/* =====================================================
-   PROFILE EDIT
-===================================================== */
-function openProfileModal() {
-    document.getElementById("profileModalBg").style.display = "flex";
+    const status = data.subscription || "free";
+    const renews = data.renews ? new Date(data.renews).toLocaleDateString() : "N/A";
+
+    document.getElementById("subStatusText").innerText = status === "premier" ? "Premier" : "Free";
+    document.getElementById("subRenews").innerText = renews;
+
+    const actions = document.getElementById("billingActions");
+    actions.innerHTML = "";
+
+    if (status === "free") {
+        actions.innerHTML = `
+            <a href="pricing.html" class="btn btn-primary">Upgrade to Premier</a>
+        `;
+    } else {
+        actions.innerHTML = `
+            <button class="btn btn-danger" onclick="cancelRenewal()">Cancel Renewal</button>
+            <button class="btn btn-secondary" onclick="reactivate()">Reactivate</button>
+        `;
+    }
 }
-function closeProfileModal() {
-    document.getElementById("profileModalBg").style.display = "none";
+loadSubscriptionStatus();
+
+// =====================================================
+// BILLING ACTIONS
+// =====================================================
+async function cancelRenewal() {
+    const res = await fetch("https://opslink-api.onrender.com/billing/cancel", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+    });
+    loadSubscriptionStatus();
 }
+
+async function reactivate() {
+    const res = await fetch("https://opslink-api.onrender.com/billing/reactivate", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token }
+    });
+    loadSubscriptionStatus();
+}
+
+// =====================================================
+// LOAD COMMUNITIES
+// =====================================================
+async function loadCommunities() {
+    const res = await fetch("https://opslink-api.onrender.com/community/my", {
+        headers: { Authorization: "Bearer " + token }
+    });
+    const communities = await res.json();
+
+    const list = document.getElementById("commList");
+    list.innerHTML = "";
+
+    if (!communities.length) {
+        list.innerHTML = "<p>No communities yet.</p>";
+    }
+
+    communities.forEach(comm => {
+        const div = document.createElement("div");
+        div.className = "community-card";
+
+        div.innerHTML = `
+            <h3>${comm.name}</h3>
+            <p>${comm.description}</p>
+            <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
+            <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">Delete</button>
+        `;
+
+        list.appendChild(div);
+    });
+
+    // FREE LIMIT
+    if (communities.length >= 1 && document.getElementById("subStatusText").innerText === "Free") {
+        document.getElementById("createBtn").classList.add("btn-disabled");
+        document.getElementById("freeBanner").style.display = "block";
+    } else {
+        document.getElementById("freeBanner").style.display = "none";
+    }
+}
+loadCommunities();
+
+// =====================================================
+// COMMUNITY ACTIONS
+// =====================================================
+function openModal() { document.getElementById("modalBg").style.display = "flex"; }
+function closeModal() { document.getElementById("modalBg").style.display = "none"; }
+function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
+function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
+function openProfileModal() { document.getElementById("profileModalBg").style.display = "flex"; }
+function closeProfileModal() { document.getElementById("profileModalBg").style.display = "none"; }
+
+async function createCommunity() {
+    const name = commName.value;
+    const description = commDesc.value;
+
+    const res = await fetch("https://opslink-api.onrender.com/community/create", {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, description })
+    });
+
+    closeModal();
+    loadCommunities();
+}
+
+async function joinCommunity() {
+    const id = joinCommId.value;
+
+    const res = await fetch("https://opslink-api.onrender.com/community/join", {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ communityId: id })
+    });
+
+    closeJoinModal();
+    loadCommunities();
+}
+
+async function deleteCommunity(id, name) {
+    if (!confirm(`Delete "${name}"?`)) return;
+
+    await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+    });
+
+    loadCommunities();
+}
+
+function openCommunity(id) {
+    localStorage.setItem("selectedCommunity", id);
+    window.location = "community.html";
+}
+
+// =====================================================
+// PROFILE UPDATE
+// =====================================================
 function saveProfile() {
     const newName = document.getElementById("editUsername").value.trim();
-    if (!newName) return alert("Enter a valid username.");
+    if (!newName) return;
 
     user.name = newName;
     localStorage.setItem("user", JSON.stringify(user));
-
     document.getElementById("username").innerText = newName;
     document.getElementById("profileName").innerText = newName;
 
     closeProfileModal();
 }
 
-
-/* =====================================================
-   LOAD COMMUNITIES
-===================================================== */
-async function loadCommunities() {
-    const res = await fetch("https://opslink-api.onrender.com/community/my", {
-        headers: { "Authorization": "Bearer " + token }
-    });
-
-    const communities = await res.json();
-    const list = document.getElementById("commList");
-
-    list.innerHTML = "";
-
-    if (!communities.length) {
-        list.innerHTML = "<p>You have no communities yet.</p>";
-    }
-
-    communities.forEach(comm => {
-        const card = document.createElement("div");
-        card.className = "community-card";
-
-        card.innerHTML = `
-            <h3>${comm.name}</h3>
-            <p>${comm.description}</p>
-
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
-                <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">Delete</button>
-            </div>
-        `;
-
-        list.appendChild(card);
-    });
-
-    // ENFORCE FREE TIER LIMIT
-    enforceCommunityLimit(communities.length);
-}
-
-
-/* =====================================================
-   DELETE COMMUNITY
-===================================================== */
-async function deleteCommunity(id, name) {
-    if (!confirm(`Delete community "${name}"?`)) return;
-
-    const res = await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
-
-    const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to delete community");
-
-    loadCommunities();
-}
-
-
-/* =====================================================
-   CREATE COMMUNITY
-===================================================== */
-async function createCommunity() {
-    const name = document.getElementById("commName").value;
-    const description = document.getElementById("commDesc").value;
-
-    if (!name) return alert("Enter a community name.");
-
-    const res = await fetch("https://opslink-api.onrender.com/community/create", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({ name, description })
-    });
-
-    const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to create community");
-
-    closeModal();
-    loadCommunities();
-}
-
-
-/* =====================================================
-   JOIN COMMUNITY
-===================================================== */
-async function joinCommunity() {
-    const id = document.getElementById("joinCommId").value.trim();
-    if (!id) return alert("Enter a valid community ID.");
-
-    const res = await fetch("https://opslink-api.onrender.com/community/join", {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ communityId: id })
-    });
-
-    const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to join community");
-
-    closeJoinModal();
-    loadCommunities();
-}
-
-
-/* =====================================================
-   MODALS
-===================================================== */
-function openModal() { document.getElementById("modalBg").style.display = "flex"; }
-function closeModal() { document.getElementById("modalBg").style.display = "none"; }
-
-function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
-function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
-
-
-/* =====================================================
-   OPEN COMMUNITY PAGE
-===================================================== */
-function openCommunity(id) {
-    localStorage.setItem("selectedCommunity", id);
-    window.location.href = "community.html";
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
+// =====================================================
+// LOGOUT
+// =====================================================
 function logout() {
     localStorage.clear();
-    window.location.href = "login.html";
+    window.location = "login.html";
 }
-
-
-/* =====================================================
-   INITIAL LOAD
-===================================================== */
-loadCommunities();
 </script>
 
 </body>
 </html>
-
-
