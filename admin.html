@@ -389,6 +389,10 @@ textarea{
     </div>
   </div>
 
+  <div class="nav-item" data-panel="panel-keys">
+  <span>Permission Keys</span>
+</div>
+
   <!-- MAIN CONTENT -->
   <div id="main">
     <!-- PANEL: OVERVIEW -->
@@ -561,6 +565,38 @@ textarea{
   </div>
 </div>
 
+
+<!-- PANEL: PERMISSION KEYS -->
+<div id="panel-keys" class="panel">
+  <h2 style="margin:4px 0 10px 0;">Permission Keys</h2>
+  <p style="font-size:13px;color:var(--text-soft);margin-bottom:14px;">
+    These keys allow users to unlock access to LEO, Fire/EMS, Dispatch, Supervisor, and Admin tools.
+    Only the community owner can view or regenerate keys.
+  </p>
+
+  <div class="table-card">
+    <div class="table-header">
+      <div>
+        <div class="table-title">Access Keys</div>
+        <div class="table-sub">Give these keys to trusted users only.</div>
+      </div>
+      <button class="btn" onclick="regenerateAllKeys()">Regenerate All</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Key</th>
+          <th style="width:120px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="keysTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+  
 <!-- =========================
      MODALS
 ========================= -->
@@ -619,7 +655,7 @@ textarea{
     </div>
   </div>
 </div>
-
+  
 <script>
 // ================================
 // CONFIG
