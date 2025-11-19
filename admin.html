@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD – Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --bg-main:#020617;
+  --bg-elevated:#0b1120;
+  --bg-panel:#020617;
+  --border:#1f2937;
+  --accent:#4e8cff;
+  --accent-soft:#1d4ed8;
+  --accent-hover:#73a5ff;
+  --danger:#ef4444;
+  --text:#e5e7eb;
+  --text-soft:#9ca3af;
+}
+
+*{box-sizing:border-box;}
+
+body {
+  margin:0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background:radial-gradient(circle at top,#111827 0,#020617 55%);
+  color:var(--text);
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* TOPBAR */
+#topbar {
+  height:56px;
+  background:rgba(15,23,42,.96);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+#topbar-left {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo-dot{
+  width:22px;height:22px;border-radius:999px;
+  background:radial-gradient(circle at 30% 30%,#93c5fd,#1d4ed8 55%,#020617 100%);
+  box-shadow:0 0 16px rgba(59,130,246,.6);
+}
+
+.app-title{
+  font-weight:600;
+  letter-spacing:.04em;
+  font-size:18px;
+  color:var(--accent-hover);
+}
+
+.app-sub{
+  font-size:11px;
+  text-transform:uppercase;
+  color:var(--text-soft);
+  letter-spacing:.16em;
+}
+
+.badge {
+  font-size:11px;
+  padding:3px 9px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);
+  color:var(--text-soft);
+  background:rgba(15,23,42,.9);
+}
+
+/* LAYOUT */
+#layout {
+  flex:1;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:0;
+}
+
+/* SIDEBAR */
+#sidebar {
+  background:rgba(15,23,42,.98);
+  border-right:1px solid var(--border);
+  padding:16px 10px;
+  display:flex;
+  flex-direction:column;
+}
+
+.nav-section-title{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--text-soft);
+  margin:18px 8px 6px;
+}
+
+.nav-item{
+  padding:9px 10px;
+  margin:2px 4px;
+  border-radius:8px;
+  font-size:14px;
+  color:var(--text-soft);
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:.15s;
+}
+.nav-item span{
+  opacity:.75;
+}
+.nav-item:hover{
+  background:rgba(30,64,175,.25);
+  color:var(--accent-hover);
+}
+.nav-item.active{
+  background:linear-gradient(to right,rgba(59,130,246,.35),rgba(59,130,246,.08));
+  color:#dbeafe;
+}
+
+/* MAIN */
+#main {
+  padding:18px 20px;
+  overflow-y:auto;
+}
+
+/* PANELS */
+.panel {
+  display:none;
+}
+.panel.active {
+  display:block;
+}
+
+/* CARDS */
+.card-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+
+.card {
+  background:rgba(15,23,42,.96);
+  border-radius:14px;
+  border:1px solid rgba(30,64,175,.6);
+  padding:14px 14px 12px;
+  box-shadow:0 10px 30px rgba(15,23,42,.8);
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:8px;
+}
+
+.card-title{
+  font-size:15px;
+  font-weight:600;
+}
+
+.card-sub{
+  font-size:12px;
+  color:var(--text-soft);
+}
+
+.stat-number{
+  font-size:22px;
+  font-weight:600;
+}
+
+.chip{
+  font-size:11px;
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);
+  color:var(--text-soft);
+}
+
+/* TABLES */
+.table-card{
+  margin-top:14px;
+  background:rgba(15,23,42,.96);
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:14px;
+}
+
+.table-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.table-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.table-sub{
+  font-size:12px;
+  color:var(--text-soft);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th,td{
+  text-align:left;
+  padding:8px 6px;
+  border-bottom:1px solid rgba(30,64,175,.35);
+}
+th{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--text-soft);
+}
+tbody tr:hover{
+  background:rgba(15,23,42,.8);
+}
+
+/* BUTTONS */
+.btn{
+  border:none;
+  border-radius:999px;
+  padding:7px 13px;
+  font-size:12px;
+  cursor:pointer;
+  background:var(--accent);
+  color:white;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.btn:hover{
+  background:var(--accent-hover);
+}
+.btn-ghost{
+  border-radius:999px;
+  padding:6px 10px;
+  border:1px solid rgba(148,163,184,.4);
+  background:transparent;
+  color:var(--text-soft);
+  font-size:11px;
+  cursor:pointer;
+}
+.btn-danger{
+  border:none;
+  border-radius:999px;
+  padding:5px 9px;
+  font-size:11px;
+  background:rgba(239,68,68,.12);
+  color:#fecaca;
+  cursor:pointer;
+}
+
+/* FORMS / MODALS */
+input,select,textarea{
+  font-family:inherit;
+}
+input,select{
+  background:#020617;
+  border-radius:8px;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:7px 9px;
+  font-size:13px;
+}
+textarea{
+  width:100%;
+  background:#020617;
+  border-radius:8px;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:7px 9px;
+  font-size:13px;
+}
+
+.modal-backdrop{
+  position:fixed;inset:0;
+  background:rgba(15,23,42,.85);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+
+.modal{
+  width:420px;
+  max-width:95vw;
+  background:rgba(15,23,42,1);
+  border-radius:16px;
+  border:1px solid rgba(59,130,246,.5);
+  padding:16px 16px 14px;
+  box-shadow:0 24px 80px rgba(15,23,42,1);
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.modal-title{
+  font-size:15px;
+  font-weight:600;
+}
+.modal-close{
+  border:none;
+  background:transparent;
+  color:var(--text-soft);
+  cursor:pointer;
+}
+
+.form-row{
+  margin-bottom:10px;
+}
+.form-row label{
+  display:block;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--text-soft);
+  margin-bottom:4px;
+}
+
+/* TAGS / STATUS */
+.status-pill{
+  font-size:11px;
+  padding:2px 8px;
+  border-radius:999px;
+  background:rgba(22,163,74,.1);
+  color:#bbf7d0;
+}
+.status-pill.offline{
+  background:rgba(239,68,68,.08);
+  color:#fecaca;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div id="topbar-left">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="app-title">OpsLinkCAD</div>
+      <div class="app-sub">Admin Control Center</div>
+    </div>
+  </div>
+  <div>
+    <span class="badge">Community Admin</span>
+  </div>
+</div>
+
+<div id="layout">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="nav-section-title">Overview</div>
+    <div class="nav-item active" data-panel="panel-overview">
+      <span>Community Overview</span>
+    </div>
+
+    <div class="nav-section-title">Structure</div>
+    <div class="nav-item" data-panel="panel-departments">
+      <span>Departments</span>
+    </div>
+    <div class="nav-item" data-panel="panel-units">
+      <span>Units</span>
+    </div>
+
+    <div class="nav-section-title">Configuration</div>
+    <div class="nav-item" data-panel="panel-settings">
+      <span>Settings</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main">
+    <!-- PANEL: OVERVIEW -->
+    <div id="panel-overview" class="panel active">
+      <h2 style="margin:4px 0 10px 0;">Community Overview</h2>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:14px;">
+        High-level health, activity, and structure for this OpsLink community.
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title" id="commName">Community Name</div>
+              <div class="card-sub" id="commDesc">Loading description…</div>
+            </div>
+            <button class="btn-ghost" onclick="openCommunityEdit()">Edit</button>
+          </div>
+          <div style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+            Community ID: <span id="commId" style="color:var(--accent-soft);"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Departments</div>
+              <div class="card-sub">Active operational divisions</div>
+            </div>
+          </div>
+          <div class="stat-number" id="statDepartments">0</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Units</div>
+              <div class="card-sub">Registered units across all departments</div>
+            </div>
+          </div>
+          <div class="stat-number" id="statUnits">0</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div>
+            <div class="table-title">Recent Units</div>
+            <div class="table-sub">Newest units registered in this community</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Callsign</th>
+              <th>Department</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="overviewUnitsBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: DEPARTMENTS -->
+    <div id="panel-departments" class="panel">
+      <h2 style="margin:4px 0 10px 0;">Departments</h2>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">
+        Manage LEO, Fire, EMS, and custom departments for this community.
+      </p>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div>
+            <div class="table-title">Department Directory</div>
+            <div class="table-sub">Create, rename, or retire departments.</div>
+          </div>
+          <button class="btn" onclick="openDeptCreate()">➕ New Department</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Abbreviation</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="deptTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: UNITS -->
+    <div id="panel-units" class="panel">
+      <h2 style="margin:4px 0 10px 0;">Units</h2>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">
+        View all units registered in this community. (Management tools can be added later.)
+      </p>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div>
+            <div class="table-title">Unit Roster</div>
+            <div class="table-sub">Sorted by department and callsign.</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Callsign</th>
+              <th>Department</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="unitTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: SETTINGS -->
+    <div id="panel-settings" class="panel">
+      <h2 style="margin:4px 0 10px 0;">Community Settings</h2>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:14px;">
+        Foundational configuration for this community. (Placeholder for now – backend settings can be wired in later.)
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">General</div>
+              <div class="card-sub">Name, description, branding.</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+            Future: support custom logos, theming, time zone, and more per-community.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Permissions</div>
+              <div class="card-sub">Admin, dispatch, supervisor, unit access.</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+            Future: add granular role-based access controls integrated with Discord IDs.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Webhooks</div>
+              <div class="card-sub">Discord alerts for calls, panic, units.</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text-soft);margin-top:4px;">
+            Future: configure webhooks for panic, new calls, BOLOs, and status changes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     MODALS
+========================= -->
+<div id="modalCommunity" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Community</div>
+      <button class="modal-close" onclick="closeCommunityEdit()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <label>Name</label>
+      <input id="commNameInput" />
+    </div>
+    <div class="form-row">
+      <label>Description</label>
+      <textarea id="commDescInput" rows="3"></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+      <button class="btn-ghost" onclick="closeCommunityEdit()">Cancel</button>
+      <button class="btn" onclick="saveCommunity()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalDept" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create Department</div>
+      <button class="modal-close" onclick="closeDeptCreate()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <label>Name</label>
+      <input id="deptNameInput" placeholder="Example: San Andreas State Police" />
+    </div>
+    <div class="form-row">
+      <label>Abbreviation</label>
+      <input id="deptShortInput" placeholder="Example: SASP" />
+    </div>
+    <div class="form-row">
+      <label>Type</label>
+      <select id="deptTypeInput">
+        <option value="LEO">Law Enforcement</option>
+        <option value="FIRE">Fire</option>
+        <option value="EMS">EMS</option>
+        <option value="CIV">Civilian</option>
+        <option value="OTHER">Other</option>
+      </select>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+      <button class="btn-ghost" onclick="closeDeptCreate()">Cancel</button>
+      <button class="btn" onclick="createDepartment()">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================
+// CONFIG
+// ================================
+const API = "https://opslink-api.onrender.com";
+const communityId = localStorage.getItem("communityId");
+
+// ================================
+// SIDEBAR NAV
+// ================================
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+
+    const target = item.dataset.panel;
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+  });
+});
+
+// ================================
+// LOAD COMMUNITY
+// ================================
+async function loadCommunity() {
+  if (!communityId) return;
+  const res = await fetch(`${API}/community/${communityId}`);
+  const data = await res.json();
+
+  document.getElementById("commName").innerText = data.name || "Community";
+  document.getElementById("commDesc").innerText = data.description || "No description set.";
+  document.getElementById("commId").innerText = data._id || communityId;
+}
+
+// ================================
+// LOAD DEPARTMENTS
+// ================================
+async function loadDepartments() {
+  if (!communityId) return;
+  const res = await fetch(`${API}/departments/${communityId}`);
+  const deps = await res.json();
+
+  document.getElementById("statDepartments").innerText = deps.length;
+
+  const body = document.getElementById("deptTableBody");
+  body.innerHTML = "";
+
+  deps.forEach(dep => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${dep.name}</td>
+      <td>${dep.type || "LEO"}</td>
+      <td>${dep.short || ""}</td>
+      <td style="text-align:right;">
+        <button class="btn-danger" onclick="deleteDepartment('${dep._id}')">Delete</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+// ================================
+// LOAD UNITS
+// ================================
+async function loadUnits() {
+  if (!communityId) return;
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  document.getElementById("statUnits").innerText = units.length;
+
+  const tbody = document.getElementById("unitTableBody");
+  const overview = document.getElementById("overviewUnitsBody");
+  tbody.innerHTML = "";
+  overview.innerHTML = "";
+
+  const latest = [...units].slice(-5).reverse();
+
+  latest.forEach(u => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.callsign}</td>
+      <td>${u.departmentName || ""}</td>
+      <td>${u.type || ""}</td>
+      <td><span class="status-pill ${u.status === "10-8" ? "" : "offline"}">${u.status || "Unknown"}</span></td>
+    `;
+    overview.appendChild(tr);
+  });
+
+  units.forEach(u => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.callsign}</td>
+      <td>${u.departmentName || ""}</td>
+      <td>${u.type || ""}</td>
+      <td><span class="status-pill ${u.status === "10-8" ? "" : "offline"}">${u.status || "Unknown"}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================
+// COMMUNITY EDIT MODAL
+// ================================
+function openCommunityEdit() {
+  document.getElementById("modalCommunity").style.display = "flex";
+  // preload existing values
+  document.getElementById("commNameInput").value =
+    document.getElementById("commName").innerText;
+  document.getElementById("commDescInput").value =
+    document.getElementById("commDesc").innerText;
+}
+function closeCommunityEdit() {
+  document.getElementById("modalCommunity").style.display = "none";
+}
+
+async function saveCommunity() {
+  const body = {
+    name: document.getElementById("commNameInput").value,
+    description: document.getElementById("commDescInput").value
+  };
+
+  await fetch(`${API}/community/${communityId}`, {
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  }).catch(() => {});
+
+  closeCommunityEdit();
+  loadCommunity();
+}
+
+// ================================
+// DEPARTMENT CREATE MODAL
+// ================================
+function openDeptCreate() {
+  document.getElementById("modalDept").style.display = "flex";
+}
+function closeDeptCreate() {
+  document.getElementById("modalDept").style.display = "none";
+}
+
+async function createDepartment() {
+  const body = {
+    name: document.getElementById("deptNameInput").value,
+    short: document.getElementById("deptShortInput").value,
+    type: document.getElementById("deptTypeInput").value
+  };
+
+  await fetch(`${API}/departments/${communityId}/create`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+
+  closeDeptCreate();
+  loadDepartments();
+}
+
+// ================================
+// DEPARTMENT DELETE
+// ================================
+async function deleteDepartment(id) {
+  if (!confirm("Delete this department?")) return;
+
+  await fetch(`${API}/departments/delete/${id}`, {
+    method:"DELETE"
+  }).catch(() => {});
+  loadDepartments();
+}
+
+// ================================
+// INIT
+// ================================
+loadCommunity();
+loadDepartments();
+loadUnits();
+</script>
+</body>
+</html>
