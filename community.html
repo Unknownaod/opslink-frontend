@@ -138,9 +138,14 @@
     <div class="logo">OpsLink<span>CAD</span></div>
 
     <a href="dashboard.html">Dashboard</a>
-    <a href="#" class="active">Community</a>
+    <a href="#" class="active" data-panel="panel-community">Community</a>
+
+    <!-- Permission Key Claim Tab -->
+    <a href="#" class="nav-item" data-panel="panel-claim">Enter Access Key</a>
+
     <a href="#" onclick="logout()">Logout</a>
 </div>
+
 
 <div class="main">
 
@@ -228,6 +233,28 @@
     </div>
 </div>
 
+
+<!-- PANEL: CLAIM PERMISSION KEY -->
+<div id="panel-claim" class="panel" style="display:none;">
+    <h2>Enter Access Key</h2>
+    <p style="color:#ccc;margin-bottom:15px;">
+        Enter a permission key provided by your Community Staff to unlock MDT/Dispatch/Fire/Supervisor access.
+    </p>
+
+    <div class="card" style="padding:20px;border:1px solid #1e293b;border-radius:8px;">
+        <label for="claimKeyInput" style="font-size:14px;">Permission Key</label>
+        <input id="claimKeyInput" type="text" placeholder="e.g. DISP-3FA2F1" 
+               style="width:100%;padding:12px;margin-top:6px;border-radius:6px;border:1px solid #333;background:#111;color:#fff;">
+        
+        <button class="btn" onclick="claimKey()" style="margin-top:15px;">
+            Submit Key
+        </button>
+
+        <p id="claimKeyResult" style="margin-top:15px;font-size:14px;"></p>
+    </div>
+</div>
+
+    
 <!-- DEPARTMENT MODAL -->
 <div id="deptModal" class="modal-bg">
     <div class="modal">
@@ -467,6 +494,48 @@ async function deleteCommunity() {
     window.location.href = "dashboard.html";
 }
 
+/// ENTER PERMISSION KEYS
+
+    async function claimKey() {
+    const key = document.getElementById("claimKeyInput").value.trim();
+    const resBox = document.getElementById("claimKeyResult");
+
+    if (!key) {
+        resBox.innerText = "Please enter a key.";
+        resBox.style.color = "red";
+        return;
+    }
+
+    const res = await fetch(`${API}/community/permission/claim`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            communityId,
+            key
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        resBox.innerText = data.message || "Invalid key.";
+        resBox.style.color = "red";
+        return;
+    }
+
+    // SUCCESS
+    resBox.innerText = `Access granted: ${data.granted.toUpperCase()} panel unlocked!`;
+    resBox.style.color = "limegreen";
+
+    // Reload role/permissions
+    loadCommunity();
+}
+
+
+    
 /* ========== MODALS ========== */
 function openModal(id) {
     document.getElementById(id).style.display = "flex";
@@ -475,13 +544,43 @@ function openModal(id) {
 function closeModal(id) {
     document.getElementById(id).style.display = "none";
 }
-
+    
 /* ========== LOGOUT ========== */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
 
+
+/* ========== PANEL NAVIGATION ========== */
+document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+
+        // Remove active from other sidebar items
+        document.querySelectorAll(".nav-item").forEach(i =>
+            i.classList.remove("active")
+        );
+        item.classList.add("active");
+
+        // Figure out which panel this tab opens
+        const target = item.dataset.panel;
+
+        // Hide all panels
+        document.querySelectorAll(".panel").forEach(p => {
+            p.style.display = "none";
+        });
+
+        // Show selected panel
+        document.getElementById(target).style.display = "block";
+
+        // Additional actions
+        if (target === "panel-claim") {
+            // nothing special yet, but here if needed
+        }
+    });
+});
+
+    
 /* INIT */
 loadCommunity();
 </script>
