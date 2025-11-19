@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – OpsLinkCAD</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">OpsLink<span>CAD</span></div>
+    <div class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="register.html">Register</a>
+    </div>
+  </nav>
+
+  <!-- AUTH FORM -->
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h2>Login</h2>
+
+      <div class="label">Email</div>
+      <input id="email" type="email" placeholder="Enter your email">
+
+      <div class="label">Password</div>
+      <input id="password" type="password" placeholder="Enter your password">
+
+      <button onclick="login()">Login</button>
+
+      <div class="auth-footer">
+        Don’t have an account? <a href="register.html">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    async function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("https://opslink-api.onrender.com/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      alert("Login successful!");
+      localStorage.setItem("token", data.token);
+      // Later redirect to CAD dashboard
+    }
+  </script>
+
+</body>
+</html>
