@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supervisor Console – OpsLinkCAD</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+body {
+    background: #0d1117;
+    color: #fff;
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+}
+
+header {
+    padding: 15px 25px;
+    background: #161b22;
+    border-bottom: 1px solid #21262d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.logout {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.unit-table {
+    width: 95%;
+    margin: 25px auto;
+    border-collapse: collapse;
+}
+
+.unit-table th, .unit-table td {
+    padding: 12px;
+    border-bottom: 1px solid #1f242c;
+}
+
+.unit-table th {
+    text-align: left;
+    background: #161b22;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    margin-right: 5px;
+    font-size: 13px;
+}
+
+.warn-btn {
+    background: #fbbf24;
+    color: #000;
+}
+
+.force-btn {
+    background: #ef4444;
+}
+
+.clear-btn {
+    background: #3b82f6;
+}
+
+.status-pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    background: #374151;
+    color: #fff;
+}
+
+.status-108 {
+    background: #22c55e !important;
+}
+
+.status-107 {
+    background: #ef4444 !important;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="title">Supervisor Console</div>
+    <div class="logout" onclick="logout()">Logout</div>
+</header>
+
+<h2 style="margin-left:25px;">Active Units</h2>
+
+<table class="unit-table">
+    <thead>
+        <tr>
+            <th>Callsign</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Supervisor Actions</th>
+        </tr>
+    </thead>
+    <tbody id="unitBody">
+        <tr><td colspan="4">Loading...</td></tr>
+    </tbody>
+</table>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+// =======================================================
+// CONFIG
+// =======================================================
+const API = "https://opslink-api.onrender.com";
+const socket = io(API);
+
+// load permission info
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user"));
+const communityId = localStorage.getItem("selectedCommunity");
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const communityRole = localStorage.getItem("communityRole");
+
+// =======================================================
+// SUPERVISOR PERMISSION LOCK
+// =======================================================
+
+// Allowed:
+// owner, admin, supervisor
+if (
+    communityRole !== "owner" &&
+    !permissions.includes("admin") &&
+    !permissions.includes("supervisor")
+) {
+    alert("You do not have access to the Supervisor Console.");
+    window.location.href = "community.html";
+}
+
+
+// =======================================================
+// LOAD UNITS
+// =======================================================
+async function loadUnits() {
+    const res = await fetch(`${API}/units/${communityId}`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const units = await res.json();
+    const tbody = document.getElementById("unitBody");
+
+    tbody.innerHTML = "";
+
+    units.forEach(u => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${u.callsign}</td>
+            <td>${u.departmentName || "—"}</td>
+            <td>
+                <span class="status-pill ${u.status === "10-8" ? "status-108" : "status-107"}">
+                    ${u.status}
+                </span>
+            </td>
+            <td>
+                <button class="action-btn warn-btn" onclick="warnUnit('${u._id}')">⚠ Warn</button>
+                <button class="action-btn force-btn" onclick="force107('${u._id}')">Force 10-7</button>
+                <button class="action-btn clear-btn" onclick="clearPanic('${u._id}')">Clear Panic</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+
+// =======================================================
+// SUPERVISOR ACTIONS
+// =======================================================
+async function warnUnit(unitId) {
+    socket.emit("supervisor:warn", { communityId, unitId });
+    alert("Warning sent.");
+}
+
+async function force107(unitId) {
+    socket.emit("supervisor:forceStatus", {
+        communityId,
+        unitId,
+        status: "10-7"
+    });
+    alert("Unit forced to 10-7.");
+}
+
+async function clearPanic(unitId) {
+    socket.emit("panic:clear", { communityId, unitId });
+    alert("Panic cleared.");
+}
+
+
+// =======================================================
+// LIVE UPDATES
+// =======================================================
+socket.on("unit:status", () => loadUnits());
+socket.on("panic:button", () => loadUnits());
+
+
+// =======================================================
+// LOGOUT
+// =======================================================
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+loadUnits();
+</script>
+
+</body>
+</html>
