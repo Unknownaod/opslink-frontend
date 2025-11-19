@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpsLinkCAD – Dashboard</title>
 
 <style>
@@ -19,15 +19,29 @@
     --text-soft: #98a1ad;
     --danger: #ff4d4d;
     --danger-hover: #ff6666;
-    --glass: rgba(255, 255, 255, 0.06);
 }
 
-/* BASE */
+/* LIGHT MODE */
+.light {
+    --bg-main: #f3f4f6;
+    --bg-sidebar: #e5e7eb;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --border: #cbd5e1;
+    --text: #111827;
+    --text-soft: #4b5563;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+}
+
 body {
     margin: 0;
     background: var(--bg-main);
     color: var(--text);
     font-family: "Segoe UI", sans-serif;
+    transition: background 0.25s, color 0.25s;
 }
 
 /* SIDEBAR */
@@ -43,62 +57,49 @@ body {
 }
 
 .logo {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: bold;
-    margin-bottom: 45px;
+    margin-bottom: 40px;
 }
 .logo span { color: var(--accent); }
 
 .sidebar a {
     display: block;
-    padding: 12px 14px;
+    padding: 12px;
     margin: 6px 0;
     color: var(--text);
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: 0.2s;
-    font-size: 15px;
 }
+
 .sidebar a:hover,
 .sidebar a.active {
     background: #1a222e;
     color: var(--accent);
 }
 
-/* MAIN CONTENT */
+/* MAIN WRAPPER */
 .main {
     margin-left: 260px;
-    padding: 40px 50px;
-    animation: fadeIn .4s ease;
+    padding: 40px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.dash-title {
-    font-size: 36px;
-    margin-bottom: 6px;
+/* PAGE TITLES */
+.page-title {
+    font-size: 34px;
+    margin-bottom: 5px;
     color: var(--accent);
-    font-weight: 600;
-}
-
-.user-tag {
-    opacity: 0.75;
-    margin-bottom: 25px;
-    font-size: 16px;
 }
 
 /* BUTTONS */
 .btn {
-    padding: 12px 22px;
+    padding: 12px 20px;
     border-radius: 8px;
+    border: none;
     cursor: pointer;
     font-weight: 600;
-    border: none;
     transition: 0.2s;
-    font-size: 14px;
 }
 
 .btn-primary {
@@ -120,117 +121,135 @@ body {
 }
 .btn-danger:hover { background: var(--danger-hover); }
 
-/* COMMUNITY GRID */
+/* COMMUNITY CARDS */
 .community-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 28px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 25px;
 }
 
 .community-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    padding: 25px;
-    border-radius: 14px;
-    transition: 0.25s ease;
-    box-shadow: 0 0 10px rgba(0,0,0,0.20);
+    padding: 22px;
+    border-radius: 12px;
+    transition: 0.25s;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.25);
 }
 
 .community-card:hover {
     transform: translateY(-6px);
     border-color: var(--accent);
-    box-shadow: 0px 0px 20px rgba(78,140,255,0.25);
+    box-shadow: 0px 0px 14px rgba(78,140,255,0.25);
 }
 
-.community-card h3 {
-    margin: 0;
-    margin-bottom: 10px;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--accent);
-}
-
-.community-card p {
-    opacity: 0.8;
-    font-size: 15px;
-    margin-bottom: 22px;
-}
-
-.card-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-/* MODAL */
-.modal-bg {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
+/* HIDDEN PAGE SECTION (OPTION A) */
+.page {
     display: none;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(4px);
+}
+.page.active {
+    display: block;
 }
 
-.modal {
-    background: var(--glass);
+/* SETTINGS PAGE */
+.settings-card {
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    padding: 28px;
-    border-radius: 14px;
-    width: 380px;
-    animation: pop .25s ease;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
 }
 
-@keyframes pop {
-    from { transform: scale(.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.modal h2 {
-    margin: 0 0 15px 0;
+.settings-title {
+    font-size: 22px;
+    margin-bottom: 12px;
     color: var(--accent);
 }
 
-.modal input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 14px;
-    background: var(--bg-input);
-    border: 1px solid #2b3240;
-    color: white;
-    border-radius: 8px;
-    font-size: 14px;
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 </style>
 </head>
-
 <body>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">OpsLink<span>CAD</span></div>
 
-    <a href="dashboard.html" class="active">Dashboard</a>
-    <a href="#">Communities</a>
-    <a href="#">Settings</a>
+    <a href="#" id="nav-dashboard" class="active" onclick="switchPage('dashboard')">Dashboard</a>
+    <a href="#" id="nav-settings" onclick="switchPage('settings')">Settings</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
-<!-- MAIN -->
+<!-- MAIN WRAPPER -->
 <div class="main">
-    <h1 class="dash-title">Dashboard</h1>
-    <div class="user-tag">Logged in as <span id="username"></span></div>
+
+
+    <!-- ============================
+     PAGE: DASHBOARD (DEFAULT)
+============================ -->
+<div id="page-dashboard" class="page active">
+
+    <h1 class="page-title">Dashboard</h1>
+    <div class="user-tag" style="opacity:0.7; margin-bottom:25px;">
+        Logged in as <span id="username"></span>
+    </div>
 
     <button class="btn btn-primary" onclick="openModal()">+ Create Community</button>
     <button class="btn btn-secondary" onclick="openJoinModal()">Join Community</button>
 
-    <h2 style="margin: 25px 0 10px 0;">Your Communities</h2>
+    <h2 style="margin: 25px 0;">Your Communities</h2>
     <div id="commList" class="community-list">Loading...</div>
 </div>
 
-<!-- CREATE COMMUNITY MODAL -->
-<div id="modalBg" class="modal-bg">
+
+
+
+<!-- ============================
+     PAGE: SETTINGS  (Hidden)
+============================ -->
+<div id="page-settings" class="page">
+
+    <h1 class="page-title">Settings</h1>
+
+    <!-- ACCOUNT SETTINGS -->
+    <div class="settings-card">
+        <div class="settings-title">Account</div>
+
+        <p style="opacity:0.8;">Username: <b id="profileName"></b></p>
+
+        <button class="btn btn-secondary" onclick="openProfileModal()">Edit Profile</button>
+    </div>
+
+    <!-- APPEARANCE SETTINGS -->
+    <div class="settings-card">
+        <div class="settings-title">Appearance</div>
+
+        <div class="toggle-row">
+            <span>Light Mode</span>
+            <button class="btn btn-secondary" onclick="toggleTheme()">Toggle</button>
+        </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="settings-card">
+        <div class="settings-title">Danger Zone</div>
+
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+
+</div>
+
+
+
+
+<!-- ============================
+     CREATE COMMUNITY MODAL
+============================ -->
+<div id="modalBg" class="modal-bg" style="display:none;">
     <div class="modal">
         <h2>Create Community</h2>
 
@@ -238,33 +257,127 @@ body {
         <input id="commDesc" type="text" placeholder="Description">
 
         <button class="btn btn-primary" onclick="createCommunity()">Create</button>
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn close-btn" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
-<!-- JOIN COMMUNITY MODAL -->
-<div id="joinModalBg" class="modal-bg">
+
+<!-- ============================
+     JOIN COMMUNITY MODAL
+============================ -->
+<div id="joinModalBg" class="modal-bg" style="display:none;">
     <div class="modal">
         <h2>Join Community</h2>
 
         <input id="joinCommId" type="text" placeholder="Enter Community ID">
 
         <button class="btn btn-primary" onclick="joinCommunity()">Join</button>
-        <button class="btn btn-secondary" onclick="closeJoinModal()">Cancel</button>
+        <button class="btn close-btn" onclick="closeJoinModal()">Cancel</button>
+    </div>
+</div>
+
+
+
+<!-- ============================
+     EDIT PROFILE MODAL
+============================ -->
+<div id="profileModalBg" class="modal-bg" style="display:none;">
+    <div class="modal">
+        <h2>Edit Profile</h2>
+
+        <input id="editUsername" type="text" placeholder="New Username">
+
+        <button class="btn btn-primary" onclick="saveProfile()">Save</button>
+        <button class="btn close-btn" onclick="closeProfileModal()">Cancel</button>
     </div>
 </div>
 
 <script>
-/* ========= AUTH CHECK ========= */
+/* ============================
+       AUTH CHECK
+============================ */
 if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
 
 const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user"));
-document.getElementById("username").innerText = user?.name || user?.email;
+let user = JSON.parse(localStorage.getItem("user"));
 
-/* ========= LOAD COMMUNITIES ========= */
+document.getElementById("username").innerText = user?.name || user?.email;
+document.getElementById("profileName").innerText = user?.name || user?.email;
+
+
+/* ============================
+       PAGE SWITCHER (OPTION A)
+============================ */
+function switchPage(page) {
+    document.getElementById("page-dashboard").classList.remove("active");
+    document.getElementById("page-settings").classList.remove("active");
+
+    document.getElementById("nav-dashboard").classList.remove("active");
+    document.getElementById("nav-settings").classList.remove("active");
+
+    if (page === "dashboard") {
+        document.getElementById("page-dashboard").classList.add("active");
+        document.getElementById("nav-dashboard").classList.add("active");
+    } else {
+        document.getElementById("page-settings").classList.add("active");
+        document.getElementById("nav-settings").classList.add("active");
+    }
+}
+
+
+/* ============================
+       THEME TOGGLE
+============================ */
+function applyTheme() {
+    const theme = localStorage.getItem("theme") || "dark";
+    if (theme === "light") {
+        document.body.classList.add("light");
+    } else {
+        document.body.classList.remove("light");
+    }
+}
+
+function toggleTheme() {
+    const current = localStorage.getItem("theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
+    applyTheme();
+}
+
+applyTheme();
+
+
+/* ============================
+       PROFILE EDIT
+============================ */
+function openProfileModal() {
+    document.getElementById("profileModalBg").style.display = "flex";
+}
+
+function closeProfileModal() {
+    document.getElementById("profileModalBg").style.display = "none";
+}
+
+function saveProfile() {
+    const newName = document.getElementById("editUsername").value.trim();
+    if (!newName) return alert("Enter a valid username.");
+
+    user.name = newName;
+    localStorage.setItem("user", JSON.stringify(user));
+
+    document.getElementById("username").innerText = newName;
+    document.getElementById("profileName").innerText = newName;
+
+    closeProfileModal();
+}
+
+
+
+/* ============================
+       LOAD COMMUNITIES
+============================ */
 async function loadCommunities() {
     const res = await fetch("https://opslink-api.onrender.com/community/my", {
         headers: { "Authorization": "Bearer " + token }
@@ -299,9 +412,12 @@ async function loadCommunities() {
     });
 }
 
-/* ========= DELETE COMMUNITY ========= */
+
+/* ============================
+       DELETE COMMUNITY
+============================ */
 async function deleteCommunity(id, name) {
-    if (!confirm(`Delete community "${name}"? This cannot be undone.`)) return;
+    if (!confirm(`Delete community "${name}"?`)) return;
 
     const res = await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
         method: "DELETE",
@@ -309,17 +425,20 @@ async function deleteCommunity(id, name) {
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to delete community");
+    if (!res.ok) return alert(data.message || "Failed to delete community.");
 
     loadCommunities();
 }
 
-/* ========= CREATE COMMUNITY ========= */
+
+/* ============================
+       CREATE COMMUNITY
+============================ */
 async function createCommunity() {
     const name = document.getElementById("commName").value;
     const description = document.getElementById("commDesc").value;
 
-    if (!name) return alert("Please enter a community name.");
+    if (!name) return alert("Enter a community name.");
 
     const res = await fetch("https://opslink-api.onrender.com/community/create", {
         method: "POST",
@@ -337,7 +456,10 @@ async function createCommunity() {
     loadCommunities();
 }
 
-/* ========= JOIN COMMUNITY ========= */
+
+/* ============================
+       JOIN COMMUNITY
+============================ */
 async function joinCommunity() {
     const id = document.getElementById("joinCommId").value.trim();
     if (!id) return alert("Enter a valid community ID.");
@@ -352,34 +474,53 @@ async function joinCommunity() {
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to join");
+    if (!res.ok) return alert(data.message || "Failed to join community");
 
     closeJoinModal();
     loadCommunities();
 }
 
-/* ========= MODALS ========= */
-function openModal() { document.getElementById("modalBg").style.display = "flex"; }
-function closeModal() { document.getElementById("modalBg").style.display = "none"; }
 
-function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
-function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
+/* ============================
+       MODAL CONTROL
+============================ */
+function openModal() {
+    document.getElementById("modalBg").style.display = "flex";
+}
+function closeModal() {
+    document.getElementById("modalBg").style.display = "none";
+}
 
-/* ========= OPEN COMMUNITY ========= */
+function openJoinModal() {
+    document.getElementById("joinModalBg").style.display = "flex";
+}
+function closeJoinModal() {
+    document.getElementById("joinModalBg").style.display = "none";
+}
+
+
+/* ============================
+       OPEN COMMUNITY PAGE
+============================ */
 function openCommunity(id) {
     localStorage.setItem("selectedCommunity", id);
     window.location.href = "community.html";
 }
 
-/* ========= LOGOUT ========= */
+
+/* ============================
+       LOGOUT
+============================ */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
 
-/* INIT */
+
+/* ============================
+       INITIAL LOAD
+============================ */
 loadCommunities();
 </script>
-
 </body>
 </html>
