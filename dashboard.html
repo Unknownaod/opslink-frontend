@@ -328,9 +328,10 @@ body {
                 Manage Billing (Stripe Portal)
             </button>
 
-            <button id="billingUpgradeBtn" class="btn btn-primary" onclick="startCheckout()">
-                Upgrade to Premier
-            </button>
+<button id="billingUpgradeBtn" class="btn btn-primary" onclick="goToCheckout()">
+    Upgrade to Premier
+</button>
+
 
             <button id="billingCancelBtn" class="btn btn-danger" onclick="cancelBilling()" style="display:none;">
                 Cancel Subscription
@@ -488,6 +489,11 @@ function switchPage(page) {
     }
 }
 
+function goToCheckout() {
+    window.location.href = "/checkout/checkout.html";
+}
+
+   
 /* =====================================================
    THEME TOGGLE
 ===================================================== */
@@ -738,3 +744,4 @@ loadCommunities();
 </div>
 </body>
 </html>
+
