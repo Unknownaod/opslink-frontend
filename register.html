@@ -1,120 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register – OpsLinkCAD</title>
+<meta charset="UTF-8">
+<title>Register – OpsLinkCAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            background: #0f141a;
-            font-family: "Segoe UI", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #c9d1d9;
-        }
+<style>
+/* =============================
+   GLOBAL BASE THEME (D-3)
+   ============================= */
+body {
+    margin: 0;
+    background: #0b1119;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    color: #dbe4f3;
+}
 
-        .container {
-            width: 360px;
-            background: #161b22;
-            padding: 35px;
-            border-radius: 12px;
-            border: 1px solid #222c36;
-            box-shadow: 0px 0px 40px rgba(0,0,0,0.3);
-        }
+/* =============================
+   GLASS CARD
+   ============================= */
+.card {
+    width: 420px;
+    background: rgba(255,255,255,0.05);
+    padding: 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    text-align: center;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+/* LOGO */
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.logo span {
+    color: #4e8cff;
+}
 
-        .logo span {
-            color: #4e8cff;
-        }
+.subtitle {
+    margin-bottom: 25px;
+    opacity: 0.7;
+}
 
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #2b323d;
-            background: #0f141a;
-            color: #fff;
-            font-size: 15px;
-        }
+/* INPUT GROUP */
+.input-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: #4e8cff;
-            border: none;
-            color: #fff;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: 0.2s;
-        }
+label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
 
-        .btn:hover {
-            background: #3570d8;
-        }
+.input-box {
+    width: 100%;
+    padding: 14px;
+    background: #0f1622;
+    border: 1px solid #2b3545;
+    border-radius: 8px;
+    color: #dbe4f3;
+    font-size: 15px;
+    transition: 0.2s;
+}
 
-        .switch {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 14px;
-            opacity: 0.8;
-        }
+.input-box:focus {
+    border-color: #4e8cff;
+    outline: none;
+}
 
-        .switch a {
-            color: #4e8cff;
-            text-decoration: none;
-        }
+.input-error {
+    border-color: #ff4c4c !important;
+}
 
-        .switch a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.error-text {
+    color: #ff4c4c;
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+}
+
+/* REGISTER BUTTON */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #4e8cff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-primary:hover {
+    background: #3675e9;
+}
+
+/* FOOTER LINKS */
+.bottom-links {
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+.bottom-links a {
+    margin: 0 8px;
+    color: #4e8cff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.bottom-links a:hover {
+    text-decoration: underline;
+}
+</style>
+
 </head>
 <body>
 
-<div class="container">
+<div class="card">
+
     <div class="logo">OpsLink<span>CAD</span></div>
+    <div class="subtitle">Create your account</div>
 
-    <input id="name" type="text" placeholder="Full Name">
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <button class="btn" onclick="register()">Create Account</button>
-
-    <div class="switch">
-        Already have an account? <a href="login.html">Login here</a>
+    <!-- NAME -->
+    <div class="input-group">
+        <label>Full Name</label>
+        <input id="name" class="input-box" type="text" placeholder="John Doe">
+        <div id="nameError" class="error-text">Please enter your name</div>
     </div>
+
+    <!-- EMAIL -->
+    <div class="input-group">
+        <label>Email</label>
+        <input id="email" class="input-box" type="email" placeholder="email@example.com">
+        <div id="emailError" class="error-text">Please enter a valid email</div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-group">
+        <label>Password</label>
+        <input id="password" class="input-box" type="password" placeholder="Enter a password">
+        <div id="passwordError" class="error-text">Password must be at least 6 characters</div>
+    </div>
+
+    <!-- CONFIRM PASSWORD -->
+    <div class="input-group">
+        <label>Confirm Password</label>
+        <input id="confirmPassword" class="input-box" type="password" placeholder="Re-enter your password">
+        <div id="confirmError" class="error-text">Passwords do not match</div>
+    </div>
+
+    <button class="btn-primary" onclick="register()">Register</button>
+
+    <div class="bottom-links">
+        <a href="login.html">LOGIN</a>
+        <a href="register.html">REGISTER</a>
+    </div>
+
 </div>
 
 <script>
 async function register() {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    let name = document.getElementById("name");
+    let email = document.getElementById("email");
+    let pw = document.getElementById("password");
+    let cpw = document.getElementById("confirmPassword");
 
+    let hasError = false;
+
+    // Reset old errors
+    document.querySelectorAll(".error-text").forEach(el => el.style.display = "none");
+    document.querySelectorAll(".input-box").forEach(el => el.classList.remove("input-error"));
+
+    if (!name.value) {
+        name.classList.add("input-error");
+        document.getElementById("nameError").style.display = "block";
+        hasError = true;
+    }
+
+    if (!email.value || !email.value.includes("@")) {
+        email.classList.add("input-error");
+        document.getElementById("emailError").style.display = "block";
+        hasError = true;
+    }
+
+    if (!pw.value || pw.value.length < 6) {
+        pw.classList.add("input-error");
+        document.getElementById("passwordError").style.display = "block";
+        hasError = true;
+    }
+
+    if (cpw.value !== pw.value) {
+        cpw.classList.add("input-error");
+        document.getElementById("confirmError").style.display = "block";
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    // SEND TO API
     const res = await fetch("https://opslink-api.onrender.com/auth/register", {
         method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ name, email, password })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            name: name.value,
+            email: email.value,
+            password: pw.value
+        })
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.message || "Registration failed.");
 
-    alert("Account created! You can now log in.");
-    window.location.href = "login.html";
+    if (!res.ok) {
+        alert(data.message || "Registration failed");
+        return;
+    }
+
+    // Save login info automatically
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    window.location.href = "dashboard.html";
 }
 </script>
 
