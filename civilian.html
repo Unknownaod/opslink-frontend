@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD – Civilian Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+/* ============================================================
+   OPSLINKCAD – SONORAN-STYLE CIVILIAN PORTAL
+   ============================================================ */
+:root {
+  --bg-main:#0c1118;--bg-elevated:#131a24;--bg-panel:#161e29;
+  --border:#1f2a38;--accent:#4e8cff;--accent-hover:#73a5ff;
+  --danger:#ff3b3b;--text:#e8ecf5;--text-soft:#9aa7b9;
+}
+
+body {
+  margin:0;background:var(--bg-main);color:var(--text);
+  font-family: "Segoe UI", sans-serif;overflow:hidden;height:100vh;
+}
+
+/* HEADER */
+#topnav {
+  height:55px;background:var(--bg-elevated);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;font-size:20px;font-weight:bold;
+  color:var(--accent);justify-content:space-between;
+}
+
+#layout {
+  display:grid;
+  grid-template-columns:380px 1fr;
+  height:calc(100vh - 55px);
+}
+
+/* LEFT – CIVILIAN LIST */
+#left {
+  background:var(--bg-elevated);
+  border-right:1px solid var(--border);
+  padding:20px;
+  overflow-y:auto;
+}
+
+.civ-card {
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+.civ-card:hover { border-color:var(--accent); }
+
+.civ-name { font-size:17px;color:var(--accent); }
+.civ-info { font-size:13px;color:var(--text-soft); }
+
+/* RIGHT – CIVILIAN DETAILS */
+#right {
+  padding:25px;
+  overflow-y:auto;
+}
+
+#right h2 { margin:0 0 10px 0;color:var(--accent); }
+
+.section {
+  background:var(--bg-panel);
+  padding:15px;
+  border-radius:6px;
+  border:1px solid var(--border);
+  margin-bottom:20px;
+}
+
+.section h3 { margin-top:0;color:var(--accent); }
+
+/* BUTTONS */
+.btn {
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+  transition:0.2s;
+}
+.btn:hover { background:var(--accent-hover); }
+
+.danger-btn {
+  background:var(--danger);
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* FORM MODAL */
+.modal {
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:20;
+}
+
+.modal-content {
+  width:500px;background:var(--bg-panel);
+  border:1px solid var(--border);padding:20px;border-radius:6px;
+}
+
+.modal input, .modal select, .modal textarea {
+  width:100%;padding:10px;margin-top:8px;
+  background:var(--bg-elevated);border:1px solid var(--border);
+  color:var(--text-soft);border-radius:6px;
+}
+</style>
+</head>
+<body>
+
+<div id="topnav">
+  <div>OpsLinkCAD – Civilian Portal</div>
+  <button class="btn" onclick="openCreate()">➕ Create Civilian</button>
+</div>
+
+<div id="layout">
+
+  <!-- LEFT: Civilian List -->
+  <div id="left">
+    <h2 style="color:var(--accent);">Your Civilians</h2>
+    <div id="civList"></div>
+  </div>
+
+  <!-- RIGHT: Civilian Details -->
+  <div id="right">
+    <h2>Select a civilian to view details</h2>
+    <div id="civDetails"></div>
+  </div>
+
+</div>
+
+<!-- CREATE CIVILIAN MODAL -->
+<div id="createModal" class="modal">
+  <div class="modal-content">
+    <h2>Create Civilian</h2>
+
+    <input id="cName" placeholder="Full Name" />
+    <input id="cDOB" placeholder="Date of Birth (MM/DD/YYYY)" />
+    <input id="cAddress" placeholder="Address" />
+
+    <select id="cLicense">
+      <option value="Valid">License Status: Valid</option>
+      <option value="Suspended">License Status: Suspended</option>
+      <option value="None">No Driver’s License</option>
+    </select>
+
+    <textarea id="cNotes" placeholder="Notes (optional)"></textarea>
+
+    <button class="btn" onclick="createCivilian()">Create</button>
+    <button class="danger-btn" onclick="closeCreate()">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT CIVILIAN MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Civilian</h2>
+
+    <input id="eName" />
+    <input id="eDOB" />
+    <input id="eAddress" />
+
+    <select id="eLicense">
+      <option value="Valid">License Valid</option>
+      <option value="Suspended">Suspended</option>
+      <option value="None">None</option>
+    </select>
+
+    <textarea id="eNotes"></textarea>
+
+    <button class="btn" onclick="saveEdit()">Save</button>
+    <button class="danger-btn" onclick="closeEdit()">Cancel</button>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// CONFIG
+// =========================================================
+const API = "https://opslink-api.onrender.com"; 
+let userId = localStorage.getItem("userId");
+let communityId = localStorage.getItem("communityId");
+
+let civilians = [];
+let selectedCivilian = null;
+
+// =========================================================
+// LOAD CIVILIANS
+// =========================================================
+async function loadCivilians() {
+  const res = await fetch(`${API}/civilians/${userId}`);
+  civilians = await res.json();
+
+  const list = document.getElementById("civList");
+  list.innerHTML = "";
+
+  civilians.forEach(c => {
+    const item = document.createElement("div");
+    item.className = "civ-card";
+    item.onclick = () => openDetails(c);
+
+    item.innerHTML = `
+      <div class="civ-name">${c.name}</div>
+      <div class="civ-info">${c.dob}</div>
+    `;
+
+    list.appendChild(item);
+  });
+}
+
+// =========================================================
+// OPEN DETAILS PANEL
+// =========================================================
+function openDetails(c) {
+  selectedCivilian = c;
+
+  const panel = document.getElementById("civDetails");
+
+  panel.innerHTML = `
+    <div class="section">
+      <h3>Identity</h3>
+      <p><b>Name:</b> ${c.name}</p>
+      <p><b>DOB:</b> ${c.dob}</p>
+      <p><b>Address:</b> ${c.address}</p>
+      <p><b>License:</b> ${c.license}</p>
+      <p><b>Notes:</b><br>${c.notes || "None"}</p>
+
+      <button class="btn" onclick="openEdit()">Edit Civilian</button>
+      <button class="danger-btn" onclick="deleteCivilian()">Delete Civilian</button>
+    </div>
+
+    <div class="section">
+      <h3>Vehicles</h3>
+      <p>No vehicles linked yet.</p>
+    </div>
+
+    <div class="section">
+      <h3>Warrants</h3>
+      <p>${(c.warrants && c.warrants.length > 0) ? c.warrants.join("<br>") : "No active warrants."}</p>
+    </div>
+  `;
+}
+
+// =========================================================
+// CREATE CIVILIAN
+// =========================================================
+function openCreate() {
+  document.getElementById("createModal").style.display = "flex";
+}
+
+function closeCreate() {
+  document.getElementById("createModal").style.display = "none";
+}
+
+async function createCivilian() {
+  const body = {
+    userId,
+    name: cName.value,
+    dob: cDOB.value,
+    address: cAddress.value,
+    license: cLicense.value,
+    notes: cNotes.value
+  };
+
+  await fetch(`${API}/civilians/create`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+
+  closeCreate();
+  loadCivilians();
+}
+
+// =========================================================
+// EDIT CIVILIAN
+// =========================================================
+function openEdit() {
+  document.getElementById("editModal").style.display = "flex";
+
+  eName.value = selectedCivilian.name;
+  eDOB.value = selectedCivilian.dob;
+  eAddress.value = selectedCivilian.address;
+  eLicense.value = selectedCivilian.license;
+  eNotes.value = selectedCivilian.notes;
+}
+
+function closeEdit() {
+  document.getElementById("editModal").style.display = "none";
+}
+
+async function saveEdit() {
+  const body = {
+    name: eName.value,
+    dob: eDOB.value,
+    address: eAddress.value,
+    license: eLicense.value,
+    notes: eNotes.value
+  };
+
+  await fetch(`${API}/civilians/update/${selectedCivilian._id}`, {
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(body)
+  });
+
+  closeEdit();
+  loadCivilians();
+}
+
+// =========================================================
+// DELETE CIVILIAN
+// =========================================================
+async function deleteCivilian() {
+  if (!confirm("Delete this civilian?")) return;
+
+  await fetch(`${API}/civilians/delete/${selectedCivilian._id}`, {
+    method:"DELETE"
+  });
+
+  selectedCivilian = null;
+  document.getElementById("civDetails").innerHTML = "<h2>Select a civilian</h2>";
+  loadCivilians();
+}
+
+// INIT
+loadCivilians();
+</script>
+
+</body>
+</html>
