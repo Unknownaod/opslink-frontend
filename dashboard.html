@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>OpsLinkCAD – Dashboard</title>
 
 <style>
@@ -19,8 +19,10 @@
     --text-soft: #98a1ad;
     --danger: #ff4d4d;
     --danger-hover: #ff6666;
+    --glass: rgba(255, 255, 255, 0.06);
 }
 
+/* BASE */
 body {
     margin: 0;
     background: var(--bg-main);
@@ -41,57 +43,62 @@ body {
 }
 
 .logo {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: bold;
-    margin-bottom: 40px;
+    margin-bottom: 45px;
 }
-
-.logo span {
-    color: var(--accent);
-}
+.logo span { color: var(--accent); }
 
 .sidebar a {
     display: block;
-    padding: 12px;
+    padding: 12px 14px;
     margin: 6px 0;
     color: var(--text);
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: 8px;
     transition: 0.2s;
+    font-size: 15px;
 }
-
 .sidebar a:hover,
 .sidebar a.active {
     background: #1a222e;
     color: var(--accent);
 }
 
-/* MAIN */
+/* MAIN CONTENT */
 .main {
     margin-left: 260px;
-    padding: 40px;
+    padding: 40px 50px;
+    animation: fadeIn .4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .dash-title {
-    font-size: 34px;
-    margin-bottom: 5px;
+    font-size: 36px;
+    margin-bottom: 6px;
     color: var(--accent);
+    font-weight: 600;
 }
 
 .user-tag {
-    opacity: 0.7;
-    margin-bottom: 30px;
+    opacity: 0.75;
+    margin-bottom: 25px;
     font-size: 16px;
 }
 
 /* BUTTONS */
 .btn {
-    padding: 12px 20px;
+    padding: 12px 22px;
     border-radius: 8px;
-    border: none;
     cursor: pointer;
     font-weight: 600;
+    border: none;
     transition: 0.2s;
+    font-size: 14px;
 }
 
 .btn-primary {
@@ -105,56 +112,95 @@ body {
     border: 1px solid var(--accent);
     color: var(--accent);
 }
-.btn-secondary:hover {
-    background: var(--accent);
-    color: white;
-}
+.btn-secondary:hover { background: var(--accent); color: white; }
 
 .btn-danger {
     background: var(--danger);
     color: white;
 }
-.btn-danger:hover {
-    background: var(--danger-hover);
-}
+.btn-danger:hover { background: var(--danger-hover); }
 
 /* COMMUNITY GRID */
 .community-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    margin-top: 20px;
 }
 
 .community-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    padding: 22px;
-    border-radius: 12px;
-    transition: 0.25s;
-    box-shadow: 0px 0px 8px rgba(0,0,0,0.25);
+    padding: 25px;
+    border-radius: 14px;
+    transition: 0.25s ease;
+    box-shadow: 0 0 10px rgba(0,0,0,0.20);
 }
 
 .community-card:hover {
     transform: translateY(-6px);
     border-color: var(--accent);
-    box-shadow: 0px 0px 14px rgba(78,140,255,0.25);
+    box-shadow: 0px 0px 20px rgba(78,140,255,0.25);
 }
 
 .community-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 20px;
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: 600;
     color: var(--accent);
 }
 
 .community-card p {
     opacity: 0.8;
-    font-size: 14px;
-    margin-bottom: 18px;
+    font-size: 15px;
+    margin-bottom: 22px;
 }
 
 .card-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+}
+
+/* MODAL */
+.modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    padding: 28px;
+    border-radius: 14px;
+    width: 380px;
+    animation: pop .25s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 {
+    margin: 0 0 15px 0;
+    color: var(--accent);
+}
+
+.modal input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    background: var(--bg-input);
+    border: 1px solid #2b3240;
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -171,7 +217,7 @@ body {
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div class="main">
     <h1 class="dash-title">Dashboard</h1>
     <div class="user-tag">Logged in as <span id="username"></span></div>
@@ -179,12 +225,12 @@ body {
     <button class="btn btn-primary" onclick="openModal()">+ Create Community</button>
     <button class="btn btn-secondary" onclick="openJoinModal()">Join Community</button>
 
-    <h2 style="margin: 25px 0;">Your Communities</h2>
+    <h2 style="margin: 25px 0 10px 0;">Your Communities</h2>
     <div id="commList" class="community-list">Loading...</div>
 </div>
 
 <!-- CREATE COMMUNITY MODAL -->
-<div id="modalBg" class="modal-bg" style="display:none;">
+<div id="modalBg" class="modal-bg">
     <div class="modal">
         <h2>Create Community</h2>
 
@@ -192,19 +238,19 @@ body {
         <input id="commDesc" type="text" placeholder="Description">
 
         <button class="btn btn-primary" onclick="createCommunity()">Create</button>
-        <button class="btn close-btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
 <!-- JOIN COMMUNITY MODAL -->
-<div id="joinModalBg" class="modal-bg" style="display:none;">
+<div id="joinModalBg" class="modal-bg">
     <div class="modal">
         <h2>Join Community</h2>
 
         <input id="joinCommId" type="text" placeholder="Enter Community ID">
 
         <button class="btn btn-primary" onclick="joinCommunity()">Join</button>
-        <button class="btn close-btn" onclick="closeJoinModal()">Cancel</button>
+        <button class="btn btn-secondary" onclick="closeJoinModal()">Cancel</button>
     </div>
 </div>
 
@@ -216,10 +262,9 @@ if (!localStorage.getItem("token")) {
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
-
 document.getElementById("username").innerText = user?.name || user?.email;
 
-/* ========= LOAD COMMUNITIES (FIXED) ========= */
+/* ========= LOAD COMMUNITIES ========= */
 async function loadCommunities() {
     const res = await fetch("https://opslink-api.onrender.com/community/my", {
         headers: { "Authorization": "Bearer " + token }
@@ -235,7 +280,6 @@ async function loadCommunities() {
     }
 
     data.forEach(comm => {
-        // Safety: skip invalid/ghost objects
         if (!comm || !comm._id) return;
 
         const card = document.createElement("div");
@@ -246,13 +290,8 @@ async function loadCommunities() {
             <p>${comm.description}</p>
 
             <div class="card-buttons">
-                <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">
-                    Manage
-                </button>
-
-                <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">
-                    Delete
-                </button>
+                <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
+                <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">Delete</button>
             </div>
         `;
 
@@ -260,11 +299,9 @@ async function loadCommunities() {
     });
 }
 
-/* ========= DELETE COMMUNITY (FIXED) ========= */
+/* ========= DELETE COMMUNITY ========= */
 async function deleteCommunity(id, name) {
     if (!confirm(`Delete community "${name}"? This cannot be undone.`)) return;
-
-    console.log("Deleting ID:", id);
 
     const res = await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
         method: "DELETE",
@@ -272,13 +309,8 @@ async function deleteCommunity(id, name) {
     });
 
     const data = await res.json();
+    if (!res.ok) return alert(data.message || "Failed to delete community");
 
-    if (!res.ok) {
-        alert(data.message || "Failed to delete community.");
-        return;
-    }
-
-    // refresh list
     loadCommunities();
 }
 
@@ -308,7 +340,6 @@ async function createCommunity() {
 /* ========= JOIN COMMUNITY ========= */
 async function joinCommunity() {
     const id = document.getElementById("joinCommId").value.trim();
-
     if (!id) return alert("Enter a valid community ID.");
 
     const res = await fetch("https://opslink-api.onrender.com/community/join", {
@@ -321,7 +352,7 @@ async function joinCommunity() {
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.message || "Failed to join community");
+    if (!res.ok) return alert(data.message || "Failed to join");
 
     closeJoinModal();
     loadCommunities();
@@ -334,7 +365,7 @@ function closeModal() { document.getElementById("modalBg").style.display = "none
 function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
 function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
 
-/* ========= GO TO COMMUNITY ========= */
+/* ========= OPEN COMMUNITY ========= */
 function openCommunity(id) {
     localStorage.setItem("selectedCommunity", id);
     window.location.href = "community.html";
@@ -346,9 +377,9 @@ function logout() {
     window.location.href = "login.html";
 }
 
+/* INIT */
 loadCommunities();
 </script>
 
 </body>
 </html>
-
