@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – OpsLinkCAD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">OpsLink<span>CAD</span></div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#" onclick="logout()" class="btn-login">Logout</a>
+    </nav>
+</header>
+
+<section class="dashboard-container">
+
+    <h1>Your Dashboard</h1>
+    <p>Welcome to OpsLinkCAD. Manage your communities below.</p>
+
+    <div class="dash-section">
+        <h2>Create a Community</h2>
+
+        <input id="commName" class="dash-input" type="text" placeholder="Community Name">
+        <input id="commDesc" class="dash-input" type="text" placeholder="Description">
+
+        <button class="btn-primary" onclick="createCommunity()">Create Community</button>
+    </div>
+
+    <div class="dash-section">
+        <h2>Your Communities</h2>
+        <div id="commList">Loading...</div>
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2025 OpsLinkCAD – All rights reserved.</p>
+</footer>
+
+
+
+<script>
+// redirect if not logged in
+if (!localStorage.getItem("token")) {
+    window.location.href = "login.html";
+}
+
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user"));
+
+// Load user's communities
+async function loadCommunities() {
+    const res = await fetch("https://opslink-api.onrender.com/community/my", {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+
+    const box = document.getElementById("commList");
+    box.innerHTML = "";
+
+    if (!data.length) {
+        box.innerHTML = "<p>You have no communities yet.</p>";
+        return;
+    }
+
+    data.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "community-item";
+        div.innerHTML = `
+            <h3>${c.name}</h3>
+            <p>${c.description}</p>
+        `;
+        box.appendChild(div);
+    });
+}
+
+
+// Create community
+async function createCommunity() {
+    const name = document.getElementById("commName").value;
+    const description = document.getElementById("commDesc").value;
+
+    const res = await fetch("https://opslink-api.onrender.com/community/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({ name, description })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Failed to create community");
+        return;
+    }
+
+    alert("Community created!");
+    loadCommunities();
+}
+
+
+// logout
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+// initialize
+loadCommunities();
+</script>
+
+<style>
+.dashboard-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 60px auto;
+}
+
+.dash-section {
+    background: #161b22;
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 30px;
+    border: 1px solid #222c36;
+}
+
+.dash-section h2 {
+    margin-bottom: 15px;
+    color: #4e8cff;
+}
+
+.dash-input {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    background: #0f141a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.community-item {
+    border-bottom: 1px solid #222;
+    padding: 15px 0;
+}
+
+.community-item:last-child {
+    border-bottom: none;
+}
+
+.community-item h3 {
+    margin: 0 0 5px;
+}
+</style>
+
+</body>
+</html>

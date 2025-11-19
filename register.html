@@ -1,65 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Register – OpsLinkCAD</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – OpsLinkCAD</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <nav>
+<header class="navbar">
     <div class="logo">OpsLink<span>CAD</span></div>
-    <div class="nav-right">
-      <a href="index.html">Home</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="login.html">Login</a>
-    </div>
-  </nav>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="login.html" class="btn-login">Login</a>
+    </nav>
+</header>
 
-  <div class="auth-wrapper">
-    <div class="auth-card">
-      <h2>Create Account</h2>
+<section class="auth-container">
+    <h1>Create Account</h1>
+    <p>Start your journey with OpsLinkCAD.</p>
 
-      <div class="label">Name</div>
-      <input id="name" type="text" placeholder="Your name">
+    <form class="auth-form" onsubmit="registerUser(event)">
+        <input id="name" type="text" placeholder="Full Name" required>
+        <input id="email" type="email" placeholder="Email Address" required>
+        <input id="password" type="password" placeholder="Password" required>
 
-      <div class="label">Email</div>
-      <input id="email" type="email" placeholder="Enter your email">
+        <button class="btn-primary">Create Account</button>
 
-      <div class="label">Password</div>
-      <input id="password" type="password" placeholder="Enter your password">
+        <p class="auth-switch">
+            Already have an account? <a href="login.html">Login</a>
+        </p>
+    </form>
+</section>
 
-      <button onclick="register()">Register</button>
+<footer>
+    <p>© 2025 OpsLinkCAD – All rights reserved.</p>
+</footer>
 
-      <div class="auth-footer">
-        Already have an account? <a href="login.html">Login</a>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    async function register() {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+<script>
+async function registerUser(e) {
+    e.preventDefault();
 
-      const res = await fetch("https://opslink-api.onrender.com/auth/register", {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("https://opslink-api.onrender.com/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
+        body: JSON.stringify({ email, password, name })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
+    if (!res.ok) {
         alert(data.message || "Registration failed");
         return;
-      }
-
-      alert("Account created! You can now log in.");
-      window.location.href = "login.html";
     }
-  </script>
+
+    // auto-login AFTER register
+    const res2 = await fetch("https://opslink-api.onrender.com/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+    });
+
+    const loginData = await res2.json();
+
+    if (res2.ok) {
+        localStorage.setItem("token", loginData.token);
+        localStorage.setItem("user", JSON.stringify(loginData.user));
+        window.location.href = "dashboard.html";
+    }
+}
+</script>
 
 </body>
 </html>

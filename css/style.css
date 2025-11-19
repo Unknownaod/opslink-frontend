@@ -1,0 +1,307 @@
+/* ========= GLOBAL RESET ========= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    background: #0d1117;
+    color: #ffffffd9;
+    line-height: 1.5;
+}
+
+/* ========= NAVBAR ========= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 60px;
+    background: #0d1117;
+    border-bottom: 1px solid #161b22;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.logo span {
+    color: #4e8cff;
+}
+
+.navbar nav {
+    display: flex;
+    gap: 35px;
+    align-items: center;
+}
+
+.navbar nav a {
+    color: #c9d1d9;
+    text-decoration: none;
+    font-size: 16px;
+    transition: .2s;
+}
+
+.navbar nav a:hover,
+.navbar nav a.active {
+    color: #4e8cff;
+}
+
+.btn-login {
+    padding: 8px 18px;
+    border: 1px solid #4e8cff;
+    border-radius: 6px;
+    color: #4e8cff !important;
+}
+
+/* ========= BUTTONS ========= */
+.btn-primary {
+    background: #4e8cff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    color: #fff !important;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-primary:hover {
+    background: #3570d8;
+}
+
+.btn-secondary {
+    background: #161b22;
+    padding: 12px 24px;
+    border-radius: 6px;
+    color: #fff;
+    border: 1px solid #2b3542;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-secondary:hover {
+    background: #1c2530;
+}
+
+/* ========= HERO SECTION ========= */
+.hero {
+    padding: 150px 60px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hero-text {
+    max-width: 650px;
+}
+
+.hero-text h1 {
+    font-size: 60px;
+    font-weight: 700;
+    color: #4e8cff;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 20px;
+    opacity: .85;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.hero-image {
+    width: 350px;
+    height: 350px;
+    background: #11161d;
+    border-radius: 20px;
+    border: 1px solid #1f2730;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ========= FEATURES ========= */
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding: 40px 60px 100px;
+}
+
+.feature-card {
+    background: #161b22;
+    border-radius: 10px;
+    padding: 25px;
+    border: 1px solid #222c36;
+}
+
+.feature-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.feature-card p {
+    opacity: .8;
+}
+
+/* ========= PRICING PAGE ========= */
+.pricing-header {
+    text-align: center;
+    padding: 80px 20px 20px;
+}
+
+.pricing-header h1 {
+    font-size: 48px;
+    color: #4e8cff;
+    margin-bottom: 10px;
+}
+
+.pricing-header p {
+    font-size: 18px;
+    opacity: .75;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding: 50px 60px;
+}
+
+.price-card {
+    background: #161b22;
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid #222c36;
+    text-align: center;
+}
+
+.price-card h2 {
+    font-size: 26px;
+}
+
+.price {
+    font-size: 48px;
+    color: #4e8cff;
+    margin: 15px 0;
+}
+
+.price span {
+    font-size: 18px;
+    opacity: .7;
+}
+
+.price-card ul {
+    list-style: none;
+    margin: 20px 0;
+    text-align: left;
+    padding: 0 15px;
+}
+
+.price-card ul li {
+    margin: 10px 0;
+    opacity: .85;
+}
+
+.price-card.featured {
+    border: 1px solid #4e8cff;
+    box-shadow: 0 0 25px rgba(78,149,255,0.25);
+}
+
+/* ========= AUTH PAGES (Login/Register) ========= */
+.auth-container {
+    max-width: 420px;
+    margin: 90px auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.auth-container h1 {
+    font-size: 32px;
+    color: #4e8cff;
+    margin-bottom: 10px;
+}
+
+.auth-container p {
+    opacity: .8;
+    margin-bottom: 20px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-form input {
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #0f141a;
+    color: #fff;
+    font-size: 16px;
+}
+
+.auth-form button {
+    margin-top: 5px;
+}
+
+.auth-switch {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: .8;
+}
+
+.auth-switch a {
+    color: #4e8cff;
+    text-decoration: none;
+}
+
+/* ========= FOOTER ========= */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    margin-top: 60px;
+    border-top: 1px solid #161b22;
+    opacity: .6;
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 1000px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .hero-text h1 {
+        font-size: 45px;
+    }
+
+    .hero-image {
+        width: 260px;
+        height: 260px;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .navbar {
+        padding: 20px 25px;
+    }
+}
