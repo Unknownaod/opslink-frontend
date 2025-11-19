@@ -5,46 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard – OpsLinkCAD</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 240px;
+            background: #0f141a;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #161b22;
+            padding: 20px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            margin: 6px 0;
+            color: #c9d1d9;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1a222e;
+            color: #4e8cff;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .dash-title {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #4e8cff;
+        }
+
+        .user-tag {
+            font-size: 16px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        /* ===== CREATE BUTTON ===== */
+        .create-btn {
+            background: #4e8cff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            border: none;
+            transition: 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .create-btn:hover {
+            background: #3570d8;
+        }
+
+        /* ===== COMMUNITY LIST ===== */
+        .community-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .community-card {
+            background: #161b22;
+            border: 1px solid #222c36;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .community-card h3 {
+            margin-bottom: 10px;
+            color: #4e8cff;
+        }
+
+        .community-card p {
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .community-card button {
+            padding: 10px 18px;
+            border-radius: 6px;
+            background: #1f2630;
+            border: 1px solid #4e8cff;
+            color: #4e8cff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .community-card button:hover {
+            background: #4e8cff;
+            color: #fff;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: #161b22;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            border: 1px solid #4e8cff;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #4e8cff;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0f141a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        .close-btn {
+            background: #222;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            color: #fff;
+            opacity: 0.7;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
 
-<header class="navbar">
+<!-- SIDEBAR -->
+<div class="sidebar">
     <div class="logo">OpsLink<span>CAD</span></div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="#" onclick="logout()" class="btn-login">Logout</a>
-    </nav>
-</header>
 
-<section class="dashboard-container">
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Communities</a>
+    <a href="#">Settings</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
 
-    <h1>Your Dashboard</h1>
-    <p>Welcome to OpsLinkCAD. Manage your communities below.</p>
+<!-- MAIN CONTENT -->
+<div class="main">
 
-    <div class="dash-section">
-        <h2>Create a Community</h2>
+    <h1 class="dash-title">Dashboard</h1>
+    <div class="user-tag">Logged in as <span id="username"></span></div>
 
-        <input id="commName" class="dash-input" type="text" placeholder="Community Name">
-        <input id="commDesc" class="dash-input" type="text" placeholder="Description">
+    <button class="create-btn" onclick="openModal()">+ Create Community</button>
 
-        <button class="btn-primary" onclick="createCommunity()">Create Community</button>
+    <h2 style="margin: 20px 0;">Your Communities</h2>
+    <div id="commList" class="community-list">
+        Loading...
     </div>
 
-    <div class="dash-section">
-        <h2>Your Communities</h2>
-        <div id="commList">Loading...</div>
+</div>
+
+<!-- CREATE COMMUNITY MODAL -->
+<div id="modalBg" class="modal-bg">
+    <div class="modal">
+        <h2>Create Community</h2>
+
+        <input id="commName" type="text" placeholder="Community Name">
+        <input id="commDesc" type="text" placeholder="Description">
+
+        <button class="btn-primary" onclick="createCommunity()">Create</button>
+        <button class="close-btn" onclick="closeModal()">Cancel</button>
     </div>
-
-</section>
-
-<footer>
-    <p>© 2025 OpsLinkCAD – All rights reserved.</p>
-</footer>
-
+</div>
 
 
 <script>
-// redirect if not logged in
 if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
@@ -52,35 +214,37 @@ if (!localStorage.getItem("token")) {
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
-// Load user's communities
+document.getElementById("username").innerText = user?.name || user?.email;
+
+/* ===== FETCH COMMUNITIES ===== */
 async function loadCommunities() {
     const res = await fetch("https://opslink-api.onrender.com/community/my", {
         headers: { "Authorization": "Bearer " + token }
     });
 
     const data = await res.json();
+    const list = document.getElementById("commList");
 
-    const box = document.getElementById("commList");
-    box.innerHTML = "";
+    list.innerHTML = "";
 
     if (!data.length) {
-        box.innerHTML = "<p>You have no communities yet.</p>";
+        list.innerHTML = "<p>You have no communities yet.</p>";
         return;
     }
 
-    data.forEach(c => {
+    data.forEach(comm => {
         const div = document.createElement("div");
-        div.className = "community-item";
+        div.className = "community-card";
         div.innerHTML = `
-            <h3>${c.name}</h3>
-            <p>${c.description}</p>
+            <h3>${comm.name}</h3>
+            <p>${comm.description}</p>
+            <button onclick="openCommunity('${comm._id}')">Manage</button>
         `;
-        box.appendChild(div);
+        list.appendChild(div);
     });
 }
 
-
-// Create community
+/* ===== CREATE COMMUNITY ===== */
 async function createCommunity() {
     const name = document.getElementById("commName").value;
     const description = document.getElementById("commDesc").value;
@@ -95,70 +259,38 @@ async function createCommunity() {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
         alert(data.message || "Failed to create community");
         return;
     }
 
-    alert("Community created!");
+    closeModal();
     loadCommunities();
 }
 
+/* ===== MODAL CONTROL ===== */
+function openModal() {
+    document.getElementById("modalBg").style.display = "flex";
+}
 
-// logout
+function closeModal() {
+    document.getElementById("modalBg").style.display = "none";
+}
+
+/* ===== COMMUNITY MANAGEMENT ===== */
+function openCommunity(id) {
+    localStorage.setItem("selectedCommunity", id);
+    window.location.href = "community.html"; // next page we will build
+}
+
+/* ===== LOGOUT ===== */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
 
-// initialize
 loadCommunities();
 </script>
-
-<style>
-.dashboard-container {
-    width: 90%;
-    max-width: 900px;
-    margin: 60px auto;
-}
-
-.dash-section {
-    background: #161b22;
-    border-radius: 10px;
-    padding: 25px;
-    margin-top: 30px;
-    border: 1px solid #222c36;
-}
-
-.dash-section h2 {
-    margin-bottom: 15px;
-    color: #4e8cff;
-}
-
-.dash-input {
-    width: 100%;
-    padding: 14px;
-    margin: 8px 0;
-    background: #0f141a;
-    border: 1px solid #333;
-    border-radius: 6px;
-    color: #fff;
-}
-
-.community-item {
-    border-bottom: 1px solid #222;
-    padding: 15px 0;
-}
-
-.community-item:last-child {
-    border-bottom: none;
-}
-
-.community-item h3 {
-    margin: 0 0 5px;
-}
-</style>
 
 </body>
 </html>
