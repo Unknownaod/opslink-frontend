@@ -664,6 +664,16 @@ const API = "https://opslink-api.onrender.com";
 const communityId = localStorage.getItem("communityId");
 
 // ================================
+// ROLE-BASED VISIBILITY (OWNER ONLY)
+// ================================
+const communityRole = localStorage.getItem("communityRole");
+
+if (communityRole !== "owner") {
+  const permTab = document.querySelector('[data-panel="panel-keys"]');
+  if (permTab) permTab.remove();
+}
+
+// ================================
 // SIDEBAR NAV
 // ================================
 document.querySelectorAll(".nav-item").forEach(item => {
