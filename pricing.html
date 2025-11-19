@@ -9,21 +9,21 @@
 
 <style>
 /* ================================
-   GLOBAL BASE
-   ================================ */
+   BASE
+================================ */
 body {
     margin: 0;
-    background: #090d14;
+    background: #070b12;
     font-family: "Segoe UI", sans-serif;
     color: #d8e0ea;
 }
 
 /* NAVBAR */
 .navbar {
-    background: rgba(10, 14, 22, 0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(10, 14, 22, 0.75);
     padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .nav-container {
@@ -47,7 +47,7 @@ body {
 .navbar nav a {
     margin-left: 28px;
     text-decoration: none;
-    color: #98a3b3;
+    color: #a1afc2;
     font-size: 16px;
     transition: 0.25s;
 }
@@ -58,10 +58,15 @@ body {
 
 .btn-login {
     background: #4e8cff;
-    padding: 10px 20px;
+    padding: 10px 22px;
     border-radius: 8px;
     color: white !important;
     font-weight: bold;
+    transition: 0.25s;
+}
+
+.btn-login:hover {
+    background: #3a6ccc;
 }
 
 .active-nav {
@@ -69,12 +74,12 @@ body {
 }
 
 /* ================================
-   HERO TITLE
-   ================================ */
+   HERO
+================================ */
 .title {
+    margin-top: 90px;
     text-align: center;
     font-size: 48px;
-    margin-top: 80px;
     font-weight: 700;
     background: linear-gradient(90deg, #4e8cff, #8ab8ff);
     -webkit-background-clip: text;
@@ -83,32 +88,32 @@ body {
 
 .subtitle {
     text-align: center;
-    color: #8592a3;
-    margin-top: 10px;
+    color: #8a96a7;
+    margin-top: 12px;
     font-size: 18px;
 }
 
 /* ================================
-   TOGGLE SWITCH
-   ================================ */
+   BILLING TOGGLE
+================================ */
 .toggle-wrapper {
     margin-top: 40px;
     text-align: center;
 }
 
 .toggle-box {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.07);
     padding: 5px;
-    border-radius: 10px;
     display: inline-flex;
-    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
 }
 
 .toggle-item {
     padding: 10px 25px;
     border-radius: 8px;
     cursor: pointer;
-    color: #9aa6b8;
+    color: #a6b3c5;
     font-weight: 500;
     transition: 0.25s;
 }
@@ -119,33 +124,30 @@ body {
 }
 
 /* ================================
-   PRICING GRID
-   ================================ */
+   PRICING CARDS
+================================ */
 .pricing-grid {
     max-width: 1200px;
-    margin: 60px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 35px;
+    margin: 65px auto;
     padding: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 35px;
 }
 
-/* ================================
-   PLAN CARD
-   ================================ */
 .plan {
-    background: rgba(255,255,255,0.04);
-    padding: 35px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 40px;
     border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.07);
-    position: relative;
     text-align: center;
-    transition: 0.25s ease;
-    backdrop-filter: blur(12px);
+    transition: 0.25s;
+    position: relative;
+    backdrop-filter: blur(14px);
 }
 
 .plan:hover {
-    transform: translateY(-8px);
+    transform: translateY(-7px);
     border-color: #4e8cff;
     box-shadow: 0 0 25px rgba(78,140,255,0.25);
 }
@@ -153,11 +155,11 @@ body {
 .plan h2 {
     margin: 0;
     font-size: 30px;
-    color: white;
 }
 
+/* PRICE */
 .price {
-    margin: 20px 0;
+    margin: 22px 0;
     font-size: 44px;
     font-weight: 700;
 }
@@ -171,35 +173,32 @@ body {
 .features {
     text-align: left;
     margin-top: 20px;
-    line-height: 1.8;
+    line-height: 1.75;
     font-size: 15px;
-    opacity: 0.9;
-}
-
-.features b {
-    color: #4e8cff;
+    opacity: 0.92;
+    min-height: 150px;
 }
 
 /* BUTTON */
 .btn-select {
     width: 100%;
     display: block;
-    margin-top: 25px;
-    padding: 14px;
+    margin-top: 28px;
+    padding: 16px;
     background: #4e8cff;
     color: white;
-    text-align: center;
     border-radius: 10px;
-    font-weight: bold;
     text-decoration: none;
+    font-weight: bold;
     transition: 0.25s;
+    font-size: 16px;
 }
 
 .btn-select:hover {
     background: #3a6ccc;
 }
 
-/* MOST POPULAR BADGE */
+/* POPULAR BADGE */
 .popular {
     position: absolute;
     top: -12px;
@@ -208,19 +207,19 @@ body {
     padding: 7px 14px;
     border-radius: 50px;
     font-size: 13px;
-    color: white;
     font-weight: bold;
-    box-shadow: 0 0 15px rgba(78,140,255,0.6);
+    color: white;
+    box-shadow: 0 0 15px rgba(78,140,255,0.7);
 }
 
 /* FOOTER */
 footer {
     text-align: center;
-    padding: 40px;
-    margin-top: 80px;
+    padding: 50px;
+    margin-top: 90px;
     opacity: 0.7;
+    font-size: 15px;
 }
-
 </style>
 </head>
 <body>
@@ -249,25 +248,25 @@ footer {
     </div>
 </div>
 
-<!-- PRICING GRID -->
+<!-- GRID -->
 <div class="pricing-grid">
 
-    <!-- Free -->
+    <!-- FREE -->
     <div class="plan">
         <h2>Free</h2>
         <div class="price" id="price-free">$0 <span>/month</span></div>
 
         <div class="features">
-            ✓ Unlimited Members <br>
-            ✓ LEO MDT + Dispatch <br>
-            ✓ Civilians Database <br>
+            ✓ Unlimited Members<br>
+            ✓ LEO MDT + Dispatch<br>
+            ✓ Civilians Database<br>
             ✓ Unlimited Units
         </div>
 
         <a href="register.html" class="btn-select">Start Free</a>
     </div>
 
-    <!-- Pro -->
+    <!-- PRO -->
     <div class="plan">
         <div class="popular">Most Popular</div>
         <h2>Pro</h2>
@@ -283,7 +282,7 @@ footer {
         <a href="#" class="btn-select">Upgrade to Pro</a>
     </div>
 
-    <!-- Premier -->
+    <!-- PREMIER -->
     <div class="plan">
         <h2>Premier</h2>
         <div class="price" id="price-premier">$9.99 <span>/month</span></div>
