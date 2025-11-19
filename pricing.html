@@ -1,231 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pricing – OpsLinkCAD</title>
 
 <style>
-/* Import theme from index */
-:root {
-    --bg-main: #070b12;
-    --bg-card: rgba(255,255,255,0.04);
-    --bg-nav: rgba(0,0,0,0.35);
+    body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #0f141a;
+        color: #c9d1d9;
+    }
 
-    --accent: #4e8cff;
-    --accent2: #81aaff;
-    --accent-glow: 0 0 20px rgba(78,140,255,0.5);
+    /* NAVBAR */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #0f141a;
+        padding: 20px 60px;
+        border-bottom: 1px solid #161b22;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
 
-    --text-main: #e2e8f0;
-    --text-soft: #9aa5b9;
-    --border: rgba(255,255,255,0.07);
-}
+    .logo {
+        font-size: 26px;
+        font-weight: bold;
+    }
 
-body {
-    margin: 0;
-    background: var(--bg-main);
-    color: var(--text-main);
-    font-family: "Segoe UI", sans-serif;
-}
+    .logo span {
+        color: #4e8cff;
+    }
 
-/* NAVBAR */
-.navbar {
-    width: 100%;
-    padding: 18px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-nav);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 20;
-}
+    .navbar nav a {
+        margin-left: 25px;
+        color: #c9d1d9;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.2s;
+    }
 
-.logo {
-    font-size: 28px;
-    font-weight: 700;
-}
+    .navbar nav a:hover {
+        color: #4e8cff;
+    }
 
-.logo span {
-    color: var(--accent);
-}
+    .btn-login {
+        padding: 10px 22px;
+        background: #4e8cff;
+        border-radius: 6px;
+        color: white !important;
+        font-weight: bold;
+    }
 
-.nav-links {
-    display: flex;
-    gap: 30px;
-}
+    /* PRICING SECTION */
+    .pricing-header {
+        text-align: center;
+        margin-top: 60px;
+        margin-bottom: 30px;
+    }
 
-.nav-links a {
-    color: var(--text-main);
-    opacity: 0.8;
-    text-decoration: none;
-    transition: .2s;
-}
+    .pricing-header h1 {
+        font-size: 40px;
+        color: #4e8cff;
+    }
 
-.nav-links a:hover {
-    color: var(--accent);
-    opacity: 1;
-}
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 40px 60px;
+    }
 
-.btn-login {
-    padding: 8px 20px;
-    background: var(--accent);
-    border-radius: 999px;
-    color: white;
-}
+    .price-card {
+        background: #161b22;
+        border: 1px solid #222c36;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+    }
 
-/* HEADER */
-.page-header {
-    text-align: center;
-    padding: 70px 30px 20px;
-}
+    .price-card h2 {
+        color: #4e8cff;
+        margin-bottom: 10px;
+    }
 
-.page-header h1 {
-    font-size: 45px;
-    color: var(--accent);
-}
+    .price-card .price {
+        font-size: 36px;
+        margin: 20px 0;
+    }
 
-.page-header p {
-    color: var(--text-soft);
-    font-size: 20px;
-}
+    .price-card button {
+        padding: 12px 24px;
+        background: #4e8cff;
+        border: none;
+        border-radius: 6px;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.2s;
+    }
 
-/* PRICING GRID */
-.pricing-grid {
-    padding: 50px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
+    .price-card button:hover {
+        background: #3570d8;
+    }
 
-.plan {
-    padding: 35px;
-    background: var(--bg-card);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    transition: 0.25s;
-}
-
-.plan:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent);
-    box-shadow: var(--accent-glow);
-}
-
-.plan h2 {
-    margin: 0 0 10px;
-    font-size: 26px;
-}
-
-.price {
-    font-size: 35px;
-    color: var(--accent2);
-    margin-bottom: 15px;
-}
-
-.features {
-    margin-bottom: 25px;
-}
-
-.features li {
-    padding: 6px 0;
-    color: var(--text-soft);
-}
-
-.btn-select {
-    display: block;
-    padding: 12px;
-    background: var(--accent);
-    color: white;
-    text-align: center;
-    border-radius: 8px;
-    font-size: 17px;
-    text-decoration: none;
-    transition: 0.2s;
-}
-
-.btn-select:hover {
-    background: var(--accent2);
-    box-shadow: var(--accent-glow);
-}
-
-/* FOOTER */
-footer {
-    text-align: center;
-    padding: 30px;
-    opacity: 0.8;
-    border-top: 1px solid var(--border);
-}
 </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <header class="navbar">
-  <div class="logo">OpsLink<span>CAD</span></div>
-  <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="pricing.html" style="color:var(--accent)">Pricing</a>
-      <a href="login.html" class="btn-login">Login</a>
-  </div>
+    <div class="logo">OpsLink<span>CAD</span></div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="pricing.html" style="color:#4e8cff;">Pricing</a>
+        <a href="login.html" class="btn-login">Login</a>
+    </nav>
 </header>
 
-<!-- HEADER -->
-<div class="page-header">
-    <h1>Simple, Transparent Pricing</h1>
-    <p>Choose a plan that fits your community.</p>
+<div class="pricing-header">
+    <h1>Choose Your Plan</h1>
+    <p>Flexible pricing for communities of all sizes.</p>
 </div>
 
-<!-- PRICING GRID -->
 <div class="pricing-grid">
-
-    <!-- FREE -->
-    <div class="plan">
+    <div class="price-card">
         <h2>Free</h2>
-        <div class="price">$0/mo</div>
-        <ul class="features">
-            <li>• 1 Community</li>
-            <li>• 10 Members</li>
-            <li>• Basic Dispatch</li>
-            <li>• Civilian Panel</li>
-        </ul>
-        <a href="register.html" class="btn-select">Start Free</a>
+        <div class="price">$0 / month</div>
+        <p>✔ Unlimited Members  
+        ✔ MDT + Dispatch  
+        ✔ Civilians  
+        ✔ Unlimited Units</p>
+        <button onclick="window.location.href='register.html'">Get Started</button>
     </div>
 
-    <!-- STANDARD -->
-    <div class="plan">
-        <h2>Standard</h2>
-        <div class="price">$4.99/mo</div>
-        <ul class="features">
-            <li>• Unlimited Members</li>
-            <li>• LEO MDT + Dispatch</li>
-            <li>• Supervisor Panel</li>
-            <li>• Unit Tracking</li>
-            <li>• BOLO/Call Management</li>
-        </ul>
-        <a href="register.html" class="btn-select">Choose Standard</a>
+    <div class="price-card">
+        <h2>Pro</h2>
+        <div class="price">$4.99 / month</div>
+        <p>✔ Everything from Free  
+        ✔ Fire/EMS Console  
+        ✔ Priority Support</p>
+        <button onclick="window.location.href='register.html'">Upgrade</button>
     </div>
 
-    <!-- PREMIER -->
-    <div class="plan" style="border-color:var(--accent);box-shadow:var(--accent-glow);">
+    <div class="price-card">
         <h2>Premier</h2>
-        <div class="price">$9.99/mo</div>
-        <ul class="features">
-            <li>• Everything in Standard</li>
-            <li>• Fire/EMS MDT</li>
-            <li>• Unlimited Communities</li>
-            <li>• Custom Branding</li>
-            <li>• Priority Support</li>
-        </ul>
-        <a href="register.html" class="btn-select">Go Premier</a>
+        <div class="price">$9.99 / month</div>
+        <p>✔ Everything from Pro  
+        ✔ Unlimited Communities  
+        ✔ Custom Branding</p>
+        <button onclick="window.location.href='register.html'">Go Premier</button>
     </div>
-
 </div>
-
-<footer>© 2025 OpsLinkCAD – All Rights Reserved.</footer>
 
 </body>
 </html>
