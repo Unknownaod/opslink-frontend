@@ -18,6 +18,7 @@
     --text: #c9d1d9;
     --text-soft: #98a1ad;
     --danger: #ff4d4d;
+    --danger-hover: #ff6666;
 }
 
 body {
@@ -45,9 +46,7 @@ body {
     margin-bottom: 40px;
 }
 
-.logo span {
-    color: var(--accent);
-}
+.logo span { color: var(--accent); }
 
 .sidebar a {
     display: block;
@@ -86,7 +85,7 @@ body {
 /* BUTTONS */
 .btn {
     padding: 12px 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     font-weight: 600;
@@ -97,9 +96,7 @@ body {
     background: var(--accent);
     color: white;
 }
-.btn-primary:hover {
-    background: var(--accent-hover);
-}
+.btn-primary:hover { background: var(--accent-hover); }
 
 .btn-secondary {
     background: #1f2630;
@@ -111,33 +108,53 @@ body {
     color: white;
 }
 
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+.btn-danger:hover {
+    background: var(--danger-hover);
+}
+
 /* COMMUNITY GRID */
 .community-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 .community-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: 10px;
-    transition: 0.2s;
+    padding: 22px;
+    border-radius: 12px;
+    transition: 0.25s;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
 }
+
 .community-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
     border-color: var(--accent);
+    box-shadow: 0px 0px 14px rgba(78,140,255,0.2);
 }
 
 .community-card h3 {
     margin: 0 0 10px 0;
+    font-size: 20px;
     color: var(--accent);
 }
 
 .community-card p {
     opacity: 0.8;
-    margin-bottom: 15px;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 /* MODALS */
@@ -154,15 +171,15 @@ body {
 .modal {
     background: var(--bg-card);
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 12px;
     width: 360px;
     border: 1px solid var(--accent);
-    animation: fadeIn 0.2s ease;
+    animation: fadeIn .2s ease;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity:0; transform:scale(.9); }
+    to { opacity:1; transform:scale(1); }
 }
 
 .modal input {
@@ -172,22 +189,20 @@ body {
     background: var(--bg-input);
     border: 1px solid #333;
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .close-btn {
     background: #222;
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     color: white;
     border: none;
     transition: 0.2s;
     margin-left: 10px;
 }
-.close-btn:hover {
-    background: #333;
-}
+.close-btn:hover { background: #333; }
 </style>
 </head>
 <body>
@@ -197,8 +212,8 @@ body {
     <div class="logo">OpsLink<span>CAD</span></div>
 
     <a href="dashboard.html" class="active">Dashboard</a>
-    <a href="#" onclick="alert('Communities page coming soon!')">Communities</a>
-    <a href="#" onclick="alert('Settings coming soon!')">Settings</a>
+    <a href="#">Communities</a>
+    <a href="#">Settings</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
@@ -241,9 +256,7 @@ body {
 
 <script>
 /* ========== AUTH CHECK ========== */
-if (!localStorage.getItem("token")) {
-    window.location.href = "login.html";
-}
+if (!localStorage.getItem("token")) window.location.href = "login.html";
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
@@ -258,7 +271,6 @@ async function loadCommunities() {
 
     const data = await res.json();
     const list = document.getElementById("commList");
-
     list.innerHTML = "";
 
     if (!data.length) {
@@ -273,11 +285,39 @@ async function loadCommunities() {
         card.innerHTML = `
             <h3>${comm.name}</h3>
             <p>${comm.description}</p>
-            <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
+
+            <div class="card-buttons">
+                <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">
+                    Manage
+                </button>
+
+                <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">
+                    Delete
+                </button>
+            </div>
         `;
 
         list.appendChild(card);
     });
+}
+
+/* ========== DELETE COMMUNITY ========== */
+async function deleteCommunity(id, name) {
+    if (!confirm(`Delete community "${name}"? This cannot be undone.`)) return;
+
+    const res = await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Failed to delete community.");
+        return;
+    }
+
+    loadCommunities();
 }
 
 /* ========== CREATE COMMUNITY ========== */
@@ -297,10 +337,7 @@ async function createCommunity() {
     });
 
     const data = await res.json();
-    if (!res.ok) {
-        alert(data.message || "Failed to create community");
-        return;
-    }
+    if (!res.ok) return alert(data.message || "Failed to create community");
 
     closeModal();
     loadCommunities();
@@ -309,7 +346,6 @@ async function createCommunity() {
 /* ========== JOIN COMMUNITY ========== */
 async function joinCommunity() {
     const id = document.getElementById("joinCommId").value.trim();
-
     if (!id) return alert("Enter a valid community ID.");
 
     const res = await fetch("https://opslink-api.onrender.com/community/join", {
@@ -318,7 +354,7 @@ async function joinCommunity() {
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ userId: user._id, communityId: id })
+        body: JSON.stringify({ communityId: id })
     });
 
     const data = await res.json();
@@ -331,10 +367,11 @@ async function joinCommunity() {
 /* MODAL CONTROL */
 function openModal() { document.getElementById("modalBg").style.display = "flex"; }
 function closeModal() { document.getElementById("modalBg").style.display = "none"; }
+
 function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
 function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
 
-/* OPEN COMMUNITY */
+/* OPEN COMMUNITY PAGE */
 function openCommunity(id) {
     localStorage.setItem("selectedCommunity", id);
     window.location.href = "community.html";
