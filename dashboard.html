@@ -1,169 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard – OpsLinkCAD</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpsLinkCAD – Dashboard</title>
 
-    <style>
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            width: 240px;
-            background: #0f141a;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-right: 1px solid #161b22;
-            padding: 20px;
-        }
+<style>
+/* GLOBAL THEME */
+:root {
+    --bg-main: #0d1117;
+    --bg-sidebar: #0f141a;
+    --bg-card: #161b22;
+    --bg-input: #0f141a;
+    --accent: #4e8cff;
+    --accent-hover: #6fa3ff;
+    --border: #1e2633;
+    --text: #c9d1d9;
+    --text-soft: #98a1ad;
+    --danger: #ff4d4d;
+}
 
-        .sidebar .logo {
-            font-size: 24px;
-            margin-bottom: 30px;
-            display: block;
-        }
+body {
+    margin: 0;
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+}
 
-        .sidebar a {
-            display: block;
-            padding: 12px;
-            margin: 6px 0;
-            color: #c9d1d9;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: 0.2s;
-        }
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: var(--bg-sidebar);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-right: 1px solid var(--border);
+    padding: 20px;
+}
 
-        .sidebar a:hover,
-        .sidebar a.active {
-            background: #1a222e;
-            color: #4e8cff;
-        }
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
 
-        /* ===== MAIN CONTENT ===== */
-        .main {
-            margin-left: 260px;
-            padding: 40px;
-        }
+.logo span {
+    color: var(--accent);
+}
 
-        .dash-title {
-            font-size: 34px;
-            margin-bottom: 10px;
-            color: #4e8cff;
-        }
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin: 6px 0;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.2s;
+}
 
-        .user-tag {
-            font-size: 16px;
-            opacity: 0.7;
-            margin-bottom: 30px;
-        }
+.sidebar a:hover,
+.sidebar a.active {
+    background: #1a222e;
+    color: var(--accent);
+}
 
-        /* ===== CREATE BUTTON ===== */
-        .create-btn {
-            background: #4e8cff;
-            padding: 12px 24px;
-            border-radius: 6px;
-            display: inline-block;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            border: none;
-            transition: 0.2s;
-            margin-bottom: 30px;
-        }
+/* MAIN */
+.main {
+    margin-left: 260px;
+    padding: 40px;
+}
 
-        .create-btn:hover {
-            background: #3570d8;
-        }
+.dash-title {
+    font-size: 34px;
+    margin-bottom: 5px;
+    color: var(--accent);
+}
 
-        /* ===== COMMUNITY LIST ===== */
-        .community-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
+.user-tag {
+    opacity: 0.7;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
 
-        .community-card {
-            background: #161b22;
-            border: 1px solid #222c36;
-            padding: 20px;
-            border-radius: 10px;
-        }
+/* BUTTONS */
+.btn {
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
 
-        .community-card h3 {
-            margin-bottom: 10px;
-            color: #4e8cff;
-        }
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
 
-        .community-card p {
-            opacity: 0.8;
-            margin-bottom: 15px;
-        }
+.btn-secondary {
+    background: #1f2630;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+.btn-secondary:hover {
+    background: var(--accent);
+    color: white;
+}
 
-        .community-card button {
-            padding: 10px 18px;
-            border-radius: 6px;
-            background: #1f2630;
-            border: 1px solid #4e8cff;
-            color: #4e8cff;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .community-card button:hover {
-            background: #4e8cff;
-            color: #fff;
-        }
+/* COMMUNITY GRID */
+.community-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
 
-        /* ===== MODAL ===== */
-        .modal-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
+.community-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+.community-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
 
-        .modal {
-            background: #161b22;
-            padding: 30px;
-            border-radius: 10px;
-            width: 350px;
-            border: 1px solid #4e8cff;
-        }
+.community-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--accent);
+}
 
-        .modal h2 {
-            margin-bottom: 20px;
-            color: #4e8cff;
-        }
+.community-card p {
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
 
-        .modal input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: #0f141a;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 6px;
-        }
+/* MODALS */
+.modal-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
 
-        .close-btn {
-            background: #222;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            color: #fff;
-            opacity: 0.7;
-        }
+.modal {
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: 10px;
+    width: 360px;
+    border: 1px solid var(--accent);
+    animation: fadeIn 0.2s ease;
+}
 
-        .close-btn:hover {
-            opacity: 1;
-        }
-    </style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: var(--bg-input);
+    border: 1px solid #333;
+    color: white;
+    border-radius: 6px;
+}
+
+.close-btn {
+    background: #222;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    transition: 0.2s;
+    margin-left: 10px;
+}
+.close-btn:hover {
+    background: #333;
+}
+</style>
 </head>
 <body>
 
@@ -171,32 +196,22 @@
 <div class="sidebar">
     <div class="logo">OpsLink<span>CAD</span></div>
 
-    <a href="#" class="active">Dashboard</a>
-    <a href="#">Communities</a>
-    <a href="#">Settings</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="#" onclick="alert('Communities page coming soon!')">Communities</a>
+    <a href="#" onclick="alert('Settings coming soon!')">Settings</a>
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
 <!-- MAIN CONTENT -->
 <div class="main">
-
     <h1 class="dash-title">Dashboard</h1>
     <div class="user-tag">Logged in as <span id="username"></span></div>
 
-<button class="create-btn" onclick="openModal()">+ Create Community</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Create Community</button>
+    <button class="btn btn-secondary" onclick="openJoinModal()">Join Community</button>
 
-<button class="create-btn" 
-        style="background:#1f2630;border:1px solid #4e8cff;color:#4e8cff;margin-left:10px;"
-        onclick="openJoinModal()">
-    Join Community
-</button>
-
-
-    <h2 style="margin: 20px 0;">Your Communities</h2>
-    <div id="commList" class="community-list">
-        Loading...
-    </div>
-
+    <h2 style="margin: 25px 0;">Your Communities</h2>
+    <div id="commList" class="community-list">Loading...</div>
 </div>
 
 <!-- CREATE COMMUNITY MODAL -->
@@ -207,26 +222,25 @@
         <input id="commName" type="text" placeholder="Community Name">
         <input id="commDesc" type="text" placeholder="Description">
 
-        <button class="btn-primary" onclick="createCommunity()">Create</button>
+        <button class="btn btn-primary" onclick="createCommunity()">Create</button>
         <button class="close-btn" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
-
-    <!-- JOIN COMMUNITY MODAL -->
+<!-- JOIN COMMUNITY MODAL -->
 <div id="joinModalBg" class="modal-bg">
     <div class="modal">
         <h2>Join Community</h2>
 
         <input id="joinCommId" type="text" placeholder="Enter Community ID">
 
-        <button class="btn-primary" onclick="joinCommunity()">Join</button>
+        <button class="btn btn-primary" onclick="joinCommunity()">Join</button>
         <button class="close-btn" onclick="closeJoinModal()">Cancel</button>
     </div>
 </div>
 
-
 <script>
+/* ========== AUTH CHECK ========== */
 if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
@@ -236,7 +250,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 document.getElementById("username").innerText = user?.name || user?.email;
 
-/* ===== FETCH COMMUNITIES ===== */
+/* ========== LOAD COMMUNITIES ========== */
 async function loadCommunities() {
     const res = await fetch("https://opslink-api.onrender.com/community/my", {
         headers: { "Authorization": "Bearer " + token }
@@ -253,21 +267,25 @@ async function loadCommunities() {
     }
 
     data.forEach(comm => {
-        const div = document.createElement("div");
-        div.className = "community-card";
-        div.innerHTML = `
+        const card = document.createElement("div");
+        card.className = "community-card";
+
+        card.innerHTML = `
             <h3>${comm.name}</h3>
             <p>${comm.description}</p>
-            <button onclick="openCommunity('${comm._id}')">Manage</button>
+            <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
         `;
-        list.appendChild(div);
+
+        list.appendChild(card);
     });
 }
 
-/* ===== CREATE COMMUNITY ===== */
+/* ========== CREATE COMMUNITY ========== */
 async function createCommunity() {
     const name = document.getElementById("commName").value;
     const description = document.getElementById("commDesc").value;
+
+    if (!name) return alert("Please enter a community name.");
 
     const res = await fetch("https://opslink-api.onrender.com/community/create", {
         method: "POST",
@@ -288,66 +306,41 @@ async function createCommunity() {
     loadCommunities();
 }
 
-/* ===== MODAL CONTROL ===== */
-function openModal() {
-    document.getElementById("modalBg").style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("modalBg").style.display = "none";
-}
-
-/* ===== COMMUNITY MANAGEMENT ===== */
-function openCommunity(id) {
-    localStorage.setItem("selectedCommunity", id);
-    window.location.href = "community.html"; // next page we will build
-}
-
-// OPEN JOIN MODAL
-function openJoinModal() {
-    document.getElementById("joinModalBg").style.display = "flex";
-}
-
-// CLOSE JOIN MODAL
-function closeJoinModal() {
-    document.getElementById("joinModalBg").style.display = "none";
-}
-
-// JOIN COMMUNITY
+/* ========== JOIN COMMUNITY ========== */
 async function joinCommunity() {
-    const communityId = document.getElementById("joinCommId").value;
+    const id = document.getElementById("joinCommId").value.trim();
 
-    if (!communityId) return alert("Please enter a community ID.");
+    if (!id) return alert("Enter a valid community ID.");
 
     const res = await fetch("https://opslink-api.onrender.com/community/join", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            userId: user._id,
-            communityId
-        })
+        body: JSON.stringify({ userId: user._id, communityId: id })
     });
 
     const data = await res.json();
-
-    if (!res.ok) {
-        alert(data.message || "Failed to join community");
-        return;
-    }
-
-    // Save selected community
-    localStorage.setItem("selectedCommunity", communityId);
+    if (!res.ok) return alert(data.message || "Failed to join community");
 
     closeJoinModal();
-    loadCommunities(); // refresh list
-
-    alert("Successfully joined community!");
+    loadCommunities();
 }
-    
-/* ===== LOGOUT ===== */
+
+/* MODAL CONTROL */
+function openModal() { document.getElementById("modalBg").style.display = "flex"; }
+function closeModal() { document.getElementById("modalBg").style.display = "none"; }
+function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
+function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
+
+/* OPEN COMMUNITY */
+function openCommunity(id) {
+    localStorage.setItem("selectedCommunity", id);
+    window.location.href = "community.html";
+}
+
+/* LOGOUT */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
@@ -358,4 +351,3 @@ loadCommunities();
 
 </body>
 </html>
-
