@@ -1,158 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <title>Pricing – OpsLinkCAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
 
 <style>
     body {
         margin: 0;
+        background: #0b0f16;
         font-family: "Segoe UI", sans-serif;
-        background: #0f141a;
-        color: #c9d1d9;
+        color: #e5e7eb;
     }
 
     /* NAVBAR */
     .navbar {
+        background: #0f141a;
+        padding: 16px 0;
+        border-bottom: 1px solid #161b22;
+    }
+    .nav-container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 40px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: #0f141a;
-        padding: 20px 60px;
-        border-bottom: 1px solid #161b22;
-        position: sticky;
-        top: 0;
-        z-index: 10;
     }
-
     .logo {
         font-size: 26px;
         font-weight: bold;
     }
-
     .logo span {
         color: #4e8cff;
     }
-
     .navbar nav a {
-        margin-left: 25px;
+        margin-left: 28px;
         color: #c9d1d9;
         text-decoration: none;
         font-size: 16px;
         transition: 0.2s;
     }
-
     .navbar nav a:hover {
         color: #4e8cff;
     }
-
+    .active-nav {
+        color: #4e8cff !important;
+    }
     .btn-login {
-        padding: 10px 22px;
+        padding: 10px 20px;
         background: #4e8cff;
-        border-radius: 6px;
         color: white !important;
-        font-weight: bold;
-    }
-
-    /* PRICING SECTION */
-    .pricing-header {
-        text-align: center;
-        margin-top: 60px;
-        margin-bottom: 30px;
-    }
-
-    .pricing-header h1 {
-        font-size: 40px;
-        color: #4e8cff;
-    }
-
-    .pricing-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 30px;
-        padding: 40px 60px;
-    }
-
-    .price-card {
-        background: #161b22;
-        border: 1px solid #222c36;
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    .price-card h2 {
-        color: #4e8cff;
-        margin-bottom: 10px;
-    }
-
-    .price-card .price {
-        font-size: 36px;
-        margin: 20px 0;
-    }
-
-    .price-card button {
-        padding: 12px 24px;
-        background: #4e8cff;
-        border: none;
+        font-size: 15px;
         border-radius: 6px;
-        color: #fff;
+    }
+
+    /* PAGE HEADER */
+    .title-header {
+        text-align: center;
+        margin-top: 90px;
+        font-size: 42px;
+        font-weight: 700;
+        color: #4e8cff;
+    }
+    .subtitle {
+        text-align: center;
+        margin-top: 10px;
+        color: #9aa2ac;
+        font-size: 17px;
+    }
+
+    /* TOGGLE */
+    .toggle-wrapper {
+        text-align: center;
+        margin: 30px 0;
+    }
+    .toggle-box {
+        background: #131a24;
+        display: inline-flex;
+        border-radius: 10px;
+        padding: 4px;
+    }
+    .toggle-option {
+        padding: 10px 20px;
+        color: #9aa2ac;
         cursor: pointer;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: 0.15s;
+        font-size: 15px;
+    }
+    .toggle-option.active {
+        background: #4e8cff;
+        color: white;
+    }
+
+    /* PRICING GRID */
+    .pricing-grid {
+        max-width: 1200px;
+        margin: 50px auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 40px;
+    }
+
+    .card {
+        background: #131a24;
+        padding: 30px;
+        border-radius: 14px;
+        border: 1px solid #1b2533;
+        text-align: center;
         transition: 0.2s;
     }
 
-    .price-card button:hover {
+    .card:hover {
+        transform: translateY(-4px);
+        border-color: #4e8cff;
+    }
+
+    .card h2 {
+        margin-top: 0;
+        font-size: 26px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .price {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .price span {
+        font-size: 18px;
+        font-weight: 400;
+        opacity: 0.7;
+    }
+
+    .features {
+        margin-top: 15px;
+        font-size: 15px;
+        opacity: 0.8;
+        line-height: 1.7;
+    }
+
+    .btn-primary {
+        margin-top: 25px;
+        background: #4e8cff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: bold;
+    }
+    .btn-primary:hover {
         background: #3570d8;
+    }
+
+    /* FOOTER */
+    footer {
+        margin-top: 80px;
+        padding: 30px;
+        text-align: center;
+        opacity: 0.6;
+        font-size: 14px;
+        border-top: 1px solid #161b22;
     }
 
 </style>
 </head>
 <body>
 
+<!-- NAVBAR -->
 <header class="navbar">
-    <div class="logo">OpsLink<span>CAD</span></div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="pricing.html" style="color:#4e8cff;">Pricing</a>
-        <a href="login.html" class="btn-login">Login</a>
-    </nav>
+    <div class="nav-container">
+        <div class="logo">OpsLink<span>CAD</span></div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="pricing.html" class="active-nav">Pricing</a>
+            <a href="login.html" class="btn-login">Login</a>
+        </nav>
+    </div>
 </header>
 
-<div class="pricing-header">
-    <h1>Choose Your Plan</h1>
-    <p>Flexible pricing for communities of all sizes.</p>
+<!-- HERO TITLE -->
+<h1 class="title-header">Choose Your Plan</h1>
+<p class="subtitle">Flexible pricing for communities of all sizes.</p>
+
+<!-- PLAN TOGGLE -->
+<div class="toggle-wrapper">
+    <div class="toggle-box">
+        <div class="toggle-option active" id="toggle-monthly" onclick="setPlan('monthly')">Monthly</div>
+        <div class="toggle-option" id="toggle-yearly" onclick="setPlan('yearly')">Yearly (Save 20%)</div>
+    </div>
 </div>
 
+<!-- PRICING CARDS -->
 <div class="pricing-grid">
-    <div class="price-card">
+
+    <!-- FREE -->
+    <div class="card">
         <h2>Free</h2>
-        <div class="price">$0 / month</div>
-        <p>✔ Unlimited Members  
-        ✔ MDT + Dispatch  
-        ✔ Civilians  
-        ✔ Unlimited Units</p>
-        <button onclick="window.location.href='register.html'">Get Started</button>
+        <div class="price" id="free-price">$0<span>/month</span></div>
+        <div class="features">
+            ✓ Unlimited Members <br>
+            ✓ MDT + Dispatch <br>
+            ✓ Civilians <br>
+            ✓ Unlimited Units
+        </div>
+        <a href="register.html" class="btn-primary">Get Started</a>
     </div>
 
-    <div class="price-card">
+    <!-- PRO -->
+    <div class="card">
         <h2>Pro</h2>
-        <div class="price">$4.99 / month</div>
-        <p>✔ Everything from Free  
-        ✔ Fire/EMS Console  
-        ✔ Priority Support</p>
-        <button onclick="window.location.href='register.html'">Upgrade</button>
+        <div class="price" id="pro-price">$4.99<span>/month</span></div>
+        <div class="features">
+            ✓ Everything Free includes <br>
+            ✓ Fire/EMS Console <br>
+            ✓ Priority Support
+        </div>
+        <a href="#" class="btn-primary">Upgrade</a>
     </div>
 
-    <div class="price-card">
+    <!-- PREMIER -->
+    <div class="card">
         <h2>Premier</h2>
-        <div class="price">$9.99 / month</div>
-        <p>✔ Everything from Pro  
-        ✔ Unlimited Communities  
-        ✔ Custom Branding</p>
-        <button onclick="window.location.href='register.html'">Go Premier</button>
+        <div class="price" id="premier-price">$9.99<span>/month</span></div>
+        <div class="features">
+            ✓ Everything from Pro <br>
+            ✓ Unlimited Communities <br>
+            ✓ Custom Branding
+        </div>
+        <a href="#" class="btn-primary">Go Premier</a>
     </div>
+
 </div>
+
+<footer>
+    © 2025 OpsLinkCAD – All rights reserved.
+</footer>
+
+<script>
+function setPlan(mode) {
+    document.getElementById("toggle-monthly").classList.remove("active");
+    document.getElementById("toggle-yearly").classList.remove("active");
+
+    if (mode === "monthly") {
+        document.getElementById("toggle-monthly").classList.add("active");
+        document.getElementById("free-price").innerHTML = "$0<span>/month</span>";
+        document.getElementById("pro-price").innerHTML = "$4.99<span>/month</span>";
+        document.getElementById("premier-price").innerHTML = "$9.99<span>/month</span>";
+    } else {
+        document.getElementById("toggle-yearly").classList.add("active");
+        document.getElementById("free-price").innerHTML = "$0<span>/year</span>";
+        document.getElementById("pro-price").innerHTML = "$49<span>/year</span>";
+        document.getElementById("premier-price").innerHTML = "$99<span>/year</span>";
+    }
+}
+</script>
 
 </body>
 </html>
