@@ -285,7 +285,7 @@ if (!token || !communityId) {
 }
 
 const API = "https://opslink-api.onrender.com";
-
+    
 /* ========== LOAD COMMUNITY ========== */
 async function loadCommunity() {
     const res = await fetch(`${API}/community/${communityId}`, {
@@ -314,6 +314,53 @@ async function loadCommunity() {
     loadDepartments();
     loadRanks();
     loadMembers();
+}
+
+/// PERMISSION MANAGER \\\    
+
+    function applyPermissionLocks(member) {
+    const permissions = member?.permissions || [];
+    const role = member?.role || "member";
+
+    function hide(selector) {
+        const el = document.querySelector(selector);
+        if (el) el.style.display = "none";
+    }
+
+    if (role !== "owner") {
+
+        // Admin-only
+        if (!permissions.includes("admin")) {
+            hide('#adminNav');
+            hide('[data-panel="panel-admin"]');
+            hide('#permKeyNav');
+            hide('[data-panel="panel-keys"]');
+        }
+
+        // Dispatch
+        if (!permissions.includes("dispatch") && !permissions.includes("admin")) {
+            hide('#dispatchNav');
+            hide('[data-panel="panel-dispatch"]');
+        }
+
+        // Supervisor
+        if (!permissions.includes("supervisor") && !permissions.includes("admin")) {
+            hide('#supervisorNav');
+            hide('[data-panel="panel-supervisor"]');
+        }
+
+        // LEO MDT
+        if (!permissions.includes("leo") && !permissions.includes("admin")) {
+            hide('#mdtNav');
+            hide('[data-panel="panel-mdt"]');
+        }
+
+        // Fire/EMS
+        if (!permissions.includes("fire") && !permissions.includes("admin")) {
+            hide('#fireNav');
+            hide('[data-panel="panel-fire"]');
+        }
+    }
 }
 
     
