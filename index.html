@@ -1,96 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OpsLinkCAD – Next-Gen Dispatch Technology</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpsLinkCAD – Next-Gen Dispatch Technology</title>
 
 <style>
-    :root {
-        --bg-main: #0a0f17;
-        --bg-card: rgba(255,255,255,0.04);
-        --accent: #4e8cff;
-        --accent2: #8bb4ff;
-        --text-main: #e0e6f1;
-        --text-soft: #8a94a7;
-        --border: rgba(255,255,255,0.08);
-    }
+/* ================================
+   THEME VARIABLES
+================================ */
+:root {
+    --bg-main: #070b12;
+    --bg-card: rgba(255,255,255,0.04);
+    --bg-nav: rgba(0,0,0,0.35);
 
-    body {
-        margin: 0;
-        background: var(--bg-main);
-        color: var(--text-main);
-        font-family: "Segoe UI", system-ui, sans-serif;
-        overflow-x: hidden;
-    }
+    --accent: #4e8cff;
+    --accent2: #81aaff;
+    --accent-glow: 0 0 22px rgba(78,140,255,0.5);
 
-    /* ===== NAVBAR (UPDATED) ===== */
-    .navbar {
-        width: 100%;
-        padding: 18px 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        backdrop-filter: blur(10px);
-        background: rgba(0, 0, 0, 0.25);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        box-sizing: border-box;
-    }
+    --text-main: #e2e8f0;
+    --text-soft: #9aa5b9;
+    --border: rgba(255,255,255,0.07);
+}
 
-    .logo {
-        font-size: 26px;
-        font-weight: bold;
-    }
+/* ================================
+   RESET + BODY
+================================ */
+body {
+    margin: 0;
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    overflow-x: hidden;
+}
 
-    .logo span {
-        color: var(--accent);
-    }
+/* ================================
+   NAVIGATION BAR
+================================ */
+.navbar {
+    width: 100%;
+    padding: 18px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    box-sizing: border-box;
+}
 
-    /* make sure this ONLY affects the top nav */
-    .navbar nav {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-    }
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 
-    .navbar nav a {
-        color: var(--text-main);
-        text-decoration: none;
-        font-size: 15px;
-        opacity: 0.85;
-        transition: 0.2s;
-    }
+.logo span {
+    color: var(--accent);
+}
 
-    .navbar nav a:hover {
-        opacity: 1;
-        color: var(--accent);
-    }
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
 
-    .navbar nav a.btn-login {
-        padding: 8px 18px;
-        background: var(--accent);
-        border-radius: 999px;
-        color: white !important;
-        opacity: 1;
-        border: 1px solid transparent;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-    }
+.nav-links a {
+    color: var(--text-main);
+    opacity: 0.8;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.2s;
+}
 
-    .navbar nav a.btn-login:hover {
-        background: var(--accent2);
-        border-color: var(--accent2);
-        transform: translateY(-1px);
-    }
+.nav-links a:hover {
+    opacity: 1;
+    color: var(--accent);
+}
 
-    /* ... keep the rest of your styles (hero, features, footer, etc.) here ... */
+.btn-login {
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff !important;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.btn-login:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: var(--accent-glow);
+}
+
+/* ================================
+   HERO SECTION
+================================ */
+.hero {
+    padding: 80px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.hero-left img {
+    width: 500px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.hero-right h1 {
+    font-size: 50px;
+    line-height: 1.2;
+    margin-bottom: 15px;
+}
+
+.hero-right p {
+    font-size: 18px;
+    color: var(--text-soft);
+    margin-bottom: 25px;
+    max-width: 550px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-primary {
+    padding: 14px 28px;
+    background: var(--accent);
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--accent2);
+    box-shadow: var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    padding: 14px 28px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 17px;
+    transition: 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+/* ================================
+   FEATURES
+================================ */
+.features {
+    padding: 80px 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.feature-card {
+    padding: 25px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: 0.25s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: var(--accent-glow);
+}
+
+.feature-card h3 {
+    color: var(--accent);
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* ================================
+   FOOTER
+================================ */
+footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    opacity: 0.8;
+    margin-top: 50px;
+}
 </style>
-
 </head>
 
 <body>
@@ -98,27 +216,26 @@
 <!-- NAVBAR -->
 <header class="navbar">
     <div class="logo">OpsLink<span>CAD</span></div>
-    <nav>
+
+    <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="pricing.html">Pricing</a>
         <a href="login.html" class="btn-login">Login</a>
-    </nav>
+    </div>
 </header>
 
-<!-- HERO SECTION -->
+<!-- HERO -->
 <section class="hero">
 
     <div class="hero-left">
-        <img src="assets/hero.png" alt="CAD Interface" class="hero-image">
+        <img src="assets/hero.png" alt="OpsLinkCAD Screenshot">
     </div>
 
     <div class="hero-right">
-        <h1>The Future of Roleplay Dispatch.</h1>
-
+        <h1>The Most Advanced Roleplay CAD</h1>
         <p>
-            Ultra-fast. Real-time. Professionally designed.<br>
-            OpsLink CAD brings clean UI, powerful features, and instant syncing 
-            across MDT, Dispatch, Civilian Panel, Supervisor, and more.
+            Real-time unit tracking. Ultra-fast dispatch. Modern MDT UI.  
+            OpsLinkCAD gives your community professional-grade tools with unlimited customization — all in your browser.
         </p>
 
         <div class="hero-buttons">
@@ -133,30 +250,39 @@
 <section class="features">
     <div class="feature-card">
         <h3>⚡ Real-Time Sync</h3>
-        <p>Lightning-fast syncing for calls, units, civilians, vehicles — no refresh needed.</p>
+        <p>Units, calls, civilians — every change updates instantly for all connected users.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🎛 Modern Interface</h3>
-        <p>A clean, premium dashboard designed to feel like real-world dispatch software.</p>
+        <h3>🖥️ Modern Interface</h3>
+        <p>Clean, responsive, and optimized for both desktop and mobile MDTs.</p>
     </div>
 
     <div class="feature-card">
         <h3>🔧 Fully Customizable</h3>
-        <p>Departments, permissions, ranks, codes, & call types — all editable in seconds.</p>
+        <p>Departments, ranks, codes, call types, permissions — all editable.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🛡 Supervisor Tools</h3>
-        <p>Force-signoff, live tracking, panic alerts, quick actions and more.</p>
+        <h3>🛡️ Secure Architecture</h3>
+        <p>Token-based auth, isolated communities, encrypted storage, safe for all RP groups.</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>🚓 Multi-Panel System</h3>
+        <p>Dispatch, LEO MDT, Fire/EMS MDT, Supervisor, Civilian Panel — all included.</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>🌐 Cloud Hosted</h3>
+        <p>No installation required — your CAD is instantly available anywhere.</p>
     </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-    <p>© 2025 OpsLinkCAD — All rights reserved.</p>
+    © 2025 OpsLinkCAD – All Rights Reserved.
 </footer>
 
 </body>
 </html>
-
