@@ -127,8 +127,19 @@ textarea{resize:vertical;height:80px;}
 const API = "https://opslink-api.onrender.com";
 const socket = io(API);
 
-let communityId = localStorage.getItem("communityId");
+// LOAD PERMISSIONS + COMMUNITY ID
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const communityId = localStorage.getItem("selectedCommunity");
+
+// LOCK DISPATCH PAGE
+if (!permissions.includes("dispatch")) {
+    alert("You do not have access to the Dispatch Console.");
+    window.location.href = "community.html";
+}
+
+// VARIABLES
 let selectedCall = null;
+
 
 // ======================================================
 // LOAD CALLS
