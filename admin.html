@@ -661,16 +661,28 @@ textarea{
 // CONFIG
 // ================================
 const API = "https://opslink-api.onrender.com";
-const communityId = localStorage.getItem("communityId");
 
-// ================================
-// ROLE-BASED VISIBILITY (OWNER ONLY)
-// ================================
+// correct community id
+const communityId = localStorage.getItem("selectedCommunity");
+
+// load permissions & role
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
 const communityRole = localStorage.getItem("communityRole");
 
+// ================================
+// ADMIN PAGE LOCK
+// ================================
+if (communityRole !== "owner" && !permissions.includes("admin")) {
+    alert("You do not have admin access.");
+    window.location.href = "community.html";
+}
+
+// ================================
+// OWNER VISIBILITY: HIDE PERMISSION KEY TAB
+// ================================
 if (communityRole !== "owner") {
-  const permTab = document.querySelector('[data-panel="panel-keys"]');
-  if (permTab) permTab.remove();
+    const permTab = document.querySelector('[data-panel="panel-keys"]');
+    if (permTab) permTab.remove();
 }
 
 // ================================
