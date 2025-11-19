@@ -1,64 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Login – OpsLinkCAD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* =============================
-   GLOBAL BASE THEME (D-3)
-   ============================= */
+/* GLOBAL THEME */
 body {
     margin: 0;
     background: #0b1119;
     font-family: "Segoe UI", sans-serif;
     display: flex;
-    height: 100vh;
     justify-content: center;
     align-items: center;
-    color: #dbe4f3;
+    min-height: 100vh;
 }
 
-/* =============================
-   GLASS CARD
-   ============================= */
+.card-wrapper {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
 .card {
-    width: 420px;
     background: rgba(255,255,255,0.05);
-    padding: 40px;
+    padding: 35px 40px;
     border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.07);
     backdrop-filter: blur(12px);
+    color: #dbe4f3;
     text-align: center;
 }
 
-/* LOGO */
 .logo {
     font-size: 32px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
-.logo span {
-    color: #4e8cff;
-}
+.logo span { color: #4e8cff; }
 
 .subtitle {
-    margin-bottom: 25px;
     opacity: 0.7;
+    font-size: 15px;
+    margin-bottom: 28px;
 }
 
-/* INPUTS */
 .input-group {
     text-align: left;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 label {
     font-size: 14px;
-    display: block;
     margin-bottom: 6px;
+    display: block;
 }
 
 .input-box {
@@ -66,8 +62,8 @@ label {
     padding: 14px;
     background: #0f1622;
     border: 1px solid #2b3545;
-    border-radius: 8px;
     color: #dbe4f3;
+    border-radius: 8px;
     font-size: 15px;
     transition: 0.2s;
 }
@@ -77,46 +73,43 @@ label {
     outline: none;
 }
 
-.input-error {
-    border-color: #ff4c4c !important;
-}
-
 .error-text {
     color: #ff4c4c;
-    font-size: 12px;
-    margin-top: 6px;
+    font-size: 13px;
+    margin-top: 4px;
+    display: none;
 }
 
-/* LOGIN BUTTON */
 .btn-primary {
     width: 100%;
     padding: 14px;
     background: #4e8cff;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 600;
     color: #fff;
-    font-weight: bold;
-    margin-top: 10px;
     cursor: pointer;
-    transition: 0.25s;
+    transition: 0.2s;
+    margin-top: 10px;
 }
+
 .btn-primary:hover {
     background: #3675e9;
 }
 
-/* FOOTER LINKS */
 .bottom-links {
     margin-top: 25px;
     font-size: 14px;
 }
 
 .bottom-links a {
-    margin: 0 8px;
     color: #4e8cff;
     text-decoration: none;
+    margin: 0 8px;
     font-weight: 600;
 }
+
 .bottom-links a:hover {
     text-decoration: underline;
 }
@@ -125,33 +118,32 @@ label {
 </head>
 <body>
 
-<div class="card">
+<div class="card-wrapper">
+    <div class="card">
 
-    <div class="logo">OpsLink<span>CAD</span></div>
-    <div class="subtitle">Sign in to your account</div>
+        <div class="logo">OpsLink<span>CAD</span></div>
+        <div class="subtitle">Sign in to your account</div>
 
-    <!-- EMAIL -->
-    <div class="input-group">
-        <label>Email</label>
-        <input id="email" class="input-box" type="email" placeholder="Enter your email">
-        <div id="emailError" class="error-text" style="display:none;">Please enter your email</div>
+        <div class="input-group">
+            <label>Email</label>
+            <input id="email" class="input-box" type="email" placeholder="email@example.com">
+            <div id="emailError" class="error-text">Please enter a valid email</div>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input id="password" class="input-box" type="password" placeholder="Enter password">
+            <div id="passwordError" class="error-text">Password required</div>
+        </div>
+
+        <button class="btn-primary" onclick="login()">Login</button>
+
+        <div class="bottom-links">
+            <a href="login.html">LOGIN</a>
+            <a href="register.html">REGISTER</a>
+        </div>
+
     </div>
-
-    <!-- PASSWORD -->
-    <div class="input-group">
-        <label>Password</label>
-        <input id="password" class="input-box" type="password" placeholder="Enter your password">
-        <div id="passwordError" class="error-text" style="display:none;">Please enter your password</div>
-    </div>
-
-    <button class="btn-primary" onclick="login()">Login</button>
-
-    <div class="bottom-links">
-        <a href="login.html">LOGIN</a>
-        <a href="register.html">REGISTER</a>
-        <a href="#">FORGOT PASSWORD</a>
-    </div>
-
 </div>
 
 <script>
@@ -159,26 +151,29 @@ async function login() {
     let email = document.getElementById("email");
     let pw = document.getElementById("password");
 
-    let hasError = false;
+    document.querySelectorAll(".error-text").forEach(e => e.style.display = "none");
 
-    if (!email.value) {
-        email.classList.add("input-error");
+    let error = false;
+
+    if (!email.value.includes("@")) {
         document.getElementById("emailError").style.display = "block";
-        hasError = true;
+        error = true;
     }
 
     if (!pw.value) {
-        pw.classList.add("input-error");
         document.getElementById("passwordError").style.display = "block";
-        hasError = true;
+        error = true;
     }
 
-    if (hasError) return;
+    if (error) return;
 
     const res = await fetch("https://opslink-api.onrender.com/auth/login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email: email.value, password: pw.value })
+        body: JSON.stringify({
+            email: email.value,
+            password: pw.value
+        })
     });
 
     const data = await res.json();
