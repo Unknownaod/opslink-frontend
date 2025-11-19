@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD – Secure Checkout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+/* ============================================
+   GLOBAL THEME (Style-C Premium)
+============================================ */
+body {
+    margin: 0;
+    background: #06090f;
+    color: #d8e0ea;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.checkout-wrapper {
+    max-width: 1100px;
+    margin: 60px auto;
+    display: flex;
+    gap: 35px;
+    padding: 0 25px;
+}
+
+/* LEFT PANEL (FORM) */
+.checkout-left {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    padding: 35px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(14px);
+}
+
+.section-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    opacity: 0.9;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    background: #0b111a;
+    border: 1px solid #1e2633;
+    border-radius: 8px;
+    color: #d8e0ea;
+    font-size: 15px;
+}
+
+#card-element {
+    padding: 14px;
+    border-radius: 8px;
+    background: #0b111a;
+    border: 1px solid #1e2633;
+    margin-top: 6px;
+}
+
+/* PAY BUTTON */
+.btn-pay {
+    margin-top: 25px;
+    width: 100%;
+    padding: 15px;
+    background: #4e8cff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 17px;
+    transition: .25s;
+}
+
+.btn-pay:hover {
+    background: #3b6fcc;
+}
+
+/* ============================================
+   RIGHT PANEL (SUMMARY)
+============================================ */
+.checkout-right {
+    width: 350px;
+    background: rgba(255,255,255,0.04);
+    padding: 30px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(14px);
+}
+
+.summary-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.summary-box {
+    background: rgba(255,255,255,0.03);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.total-line {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 15px;
+    padding-top: 15px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.feature-list {
+    margin-top: 25px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.feature-list div {
+    margin-bottom: 8px;
+}
+
+/* BADGE */
+.secure {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+    .checkout-wrapper {
+        flex-direction: column;
+    }
+    .checkout-right {
+        width: 100%;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="checkout-wrapper">
+
+    <!-- ================= LEFT: PAYMENT FORM ================= -->
+    <div class="checkout-left">
+
+        <div class="section-title">Customer Information</div>
+
+        <label>Full Name</label>
+        <input id="fullname" placeholder="John Doe">
+
+        <label>Email Address</label>
+        <input id="email" placeholder="you@example.com">
+
+        <label>Billing Address</label>
+        <input id="address" placeholder="123 Main St">
+
+        <label>City</label>
+        <input id="city" placeholder="Toronto">
+
+        <label>Country</label>
+        <select id="country">
+            <option value="CA">Canada</option>
+            <option value="US">United States</option>
+            <option value="UK">United Kingdom</option>
+            <option value="AU">Australia</option>
+        </select>
+
+        <label>Postal / ZIP Code</label>
+        <input id="zip" placeholder="Postal Code">
+
+        <div class="section-title" style="margin-top:30px;">Payment Method</div>
+
+        <label>Card Details</label>
+        <div id="card-element"></div>
+
+        <button class="btn-pay" onclick="startPayment()">Activate Premier</button>
+
+        <p id="msg" style="text-align:center;margin-top:15px;"></p>
+
+    </div>
+
+    <!-- ================= RIGHT: ORDER SUMMARY ================= -->
+    <div class="checkout-right">
+
+        <div class="summary-title">Order Summary</div>
+
+        <div class="summary-box">
+            <div class="summary-item">
+                <span>OpsLink Premier</span>
+                <span>$7.99/mo</span>
+            </div>
+
+            <div class="summary-item">
+                <span>Billing Starts Today</span>
+                <span>$7.99</span>
+            </div>
+
+            <div class="total-line">
+                <span>Total Due Today</span>
+                <span>$7.99</span>
+            </div>
+        </div>
+
+        <div class="feature-list">
+            <div>✓ Unlimited Communities</div>
+            <div>✓ Custom Branding</div>
+            <div>✓ Priority Support</div>
+            <div>✓ Full Access to All Features</div>
+            <div>✓ Cancel Anytime</div>
+        </div>
+
+        <div class="secure">
+            🔒 Payments are securely processed and encrypted.
+        </div>
+    </div>
+
+</div>
+
+<!-- Stripe -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+let stripe = Stripe("YOUR_PUBLISHABLE_KEY");
+
+let elements = stripe.elements();
+let card = elements.create("card", {
+    style: {
+        base: {
+            color: "#d8e0ea",
+            fontSize: "16px",
+            fontFamily: "Segoe UI"
+        }
+    }
+});
+
+card.mount("#card-element");
+
+async function startPayment() {
+    document.getElementById("msg").innerText = "Processing...";
+
+    const token = localStorage.getItem("token");
+
+    const customer = {
+        fullname: document.getElementById("fullname").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        country: document.getElementById("country").value,
+        zip: document.getElementById("zip").value
+    };
+
+    // create subscription session from backend
+    const res = await fetch("https://opslink-api.onrender.com/billing/create-subscription", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(customer)
+    });
+
+    const data = await res.json();
+
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+            card: card,
+            billing_details: {
+                name: customer.fullname,
+                email: customer.email,
+                address: {
+                    line1: customer.address,
+                    city: customer.city,
+                    postal_code: customer.zip,
+                    country: customer.country
+                }
+            }
+        }
+    });
+
+    if (result.error) {
+        document.getElementById("msg").innerText = result.error.message;
+    } else {
+        window.location.href = "dashboard.html?upgraded=true";
+    }
+}
+</script>
+
+</body>
+</html>
