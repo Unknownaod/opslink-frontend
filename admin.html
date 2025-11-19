@@ -668,14 +668,33 @@ const communityId = localStorage.getItem("communityId");
 // ================================
 document.querySelectorAll(".nav-item").forEach(item => {
   item.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+
+    // Remove active class from all tabs
+    document.querySelectorAll(".nav-item").forEach(i =>
+      i.classList.remove("active")
+    );
+
+    // Apply active class to clicked tab
     item.classList.add("active");
 
+    // Determine target panel
     const target = item.dataset.panel;
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+
+    // Load Permission Keys *after* reading target
+    if (target === "panel-keys") {
+      loadPermissionKeys();
+    }
+
+    // Hide all panels
+    document.querySelectorAll(".panel").forEach(p =>
+      p.classList.remove("active")
+    );
+
+    // Show selected panel
     document.getElementById(target).classList.add("active");
   });
 });
+
 
 // ================================
 // LOAD COMMUNITY
