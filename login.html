@@ -1,115 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login – OpsLinkCAD</title>
+<meta charset="UTF-8">
+<title>Login – OpsLinkCAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            background: #0f141a;
-            font-family: "Segoe UI", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #c9d1d9;
-        }
+<style>
+/* =============================
+   GLOBAL BASE THEME (D-3)
+   ============================= */
+body {
+    margin: 0;
+    background: #0b1119;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    color: #dbe4f3;
+}
 
-        .container {
-            width: 360px;
-            background: #161b22;
-            padding: 35px;
-            border-radius: 12px;
-            border: 1px solid #222c36;
-            box-shadow: 0px 0px 40px rgba(0,0,0,0.3);
-        }
+/* =============================
+   GLASS CARD
+   ============================= */
+.card {
+    width: 420px;
+    background: rgba(255,255,255,0.05);
+    padding: 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    text-align: center;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+/* LOGO */
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.logo span {
+    color: #4e8cff;
+}
 
-        .logo span {
-            color: #4e8cff;
-        }
+.subtitle {
+    margin-bottom: 25px;
+    opacity: 0.7;
+}
 
-        input {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #2b323d;
-            background: #0f141a;
-            color: #fff;
-            font-size: 15px;
-        }
+/* INPUTS */
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: #4e8cff;
-            border: none;
-            color: #fff;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: 0.2s;
-        }
+label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+}
 
-        .btn:hover {
-            background: #3570d8;
-        }
+.input-box {
+    width: 100%;
+    padding: 14px;
+    background: #0f1622;
+    border: 1px solid #2b3545;
+    border-radius: 8px;
+    color: #dbe4f3;
+    font-size: 15px;
+    transition: 0.2s;
+}
 
-        .switch {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 14px;
-            opacity: 0.8;
-        }
+.input-box:focus {
+    border-color: #4e8cff;
+    outline: none;
+}
 
-        .switch a {
-            color: #4e8cff;
-            text-decoration: none;
-        }
+.input-error {
+    border-color: #ff4c4c !important;
+}
 
-        .switch a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.error-text {
+    color: #ff4c4c;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* LOGIN BUTTON */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #4e8cff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+.btn-primary:hover {
+    background: #3675e9;
+}
+
+/* FOOTER LINKS */
+.bottom-links {
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+.bottom-links a {
+    margin: 0 8px;
+    color: #4e8cff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.bottom-links a:hover {
+    text-decoration: underline;
+}
+</style>
+
 </head>
 <body>
 
-<div class="container">
+<div class="card">
+
     <div class="logo">OpsLink<span>CAD</span></div>
+    <div class="subtitle">Sign in to your account</div>
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <button class="btn" onclick="login()">Login</button>
-
-    <div class="switch">
-        New here? <a href="register.html">Create an account</a>
+    <!-- EMAIL -->
+    <div class="input-group">
+        <label>Email</label>
+        <input id="email" class="input-box" type="email" placeholder="Enter your email">
+        <div id="emailError" class="error-text" style="display:none;">Please enter your email</div>
     </div>
+
+    <!-- PASSWORD -->
+    <div class="input-group">
+        <label>Password</label>
+        <input id="password" class="input-box" type="password" placeholder="Enter your password">
+        <div id="passwordError" class="error-text" style="display:none;">Please enter your password</div>
+    </div>
+
+    <button class="btn-primary" onclick="login()">Login</button>
+
+    <div class="bottom-links">
+        <a href="login.html">LOGIN</a>
+        <a href="register.html">REGISTER</a>
+        <a href="#">FORGOT PASSWORD</a>
+    </div>
+
 </div>
 
 <script>
 async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    let email = document.getElementById("email");
+    let pw = document.getElementById("password");
+
+    let hasError = false;
+
+    if (!email.value) {
+        email.classList.add("input-error");
+        document.getElementById("emailError").style.display = "block";
+        hasError = true;
+    }
+
+    if (!pw.value) {
+        pw.classList.add("input-error");
+        document.getElementById("passwordError").style.display = "block";
+        hasError = true;
+    }
+
+    if (hasError) return;
 
     const res = await fetch("https://opslink-api.onrender.com/auth/login", {
         method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ email, password })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ email: email.value, password: pw.value })
     });
 
     const data = await res.json();
-    if (!res.ok) return alert(data.message || "Login failed.");
+
+    if (!res.ok) {
+        alert(data.message || "Invalid login");
+        return;
+    }
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
