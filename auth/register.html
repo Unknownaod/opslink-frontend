@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Register – OpsLinkCAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* SAME THEME AS LOGIN */
+body {
+    margin: 0;
+    background: #0b1119;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card-wrapper {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.05);
+    padding: 35px 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px);
+    color: #dbe4f3;
+    text-align: center;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.logo span { color: #4e8cff; }
+
+.subtitle {
+    opacity: 0.7;
+    font-size: 15px;
+    margin-bottom: 28px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-box {
+    width: 100%;
+    padding: 14px;
+    background: #0f1622;
+    border: 1px solid #2b3545;
+    color: #dbe4f3;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.input-box:focus {
+    border-color: #4e8cff;
+    outline: none;
+}
+
+.error-text {
+    color: #ff4c4c;
+    font-size: 13px;
+    margin-top: 4px;
+    display: none;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #4e8cff;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background: #3675e9;
+}
+
+.bottom-links {
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+.bottom-links a {
+    color: #4e8cff;
+    text-decoration: none;
+    margin: 0 8px;
+    font-weight: 600;
+}
+
+.bottom-links a:hover {
+    text-decoration: underline;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card-wrapper">
+    <div class="card">
+
+        <div class="logo">OpsLink<span>CAD</span></div>
+        <div class="subtitle">Create your account</div>
+
+        <div class="input-group">
+            <label>Full Name</label>
+            <input id="name" class="input-box" type="text" placeholder="John Doe">
+            <div id="nameError" class="error-text">Name required</div>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input id="email" class="input-box" type="email" placeholder="email@example.com">
+            <div id="emailError" class="error-text">Valid email required</div>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input id="password" class="input-box" type="password" placeholder="Password">
+            <div id="passwordError" class="error-text">At least 6 characters required</div>
+        </div>
+
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <input id="confirmPassword" class="input-box" type="password" placeholder="Confirm password">
+            <div id="confirmError" class="error-text">Passwords do not match</div>
+        </div>
+
+        <button class="btn-primary" onclick="register()">Register</button>
+
+        <div class="bottom-links">
+        <label>Already have an OpsLink Account?</label>
+            <a href="login.html">LOGIN</a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+async function register() {
+    let name = document.getElementById("name");
+    let email = document.getElementById("email");
+    let pw = document.getElementById("password");
+    let cpw = document.getElementById("confirmPassword");
+
+    let error = false;
+    document.querySelectorAll(".error-text").forEach(e => e.style.display = "none");
+
+    if (!name.value) {
+        document.getElementById("nameError").style.display = "block";
+        error = true;
+    }
+    if (!email.value.includes("@")) {
+        document.getElementById("emailError").style.display = "block";
+        error = true;
+    }
+    if (pw.value.length < 6) {
+        document.getElementById("passwordError").style.display = "block";
+        error = true;
+    }
+    if (pw.value !== cpw.value) {
+        document.getElementById("confirmError").style.display = "block";
+        error = true;
+    }
+
+    if (error) return;
+
+    const res = await fetch("https://opslink-api.onrender.com/auth/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            name: name.value,
+            email: email.value,
+            password: pw.value
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Registration failed");
+        return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
+
