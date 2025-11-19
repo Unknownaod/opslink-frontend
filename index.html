@@ -4,8 +4,224 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OpsLinkCAD – Next-Gen Dispatch Technology</title>
-    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* ===========================
+           GLOBAL STYLE / THEME
+        ============================ */
+        :root {
+            --bg-main: #0a0f17;
+            --bg-card: rgba(255,255,255,0.04);
+            --accent: #4e8cff;
+            --accent2: #8bb4ff;
+            --text-main: #e0e6f1;
+            --text-soft: #8a94a7;
+            --border: rgba(255,255,255,0.08);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: "Segoe UI", system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav a {
+            margin-left: 25px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 15px;
+            opacity: 0.85;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .btn-login {
+            padding: 8px 16px;
+            background: var(--accent);
+            border-radius: 6px;
+            color: white !important;
+            transition: 0.2s;
+        }
+
+        .btn-login:hover {
+            background: var(--accent2);
+        }
+
+        /* ===========================
+           HERO SECTION
+        ============================ */
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 40px;
+            gap: 60px;
+            position: relative;
+        }
+
+        /* soft glow balls */
+        .hero::before,
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(78,140,255,0.35), transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        .hero::before { top: -100px; left: -200px; }
+        .hero::after { bottom: -150px; right: -200px; }
+
+        /* IMAGE */
+        .hero-image {
+            width: 480px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 30px rgba(78,140,255,0.2);
+        }
+
+        /* TEXT */
+        .hero-right {
+            max-width: 500px;
+        }
+
+        .hero-right h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #7aa8ff, #dce7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .hero-right p {
+            color: var(--text-soft);
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* BUTTONS */
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-primary:hover {
+            background: var(--accent2);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        /* ===========================
+           FEATURES SECTION
+        ============================ */
+        .features {
+            padding: 100px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            padding: 25px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-soft);
+            line-height: 1.5;
+        }
+
+        /* ===========================
+           FOOTER
+        ============================ */
+        footer {
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+            color: var(--text-soft);
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
 
 <!-- NAVBAR -->
@@ -20,15 +236,18 @@
 
 <!-- HERO SECTION -->
 <section class="hero">
+
     <div class="hero-left">
         <img src="assets/hero.png" alt="CAD Interface" class="hero-image">
     </div>
 
     <div class="hero-right">
-        <h1>Next-Gen Dispatch Technology</h1>
+        <h1>The Future of Roleplay Dispatch.</h1>
+
         <p>
-            Optimized for roleplay. Built for speed.  
-            OpsLink CAD delivers a clean, modern, fully responsive dispatch and MDT experience with real-time syncing, clarity, and unlimited customization.
+            Ultra-fast. Real-time. Professionally designed.<br>
+            OpsLink CAD brings clean UI, powerful features, and instant syncing 
+            across MDT, Dispatch, Civilian Panel, Supervisor, and more.
         </p>
 
         <div class="hero-buttons">
@@ -36,29 +255,35 @@
             <a href="pricing.html" class="btn-secondary">View Premier</a>
         </div>
     </div>
+
 </section>
 
 <!-- FEATURES -->
 <section class="features">
     <div class="feature-card">
-        <h3>Real-Time Sync</h3>
-        <p>Lightning-fast dispatch, unit, and civilian syncing across your entire community.</p>
+        <h3>⚡ Real-Time Sync</h3>
+        <p>Lightning-fast syncing for calls, units, civilians, vehicles — no refresh needed.</p>
     </div>
 
     <div class="feature-card">
-        <h3>Modern Interface</h3>
-        <p>A clean, intuitive dashboard with zero clutter and premium UI design.</p>
+        <h3>🎛 Modern Interface</h3>
+        <p>A clean, premium dashboard designed to feel like real-world dispatch software.</p>
     </div>
 
     <div class="feature-card">
-        <h3>Fully Customizable</h3>
-        <p>Edit departments, permissions, codes, call types — all configurable.</p>
+        <h3>🔧 Fully Customizable</h3>
+        <p>Departments, permissions, ranks, codes, & call types — all editable in seconds.</p>
+    </div>
+
+    <div class="feature-card">
+        <h3>🛡 Supervisor Tools</h3>
+        <p>Force-signoff, live tracking, panic alerts, quick actions and more.</p>
     </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-    <p>© 2025 OpsLinkCAD – All rights reserved.</p>
+    <p>© 2025 OpsLinkCAD — All rights reserved.</p>
 </footer>
 
 </body>
