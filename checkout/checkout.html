@@ -237,10 +237,11 @@ input, select {
 
 <!-- Stripe -->
 <script src="https://js.stripe.com/v3/"></script>
-
 <script>
+// ===========================
+// STRIPE INITIALIZATION
+// ===========================
 let stripe = Stripe("pk_live_51SVFpBLQjsrxMZMFPhO41fNL37kau7u4uITjjmXKkBabyHvx30X16scvSFDHBJDZ1GGC71GFKI1tPWM...");
-
 let elements = stripe.elements();
 let card = elements.create("card", {
     style: {
@@ -251,9 +252,147 @@ let card = elements.create("card", {
         }
     }
 });
-
 card.mount("#card-element");
 
+// ===========================
+// BASE PRICE
+// ===========================
+const BASE_PRICE = 12.99;
+
+// ===========================
+// DOM ELEMENTS
+// ===========================
+const subtotalEl = document.getElementById("subtotal");
+const taxEl = document.getElementById("tax");
+const totalEl = document.getElementById("total");
+
+// ===========================
+// COUNTRY → PROVINCE/STATE SETUP
+// ===========================
+const countryEl = document.getElementById("country");
+
+// Create dynamic state selector
+let stateLabel = document.createElement("label");
+stateLabel.innerText = "State / Province";
+stateLabel.style.marginTop = "15px";
+
+let stateSelect = document.createElement("select");
+stateSelect.id = "stateSelect";
+stateSelect.style.width = "100%";
+stateSelect.style.padding = "12px";
+stateSelect.style.background = "#0b111a";
+stateSelect.style.border = "1px solid #1e2633";
+stateSelect.style.borderRadius = "8px";
+stateSelect.style.color = "#d8e0ea";
+stateSelect.style.fontSize = "15px";
+stateSelect.style.display = "none";
+
+// Insert state selector before ZIP input
+document.getElementById("zip").parentNode.insertBefore(stateLabel, document.getElementById("zip"));
+document.getElementById("zip").parentNode.insertBefore(stateSelect, document.getElementById("zip"));
+
+// Province lists
+const provinces_CA = {
+    "AB": 0.05,
+    "BC": 0.05,
+    "MB": 0.05,
+    "NB": 0.15,
+    "NL": 0.15,
+    "NT": 0.05,
+    "NS": 0.15,
+    "NU": 0.05,
+    "ON": 0.13,
+    "PE": 0.15,
+    "QC": 0.14975,
+    "SK": 0.05,
+    "YT": 0.05
+};
+
+const states_US = {
+    "AL": 0, "AK": 0, "AZ": 0, "AR": 0, "CA": 0,
+    "CO": 0, "CT": 0, "DE": 0, "FL": 0, "GA": 0,
+    "HI": 0, "ID": 0, "IL": 0, "IN": 0, "IA": 0,
+    "KS": 0, "KY": 0, "LA": 0, "ME": 0, "MD": 0,
+    "MA": 0, "MI": 0, "MN": 0, "MS": 0, "MO": 0,
+    "MT": 0, "NE": 0, "NV": 0, "NH": 0, "NJ": 0,
+    "NM": 0, "NY": 0, "NC": 0, "ND": 0, "OH": 0,
+    "OK": 0, "OR": 0, "PA": 0, "RI": 0, "SC": 0,
+    "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VT": 0,
+    "VA": 0, "WA": 0, "WV": 0, "WI": 0, "WY": 0
+};
+
+// ===========================
+// POPULATE STATES/PROVINCES
+// ===========================
+function updateStateOptions() {
+    const country = countryEl.value;
+    stateSelect.innerHTML = "";
+
+    if (country === "CA") {
+        stateLabel.style.display = "block";
+        stateSelect.style.display = "block";
+
+        for (const abbr in provinces_CA) {
+            let opt = document.createElement("option");
+            opt.value = abbr;
+            opt.innerText = abbr;
+            stateSelect.appendChild(opt);
+        }
+    } 
+    else if (country === "US") {
+        stateLabel.style.display = "block";
+        stateSelect.style.display = "block";
+
+        for (const abbr in states_US) {
+            let opt = document.createElement("option");
+            opt.value = abbr;
+            opt.innerText = abbr;
+            stateSelect.appendChild(opt);
+        }
+    } 
+    else {
+        stateLabel.style.display = "none";
+        stateSelect.style.display = "none";
+    }
+
+    updateTotals();
+}
+
+countryEl.addEventListener("change", updateStateOptions);
+stateSelect.addEventListener("change", updateTotals);
+
+// ===========================
+// TAX + TOTAL CALCULATION
+// ===========================
+function updateTotals() {
+    const country = countryEl.value;
+    const province = stateSelect.value;
+
+    let taxRate = 0;
+
+    if (country === "CA" && provinces_CA[province] !== undefined) {
+        taxRate = provinces_CA[province];
+    }
+
+    if (country === "US" && states_US[province] !== undefined) {
+        taxRate = states_US[province];
+    }
+
+    const subtotal = BASE_PRICE;
+    const taxAmount = subtotal * taxRate;
+    const total = subtotal + taxAmount;
+
+    subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+    taxEl.innerText = `$${taxAmount.toFixed(2)}`;
+    totalEl.innerText = `$${total.toFixed(2)}`;
+}
+
+// Initial load
+updateTotals();
+
+// ===========================
+// PAYMENT FLOW
+// ===========================
 async function startPayment() {
     document.getElementById("msg").innerText = "Processing...";
 
@@ -268,7 +407,6 @@ async function startPayment() {
         zip: document.getElementById("zip").value
     };
 
-    // create subscription session from backend
     const res = await fetch("https://opslink-api.onrender.com/billing/create-subscription", {
         method: "POST",
         headers: {
@@ -304,6 +442,8 @@ async function startPayment() {
 }
 </script>
 
+
 </body>
 </html>
+
 
