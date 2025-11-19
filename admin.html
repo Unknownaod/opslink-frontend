@@ -827,6 +827,67 @@ async function deleteDepartment(id) {
   loadDepartments();
 }
 
+/// DEPARTMENT PERMISSION KEYS ////
+
+  
+async function loadPermissionKeys() {
+  const commId = communityId;
+  const res = await fetch(`${API}/community/${commId}/keys`, {
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+  if (!res.ok) {
+    document.getElementById("keysTableBody").innerHTML = 
+      "<tr><td colspan='3'>You do not have permission to view keys.</td></tr>";
+    return;
+  }
+
+  const keys = await res.json();
+  const body = document.getElementById("keysTableBody");
+
+  body.innerHTML = "";
+
+  Object.entries(keys).forEach(([role, key]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="text-transform:uppercase;">${role}</td>
+      <td>${key}</td>
+      <td>
+        <button class="btn-ghost" onclick="copyKey('${key}')">Copy</button>
+        <button class="btn-danger" onclick="regenerateKey('${role}')">New Key</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function copyKey(key) {
+  navigator.clipboard.writeText(key);
+  alert("Copied key: " + key);
+}
+
+async function regenerateKey(role) {
+  const commId = communityId;
+
+  const res = await fetch(`${API}/community/${commId}/keys/regenerate`, {
+    method: "PUT",
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+  if (!res.ok) {
+    return alert("Only the owner can regenerate keys.");
+  }
+
+  const keys = await res.json();
+  loadPermissionKeys();
+}
+
+async function regenerateAllKeys() {
+  if (!confirm("Regenerate ALL permission keys? Users will need to re-enter them.")) return;
+  regenerateKey("*");
+}
+
+  
 // ================================
 // INIT
 // ================================
