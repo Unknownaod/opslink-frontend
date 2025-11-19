@@ -23,6 +23,7 @@
     --danger-hover: #ff6666;
 }
 
+/* LIGHT THEME */
 .light {
     --bg-main: #f1f3f5;
     --bg-sidebar: #e5e7eb;
@@ -45,16 +46,18 @@ body {
     transition: background 0.25s, color 0.25s;
 }
 
-/* SIDEBAR */
+/* =============================================
+   SIDEBAR — CAD STYLE
+============================================= */
 .sidebar {
     width: 250px;
     background: var(--bg-sidebar);
-    position: fixed;
-    top: 0;
-    left: 0;
     height: 100vh;
-    padding: 25px 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
     border-right: 1px solid var(--border);
+    padding: 25px 20px;
 }
 
 .logo {
@@ -65,411 +68,673 @@ body {
 .logo span { color: var(--accent); }
 
 .nav-link {
-    padding: 12px 16px;
     display: block;
+    padding: 12px 16px;
+    margin: 6px 0;
     color: var(--text-soft);
     text-decoration: none;
     border-radius: 6px;
-    margin: 6px 0;
+    font-size: 15px;
+    transition: 0.2s;
 }
+
 .nav-link:hover {
     background: #1a222e;
     color: var(--accent);
 }
+
 .nav-link.active {
     background: #1a222e;
     color: var(--accent);
     font-weight: 600;
 }
 
-/* MAIN */
+/* =============================================
+   MAIN SECTION WRAPPER
+============================================= */
 .main {
     margin-left: 260px;
     padding: 40px;
 }
 
-/* PAGES */
+/* PAGE SWITCHING */
 .page { display: none; }
 .page.active { display: block; }
 
-/* BANNER */
+/* =============================================
+   FREE TIER BANNER
+============================================= */
 .banner {
     background: #1e293b;
     border: 1px solid var(--border);
     padding: 14px 18px;
     border-radius: 8px;
+    color: var(--text);
     margin-bottom: 20px;
 }
+.banner b { color: var(--accent); }
 
-/* BUTTONS */
+/* =============================================
+   BUTTONS — CAD STYLE
+============================================= */
 .btn {
-    padding: 12px 20px;
+    padding: 12px 22px;
     border-radius: 6px;
+    border: 1px solid transparent;
     cursor: pointer;
     font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
 }
-.btn-primary { background: var(--accent); color: #fff; border: 0; }
+
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
 .btn-primary:hover { background: var(--accent-hover); }
-.btn-secondary { background: #1c2430; color: var(--accent); border: 1px solid var(--accent); }
-.btn-secondary:hover { background: var(--accent); color: #fff; }
-.btn-danger { background: var(--danger); border: 0; color: #fff; }
-.btn-danger:hover { background: var(--danger-hover); }
-.btn-disabled { background: #2a2e37; color: #6b7280; cursor: not-allowed; }
 
-/* CARDS */
-.settings-card,
-.community-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
+.btn-secondary {
+    background: #1c2430;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+.btn-secondary:hover { background: var(--accent); color: #fff; }
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+.btn-danger:hover { background: var(--danger-hover); }
+
+.btn-disabled {
+    background: #1b1f27;
+    color: #6b7280;
+    border: 1px solid #2a303d;
+    cursor: not-allowed;
 }
 
+/* =============================================
+   COMMUNITY CARDS — CLEAN CAD FORMAT
+============================================= */
 .community-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 25px;
 }
 
+.community-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 22px;
+    border-radius: 10px;
+    transition: 0.25s;
+}
+
+.community-card:hover {
+    border-color: var(--accent);
+}
+
 /* MODALS */
 .modal-bg {
     position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
     background: rgba(0,0,0,0.7);
-    display:none;
-    align-items:center;
-    justify-content:center;
 }
+
 .modal {
     background: var(--bg-card);
     padding: 30px;
     border-radius: 10px;
-    width: 350px;
     border: 1px solid var(--accent);
+    width: 360px;
 }
-.modal input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: var(--bg-input);
+
+/* SETTINGS CARD */
+.settings-card {
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 6px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
 }
 </style>
 </head>
+
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">OpsLink<span>CAD</span></div>
-    <a class="nav-link active" onclick="switchPage('dashboard')" id="nav-dashboard">Dashboard</a>
-    <a class="nav-link" onclick="switchPage('settings')" id="nav-settings">Settings</a>
+
+    <a class="nav-link active" id="nav-dashboard" onclick="switchPage('dashboard')">Dashboard</a>
+    <a class="nav-link" id="nav-settings" onclick="switchPage('settings')">Settings</a>
+    <a class="nav-link" id="nav-billing" onclick="switchPage('billing')">Billing</a>
     <a class="nav-link" onclick="logout()">Logout</a>
 </div>
 
+<!-- MAIN WRAPPER -->
 <div class="main">
 
-<!-- DASHBOARD -->
+<!-- ============================
+     PAGE: DASHBOARD (DEFAULT)
+============================= -->
 <div id="page-dashboard" class="page active">
 
-    <!-- Free tier banner (dynamic) -->
     <div id="freeBanner" class="banner" style="display:none;">
         <b>Free Tier:</b> You can create 1 community.
-        Upgrade to <b>Premier</b> for unlimited communities.
+        Upgrade to <b>Premier Tier</b> for unlimited communities.
     </div>
 
-    <h1>Dashboard</h1>
-    <div style="opacity:0.7;">Logged in as <span id="username"></span></div>
+    <h1 class="page-title">Dashboard</h1>
 
-    <div style="display:flex; gap:12px; margin-top:20px;">
-        <button id="createBtn" class="btn btn-primary">+ Create Community</button>
+    <div style="opacity:0.7; margin-bottom:25px;">
+        Logged in as <span id="username"></span>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-bottom:25px;">
+        <button id="createBtn" class="btn btn-primary" onclick="openModal()">+ Create Community</button>
         <button class="btn btn-secondary" onclick="openJoinModal()">Join Community</button>
     </div>
 
-    <h2 style="margin-top:25px;">Your Communities</h2>
+    <h2 style="margin: 20px 0;">Your Communities</h2>
     <div id="commList" class="community-list">Loading...</div>
 </div>
 
-<!-- SETTINGS -->
+
+   <!-- ============================
+     PAGE: SETTINGS
+============================= -->
 <div id="page-settings" class="page">
 
-    <h1>Settings</h1>
+    <h1 class="page-title">Settings</h1>
 
-    <!-- BILLING -->
+    <!-- SUBSCRIPTION CARD (NOW CONTROLLED BY STRIPE) -->
     <div class="settings-card">
-        <div style="font-size:20px; font-weight:600; color:var(--accent);">Subscription</div>
-        <p>Status: <b id="subStatusText"></b></p>
-        <p>Renews: <b id="subRenews"></b></p>
-
-        <div id="billingActions">
-            <!-- Autogenerated buttons -->
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
+            Subscription Status
         </div>
+
+        <p style="font-size:15px; opacity:0.8;">
+            Current Tier: <b id="subTierText"></b>
+        </p>
     </div>
 
-    <!-- PROFILE -->
+    <!-- PROFILE CARD -->
     <div class="settings-card">
-        <div style="font-size:20px; font-weight:600; color:var(--accent);">Profile</div>
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
+            Profile
+        </div>
+
         <p>Username: <b id="profileName"></b></p>
         <button class="btn btn-secondary" onclick="openProfileModal()">Edit Username</button>
     </div>
 
-    <!-- THEME -->
+    <!-- APPEARANCE CARD -->
     <div class="settings-card">
-        <div style="font-size:20px; font-weight:600; color:var(--accent);">Appearance</div>
-        <button class="btn btn-secondary" onclick="toggleTheme()">Toggle Light/Dark</button>
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
+            Appearance
+        </div>
+
+        <button class="btn btn-secondary" onclick="toggleTheme()">Toggle Light / Dark Mode</button>
     </div>
 
-    <!-- ACCOUNT -->
+    <!-- ACCOUNT CARD -->
     <div class="settings-card">
-        <div style="font-size:20px; font-weight:600; color:var(--accent);">Account</div>
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
+            Account
+        </div>
+
         <button class="btn btn-danger" onclick="logout()">Logout</button>
     </div>
 
 </div>
 
-<!-- CREATE COMMUNITY MODAL -->
+<!-- ============================
+     PAGE: BILLING (NEW)
+============================= -->
+<div id="page-billing" class="page">
+
+    <h1 class="page-title">Billing & Subscription</h1>
+
+    <p style="opacity:0.7; margin-bottom:20px;">
+        Manage your OpsLinkCAD subscription securely through Stripe.
+    </p>
+
+    <!-- BILLING STATUS CARD -->
+    <div class="settings-card">
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:12px;">
+            Current Plan
+        </div>
+
+        <p style="font-size:15px; opacity:0.8;">
+            Subscription Tier: <b id="billingTierText"></b>
+        </p>
+    </div>
+
+    <!-- BILLING ACTIONS CARD -->
+    <div class="settings-card">
+
+        <div style="font-size:20px; font-weight:600; color:var(--accent); margin-bottom:15px;">
+            Subscription Actions
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button id="billingManageBtn" class="btn btn-secondary" onclick="openBillingPortal()">
+                Manage Billing (Stripe Portal)
+            </button>
+
+            <button id="billingUpgradeBtn" class="btn btn-primary" onclick="startCheckout()">
+                Upgrade to Premier
+            </button>
+
+            <button id="billingCancelBtn" class="btn btn-danger" onclick="cancelBilling()" style="display:none;">
+                Cancel Subscription
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================
+     CREATE COMMUNITY MODAL
+============================= -->
 <div id="modalBg" class="modal-bg">
     <div class="modal">
         <h2>Create Community</h2>
-        <input id="commName" placeholder="Name">
-        <input id="commDesc" placeholder="Description">
+
+        <input id="commName" type="text" placeholder="Community Name" style="width:100%; margin-bottom:10px; padding:10px;">
+        <input id="commDesc" type="text" placeholder="Description" style="width:100%; margin-bottom:15px; padding:10px;">
+
         <button class="btn btn-primary" onclick="createCommunity()">Create</button>
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
     </div>
 </div>
 
-<!-- JOIN COMMUNITY MODAL -->
+<!-- ============================
+     JOIN COMMUNITY MODAL
+============================= -->
 <div id="joinModalBg" class="modal-bg">
     <div class="modal">
         <h2>Join Community</h2>
-        <input id="joinCommId" placeholder="Community ID">
+
+        <input id="joinCommId" type="text" placeholder="Community ID" style="width:100%; margin-bottom:15px; padding:10px;">
+
         <button class="btn btn-primary" onclick="joinCommunity()">Join</button>
         <button class="btn btn-secondary" onclick="closeJoinModal()">Cancel</button>
     </div>
 </div>
 
-<!-- PROFILE MODAL -->
+<!-- ============================
+     EDIT PROFILE MODAL
+============================= -->
 <div id="profileModalBg" class="modal-bg">
     <div class="modal">
         <h2>Edit Profile</h2>
-        <input id="editUsername" placeholder="New Username">
+
+        <input id="editUsername" type="text" placeholder="New Username" style="width:100%; margin-bottom:15px; padding:10px;">
+
         <button class="btn btn-primary" onclick="saveProfile()">Save</button>
         <button class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
     </div>
 </div>
 
 <script>
-// =====================================================
-// AUTH
-// =====================================================
-if (!localStorage.getItem("token")) window.location = "login.html";
-const token = localStorage.getItem("token");
-let user = JSON.parse(localStorage.getItem("user"));
-
-document.getElementById("username").innerText = user.name;
-document.getElementById("profileName").innerText = user.name;
-
-// =====================================================
-// PAGE SWITCH
-// =====================================================
-function switchPage(p) {
-    document.querySelectorAll(".page").forEach(x => x.classList.remove("active"));
-    document.getElementById("page-" + p).classList.add("active");
-
-    document.querySelectorAll(".nav-link").forEach(x => x.classList.remove("active"));
-    document.getElementById("nav-" + p).classList.add("active");
+/* =====================================================
+   AUTH CHECK
+===================================================== */
+if (!localStorage.getItem("token")) {
+    window.location.href = "login.html";
 }
 
-// =====================================================
-// THEME
-// =====================================================
+const token = localStorage.getItem("token");
+let user = JSON.parse(localStorage.getItem("user") || "{}");
+
+document.getElementById("username").innerText = user?.name || user?.email;
+document.getElementById("profileName").innerText = user?.name || user?.email;
+
+/* =====================================================
+   STRIPE SUBSCRIPTION STATE
+   (OPTION 1: Stripe ONLY — NO localStorage)
+===================================================== */
+let subscriptionStatus = "free"; // updated dynamically
+
+async function loadStripeSubscription() {
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/billing/customer", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const data = await res.json();
+
+        if (data?.subscription?.status === "active") {
+            subscriptionStatus = "premier";
+        } else {
+            subscriptionStatus = "free";
+        }
+
+        // Update UI everywhere
+        document.getElementById("subTierText").innerText =
+            subscriptionStatus === "premier" ? "Premier Tier" : "Free Tier";
+
+        document.getElementById("billingTierText").innerText =
+            subscriptionStatus === "premier" ? "Premier Tier" : "Free Tier";
+
+        // Show/hide billing action buttons
+        document.getElementById("billingUpgradeBtn").style.display =
+            subscriptionStatus === "free" ? "block" : "none";
+
+        document.getElementById("billingCancelBtn").style.display =
+            subscriptionStatus === "premier" ? "block" : "none";
+
+    } catch (e) {
+        console.error("Failed to load Stripe subscription:", e);
+    }
+}
+
+/* =====================================================
+   FREE TIER LIMIT → STRIPE ONLY
+===================================================== */
+function enforceCommunityLimit(communityCount) {
+    const createBtn = document.getElementById("createBtn");
+    const freeBanner = document.getElementById("freeBanner");
+
+    if (subscriptionStatus === "premier") {
+        createBtn.classList.remove("btn-disabled");
+        createBtn.disabled = false;
+        freeBanner.style.display = "none";
+        return;
+    }
+
+    // FREE TIER: max 1 community
+    if (communityCount >= 1) {
+        createBtn.classList.add("btn-disabled");
+        createBtn.disabled = true;
+        freeBanner.style.display = "block";
+    } else {
+        createBtn.classList.remove("btn-disabled");
+        createBtn.disabled = false;
+        freeBanner.style.display = "block";
+    }
+}
+
+/* =====================================================
+   PAGE SWITCHING (Dashboard / Settings / Billing)
+===================================================== */
+function switchPage(page) {
+    document.getElementById("page-dashboard").classList.remove("active");
+    document.getElementById("page-settings").classList.remove("active");
+    document.getElementById("page-billing").classList.remove("active");
+
+    document.getElementById("nav-dashboard").classList.remove("active");
+    document.getElementById("nav-settings").classList.remove("active");
+    document.getElementById("nav-billing").classList.remove("active");
+
+    if (page === "dashboard") {
+        document.getElementById("page-dashboard").classList.add("active");
+        document.getElementById("nav-dashboard").classList.add("active");
+    } 
+    else if (page === "settings") {
+        document.getElementById("page-settings").classList.add("active");
+        document.getElementById("nav-settings").classList.add("active");
+    }
+    else if (page === "billing") {
+        document.getElementById("page-billing").classList.add("active");
+        document.getElementById("nav-billing").classList.add("active");
+    }
+}
+
+/* =====================================================
+   THEME TOGGLE
+===================================================== */
 function applyTheme() {
-    if (localStorage.getItem("theme") === "light") {
+    const theme = localStorage.getItem("theme") || "dark";
+    if (theme === "light") {
         document.body.classList.add("light");
-    } else document.body.classList.remove("light");
+    } else {
+        document.body.classList.remove("light");
+    }
 }
 applyTheme();
+
 function toggleTheme() {
-    localStorage.setItem("theme",
-        localStorage.getItem("theme") === "light" ? "dark" : "light"
-    );
+    const current = localStorage.getItem("theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
     applyTheme();
 }
 
-// =====================================================
-// BILLING STATUS
-// =====================================================
-async function loadSubscriptionStatus() {
-    const res = await fetch("https://opslink-api.onrender.com/billing/status", {
-        headers: { "Authorization": "Bearer " + token }
-    });
-    const data = await res.json();
-
-    const status = data.subscription || "free";
-    const renews = data.renews ? new Date(data.renews).toLocaleDateString() : "N/A";
-
-    document.getElementById("subStatusText").innerText = status === "premier" ? "Premier" : "Free";
-    document.getElementById("subRenews").innerText = renews;
-
-    const actions = document.getElementById("billingActions");
-    actions.innerHTML = "";
-
-    if (status === "free") {
-        actions.innerHTML = `
-            <a href="pricing.html" class="btn btn-primary">Upgrade to Premier</a>
-        `;
-    } else {
-        actions.innerHTML = `
-            <button class="btn btn-danger" onclick="cancelRenewal()">Cancel Renewal</button>
-            <button class="btn btn-secondary" onclick="reactivate()">Reactivate</button>
-        `;
-    }
+/* =====================================================
+   PROFILE EDIT
+===================================================== */
+function openProfileModal() {
+    document.getElementById("profileModalBg").style.display = "flex";
 }
-loadSubscriptionStatus();
-
-// =====================================================
-// BILLING ACTIONS
-// =====================================================
-async function cancelRenewal() {
-    const res = await fetch("https://opslink-api.onrender.com/billing/cancel", {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + token }
-    });
-    loadSubscriptionStatus();
+function closeProfileModal() {
+    document.getElementById("profileModalBg").style.display = "none";
 }
-
-async function reactivate() {
-    const res = await fetch("https://opslink-api.onrender.com/billing/reactivate", {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + token }
-    });
-    loadSubscriptionStatus();
-}
-
-// =====================================================
-// LOAD COMMUNITIES
-// =====================================================
-async function loadCommunities() {
-    const res = await fetch("https://opslink-api.onrender.com/community/my", {
-        headers: { Authorization: "Bearer " + token }
-    });
-    const communities = await res.json();
-
-    const list = document.getElementById("commList");
-    list.innerHTML = "";
-
-    if (!communities.length) {
-        list.innerHTML = "<p>No communities yet.</p>";
-    }
-
-    communities.forEach(comm => {
-        const div = document.createElement("div");
-        div.className = "community-card";
-
-        div.innerHTML = `
-            <h3>${comm.name}</h3>
-            <p>${comm.description}</p>
-            <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
-            <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">Delete</button>
-        `;
-
-        list.appendChild(div);
-    });
-
-    // FREE LIMIT
-    if (communities.length >= 1 && document.getElementById("subStatusText").innerText === "Free") {
-        document.getElementById("createBtn").classList.add("btn-disabled");
-        document.getElementById("freeBanner").style.display = "block";
-    } else {
-        document.getElementById("freeBanner").style.display = "none";
-    }
-}
-loadCommunities();
-
-// =====================================================
-// COMMUNITY ACTIONS
-// =====================================================
-function openModal() { document.getElementById("modalBg").style.display = "flex"; }
-function closeModal() { document.getElementById("modalBg").style.display = "none"; }
-function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
-function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
-function openProfileModal() { document.getElementById("profileModalBg").style.display = "flex"; }
-function closeProfileModal() { document.getElementById("profileModalBg").style.display = "none"; }
-
-async function createCommunity() {
-    const name = commName.value;
-    const description = commDesc.value;
-
-    const res = await fetch("https://opslink-api.onrender.com/community/create", {
-        method: "POST",
-        headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, description })
-    });
-
-    closeModal();
-    loadCommunities();
-}
-
-async function joinCommunity() {
-    const id = joinCommId.value;
-
-    const res = await fetch("https://opslink-api.onrender.com/community/join", {
-        method: "POST",
-        headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ communityId: id })
-    });
-
-    closeJoinModal();
-    loadCommunities();
-}
-
-async function deleteCommunity(id, name) {
-    if (!confirm(`Delete "${name}"?`)) return;
-
-    await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: "Bearer " + token }
-    });
-
-    loadCommunities();
-}
-
-function openCommunity(id) {
-    localStorage.setItem("selectedCommunity", id);
-    window.location = "community.html";
-}
-
-// =====================================================
-// PROFILE UPDATE
-// =====================================================
 function saveProfile() {
     const newName = document.getElementById("editUsername").value.trim();
-    if (!newName) return;
+    if (!newName) return alert("Enter a valid username.");
 
     user.name = newName;
     localStorage.setItem("user", JSON.stringify(user));
+
     document.getElementById("username").innerText = newName;
     document.getElementById("profileName").innerText = newName;
 
     closeProfileModal();
 }
 
-// =====================================================
-// LOGOUT
-// =====================================================
+/* =====================================================
+   STRIPE BILLING BUTTONS
+===================================================== */
+async function openBillingPortal() {
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/billing/portal", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+
+    } catch (e) {
+        alert("Failed to open billing portal.");
+    }
+}
+
+async function startCheckout() {
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/billing/create-checkout-session", {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+
+    } catch (e) {
+        alert("Could not start checkout session.");
+    }
+}
+
+async function cancelBilling() {
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/billing/cancel", {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        alert("Your subscription will end after this billing period.");
+
+        loadStripeSubscription();
+
+    } catch (e) {
+        alert("Failed to cancel your subscription.");
+    }
+}
+
+/* =====================================================
+   LOAD COMMUNITIES
+===================================================== */
+async function loadCommunities() {
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/community/my", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const communities = await res.json();
+        const list = document.getElementById("commList");
+
+        list.innerHTML = "";
+
+        if (!communities.length) {
+            list.innerHTML = "<p>You have no communities yet.</p>";
+        }
+
+        communities.forEach(comm => {
+            const card = document.createElement("div");
+            card.className = "community-card";
+
+            card.innerHTML = `
+                <h3>${comm.name}</h3>
+                <p>${comm.description}</p>
+
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" onclick="openCommunity('${comm._id}')">Manage</button>
+                    <button class="btn btn-danger" onclick="deleteCommunity('${comm._id}', '${comm.name}')">Delete</button>
+                </div>
+            `;
+
+            list.appendChild(card);
+        });
+
+        // Enforce free-tier limit using Stripe
+        enforceCommunityLimit(communities.length);
+
+    } catch (e) {
+        console.error("Community load failed:", e);
+        document.getElementById("commList").innerHTML =
+            "<p style='color:red;'>Failed to load communities.</p>";
+    }
+}
+
+/* =====================================================
+   DELETE COMMUNITY
+===================================================== */
+async function deleteCommunity(id, name) {
+    if (!confirm(`Delete community "${name}"?`)) return;
+
+    try {
+        const res = await fetch(`https://opslink-api.onrender.com/community/delete/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const data = await res.json();
+        if (!res.ok) return alert(data.message || "Failed to delete community");
+
+        loadCommunities();
+
+    } catch (e) {
+        alert("An error occurred.");
+    }
+}
+
+/* =====================================================
+   CREATE COMMUNITY
+===================================================== */
+async function createCommunity() {
+    const name = document.getElementById("commName").value;
+    const description = document.getElementById("commDesc").value;
+
+    if (!name) return alert("Enter a community name.");
+
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/community/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ name, description })
+        });
+
+        const data = await res.json();
+        if (!res.ok) return alert(data.message || "Failed to create community");
+
+        closeModal();
+        loadCommunities();
+
+    } catch (e) {
+        alert("Failed to create community.");
+    }
+}
+
+/* =====================================================
+   JOIN COMMUNITY
+===================================================== */
+async function joinCommunity() {
+    const id = document.getElementById("joinCommId").value.trim();
+    if (!id) return alert("Enter a valid community ID.");
+
+    try {
+        const res = await fetch("https://opslink-api.onrender.com/community/join", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ communityId: id })
+        });
+
+        const data = await res.json();
+        if (!res.ok) return alert(data.message || "Failed to join community");
+
+        closeJoinModal();
+        loadCommunities();
+
+    } catch (e) {
+        alert("Failed to join community.");
+    }
+}
+
+/* =====================================================
+   MODALS
+===================================================== */
+function openModal() { document.getElementById("modalBg").style.display = "flex"; }
+function closeModal() { document.getElementById("modalBg").style.display = "none"; }
+
+function openJoinModal() { document.getElementById("joinModalBg").style.display = "flex"; }
+function closeJoinModal() { document.getElementById("joinModalBg").style.display = "none"; }
+
+/* =====================================================
+   OPEN COMMUNITY PAGE
+===================================================== */
+function openCommunity(id) {
+    localStorage.setItem("selectedCommunity", id);
+    window.location.href = "community.html";
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
 function logout() {
     localStorage.clear();
-    window.location = "login.html";
+    window.location.href = "login.html";
 }
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+loadStripeSubscription();
+loadCommunities();
 </script>
 
+</div>
 </body>
 </html>
