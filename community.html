@@ -284,23 +284,6 @@ async function loadCommunity() {
     loadRanks();
     loadMembers();
 }
-
-
-
-async function loadUserRole() {
-    const commId = localStorage.getItem("selectedCommunity");
-    const res = await fetch(`https://opslink-api.onrender.com/community/${commId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
-
-    const community = await res.json();
-    const userId = user._id;
-
-    const member = community.members.find(m => m.userId === userId || m.userId._id === userId);
-
-    localStorage.setItem("communityRole", member?.role || "member");
-}
-
     
 /* ========== SAVE SETTINGS ========== */
 async function saveCommunity() {
