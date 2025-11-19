@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD – Fire/EMS MDT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ============================================================
+   FIRE/EMS MDT THEME (Theme B – Realistic Red/Amber)
+   ============================================================ */
+:root {
+  --bg-main: #0a0a0a;
+  --bg-elevated: #141414;
+  --bg-panel: #1a1a1a;
+
+  --border-soft: #2b2b2b;
+  --text-main: #f2f2f2;
+  --text-soft: #c5c5c5;
+
+  --fire-red: #d62828;
+  --fire-red-hover: #b71f1f;
+
+  --ems-amber: #ffb703;
+  --ems-amber-hover: #ff9f00;
+
+  --danger: #ff4646;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* SIDEBAR */
+#sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border-soft);
+  padding-top: 20px;
+}
+
+#sidebar header {
+  font-size: 22px;
+  text-align: center;
+  color: var(--fire-red);
+  margin-bottom: 25px;
+}
+
+.nav-item {
+  padding: 14px 20px;
+  cursor: pointer;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--border-soft);
+  transition: 0.2s;
+}
+
+.nav-item:hover {
+  background: var(--bg-panel);
+  color: var(--fire-red);
+}
+
+.nav-item.active {
+  background: var(--bg-panel);
+  color: var(--fire-red);
+}
+
+/* MAIN CONTENT */
+#main {
+  margin-left: 240px;
+  padding: 25px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* UNIT HEADER */
+#unit-header {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  padding: 15px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+#panic-btn {
+  padding: 10px 20px;
+  background: var(--danger);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#panic-btn:hover {
+  background: #cc2b2b;
+}
+
+/* STATUS BUTTONS */
+.status-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.status-btn {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 16px;
+}
+.status-btn:hover { background: #222; }
+
+/* FIRE STATUS COLORING */
+.fire { border-left: 4px solid var(--fire-red); }
+.ems { border-left: 4px solid var(--ems-amber); }
+
+/* CALL CARDS */
+.call-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-left: 5px solid var(--fire-red);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.call-card h3 { margin: 0; color: var(--fire-red); }
+
+/* MODAL */
+.modal {
+  position: fixed;
+  display: none;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  width: 400px;
+  padding: 20px;
+  border-radius: 6px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+}
+
+.modal-content button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  background: var(--fire-red);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+.modal-content button:hover { background: var(--fire-red-hover); }
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <header>Fire/EMS MDT</header>
+
+  <div class="nav-item active" data-panel="panel-status">Status</div>
+  <div class="nav-item" data-panel="panel-calls">Calls</div>
+  <div class="nav-item" data-panel="panel-search">Search</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+  <div id="unit-header">
+    <div id="unit-info">Unit: Not Selected</div>
+    <button id="panic-btn">PANIC</button>
+  </div>
+
+  <!-- PANELS -->
+  <div id="panel-status" class="panel active">
+    <h2>Status</h2>
+
+    <div class="status-grid">
+      <div class="status-btn fire" data-status="Enroute">Enroute</div>
+      <div class="status-btn fire" data-status="On-Scene">On Scene</div>
+      <div class="status-btn fire" data-status="Clearing">Clearing</div>
+      <div class="status-btn fire" data-status="Available">Available</div>
+
+      <div class="status-btn ems" data-status="To-Hospital">Transporting</div>
+      <div class="status-btn ems" data-status="At-Hospital">At Hospital</div>
+      <div class="status-btn ems" data-status="Returning">Returning</div>
+      <div class="status-btn ems" data-status="Unavailable">Unavailable</div>
+    </div>
+  </div>
+
+  <div id="panel-calls" class="panel">
+    <h2>Active Calls</h2>
+    <div id="calls-list"></div>
+  </div>
+
+  <div id="panel-search" class="panel">
+    <h2>Search Database</h2>
+
+    <h3 style="margin-top:20px;">Person Search</h3>
+    <input id="person-name" placeholder="Enter civilian name..." style="width:100%;padding:12px;">
+    <button onclick="searchPerson()" style="padding:12px;margin-top:10px;">Search</button>
+    <pre id="person-result"></pre>
+
+    <h3 style="margin-top:20px;">Vehicle Search</h3>
+    <input id="vehicle-plate" placeholder="License Plate..." style="width:100%;padding:12px;">
+    <button onclick="searchVehicle()" style="padding:12px;margin-top:10px;">Search</button>
+    <pre id="vehicle-result"></pre>
+  </div>
+
+</div>
+
+<!-- UNIT LOGIN MODAL -->
+<div id="unitModal" class="modal">
+  <div class="modal-content">
+    <h2>Select Your Unit</h2>
+
+    <select id="unitSelect"></select>
+    <button onclick="confirmUnit()">Enter MDT</button>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+/* ============================================================
+   FIRE/EMS MDT JAVASCRIPT
+   ============================================================ */
+
+const API = "https://opslink-api.onrender.com";
+const socket = io(API);
+
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const communityId = localStorage.getItem("selectedCommunity");
+
+// LOCK FIRE/EMS ACCESS
+if (!permissions.includes("fire") && !permissions.includes("ems") && !permissions.includes("admin")) {
+    alert("You do not have access to the Fire/EMS MDT.");
+    window.location.href = "community.html";
+}
+
+let currentUnit = null;
+
+/* SIDEBAR NAV */
+document.querySelectorAll(".nav-item").forEach(i=>{
+  i.onclick=()=>{
+    document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+    i.classList.add("active");
+
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    document.getElementById(i.dataset.panel).classList.add("active");
+  };
+});
+
+/* UNIT LOGIN */
+document.getElementById("unitModal").style.display = "flex";
+
+async function loadUnits(){
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  const select = document.getElementById("unitSelect");
+  select.innerHTML = "";
+
+  units.forEach(u=>{
+    const opt = document.createElement("option");
+    opt.value = u._id;
+    opt.textContent = `${u.callsign} (${u.type})`;
+    select.appendChild(opt);
+  });
+}
+
+loadUnits();
+
+async function confirmUnit(){
+  const id = document.getElementById("unitSelect").value;
+
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  currentUnit = units.find(u => u._id === id);
+
+  document.getElementById("unit-info").innerText =
+    `Unit: ${currentUnit.callsign} – ${currentUnit.type}`;
+
+  document.getElementById("unitModal").style.display = "none";
+
+  loadCalls();
+}
+
+/* LOAD CALLS */
+async function loadCalls(){
+  const res = await fetch(`${API}/calls/${communityId}`);
+  const calls = await res.json();
+
+  const list = document.getElementById("calls-list");
+  list.innerHTML = "";
+
+  calls.forEach(call=>{
+    const div = document.createElement("div");
+    div.className = "call-card";
+
+    div.innerHTML = `
+      <h3>Call #${call.callNumber}</h3>
+      <p><b>Type:</b> ${call.type}</p>
+      <p><b>Location:</b> ${call.location}</p>
+      <p><b>Description:</b> ${call.description}</p>
+      <button onclick="attachToCall('${call._id}')"
+             style="padding:10px;background:var(--fire-red);border:none;
+             color:white;border-radius:6px;cursor:pointer;">
+        Attach to Call
+      </button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+async function attachToCall(callId){
+  await fetch(`${API}/calls/attach/${callId}`, {
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      unitId:currentUnit._id,
+      callsign:currentUnit.callsign
+    })
+  });
+
+  socket.emit("call:update",{});
+  loadCalls();
+}
+
+/* STATUS BUTTONS */
+document.querySelectorAll(".status-btn").forEach(btn=>{
+  btn.onclick = async ()=>{
+    const status = btn.dataset.status;
+
+    await fetch(`${API}/units/${currentUnit._id}/status`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ status })
+    });
+
+    socket.emit("unit:status",{
+      unitId:currentUnit._id,
+      status
+    });
+  };
+});
+
+/* SEARCH */
+async function searchPerson(){
+  let q = document.getElementById("person-name").value;
+  let res = await fetch(`${API}/civilians/search/${communityId}?q=${q}`);
+  document.getElementById("person-result").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function searchVehicle(){
+  let plate = document.getElementById("vehicle-plate").value;
+  let res = await fetch(`${API}/search/vehicle`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ plate })
+  });
+  document.getElementById("vehicle-result").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+/* PANIC BUTTON */
+document.getElementById("panic-btn").onclick = () => {
+  socket.emit("panic:button", {
+    unitId: currentUnit._id,
+    callsign: currentUnit.callsign
+  });
+};
+</script>
+
+</body>
+</html>
