@@ -190,7 +190,24 @@ input, select {
         <label>Card Details</label>
         <div id="card-element"></div>
 
-        <button class="btn-pay" onclick="startPayment()">Activate Premier</button>
+<!-- LEGAL CONSENT -->
+<div style="margin-top:25px; font-size:14px; opacity:0.85;">
+    <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+        <input type="checkbox" id="agreement" style="margin-top:3px;">
+        <span>
+            I agree and give consent for OpsLinkCAD to charge <b>$12.99 USD monthly</b> on a recurring basis. 
+            I understand this subscription will renew automatically unless cancelled, and I authorize recurring charges 
+            to the payment method I provide. I confirm that I have read and agree to the 
+            <a href="#" style="color:#4e8cff;">Terms of Service</a> and 
+            <a href="#" style="color:#4e8cff;">Billing Policy</a>.
+        </span>
+    </label>
+</div>
+
+<button id="activateBtn" class="btn-pay" style="opacity:0.5; cursor:not-allowed;" disabled onclick="startPayment()">
+    Activate Premier
+</button>
+
 
         <p id="msg" style="text-align:center;margin-top:15px;"></p>
 
@@ -389,6 +406,27 @@ countryEl.addEventListener("change", loadStates);
 stateSelect.addEventListener("change", updateTotals);
 zipEl.addEventListener("input", updateTotals);
 
+
+/* =====================================================
+   AGREEMENT CHECKBOX (LEGAL COMPLIANCE)
+===================================================== */
+const agreement = document.getElementById("agreement");
+const activateBtn = document.getElementById("activateBtn");
+
+agreement.addEventListener("change", () => {
+    if (agreement.checked) {
+        activateBtn.disabled = false;
+        activateBtn.style.opacity = "1";
+        activateBtn.style.cursor = "pointer";
+    } else {
+        activateBtn.disabled = true;
+        activateBtn.style.opacity = "0.5";
+        activateBtn.style.cursor = "not-allowed";
+    }
+});
+
+
+   
 /* =====================================================
    PAYMENT PROCESS
 ===================================================== */
@@ -443,3 +481,4 @@ async function startPayment() {
 
 </body>
 </html>
+
