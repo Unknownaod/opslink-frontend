@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranks – OpsLinkCAD</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #0f141a;
+            position: fixed;
+            top: 0; bottom: 0;
+            border-right: 1px solid #161b22;
+            padding: 20px;
+        }
+        .sidebar a {
+            display: block; padding: 12px;
+            margin: 6px 0; border-radius: 6px;
+            color: #c9d1d9; text-decoration: none;
+        }
+        .sidebar a.active, .sidebar a:hover {
+            background: #1a222e; color: #4e8cff;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #222c36;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            margin-bottom: 10px;
+            color: #4e8cff;
+        }
+
+        .divider {
+            height: 1px;
+            background: #222;
+            margin: 15px 0;
+        }
+
+        /* SELECT */
+        select {
+            background: #0f141a;
+            border: 1px solid #333;
+            padding: 12px; border-radius: 6px;
+            color: white;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* RANK CARDS */
+        .rank-card {
+            background: #1d232c;
+            border: 1px solid #2a313c;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex; justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-name {
+            font-size: 18px;
+        }
+
+        /* BUTTONS */
+        .btn-small {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #4e8cff;
+            background: transparent;
+            color: #4e8cff;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .btn-small:hover {
+            background: #4e8cff;
+            color: #fff;
+        }
+        .danger-btn {
+            border-color: #ff5555;
+            color: #ff5555;
+        }
+        .danger-btn:hover {
+            background: #ff5555;
+            color: #fff;
+        }
+
+        .btn-order {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background: #222;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .btn-order:hover {
+            opacity: .8;
+        }
+
+        /* MODAL */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            justify-content: center; align-items: center;
+        }
+        .modal {
+            background: #161b22;
+            padding: 25px;
+            width: 350px;
+            border-radius: 10px;
+            border: 1px solid #4e8cff;
+        }
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            background: #0f141a;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">OpsLink<span>CAD</span></div>
+
+    <a href="dashboard.html">Dashboard</a>
+    <a href="community.html">Community</a>
+    <a href="departments.html">Departments</a>
+    <a href="ranks.html" class="active">Ranks</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+    <h1 class="dash-title">Ranks Manager</h1>
+    <p class="user-tag">Select a department and manage all ranks.</p>
+
+    <!-- DEPARTMENT SELECT -->
+    <select id="deptSelect" onchange="loadRanks()">
+        <option value="">Select Department</option>
+    </select>
+
+    <!-- RANKS LIST -->
+    <div class="section">
+        <h2>Ranks</h2>
+        <div class="divider"></div>
+
+        <button class="btn-small" onclick="openRankModal()">+ Add Rank</button>
+        <div id="rankList" style="margin-top:20px;">Select a department.</div>
+    </div>
+</div>
+
+<!-- RANK MODAL -->
+<div id="rankModal" class="modal-bg">
+    <div class="modal">
+        <h2 id="rankModalTitle">Add Rank</h2>
+
+        <input id="rankName" placeholder="Rank Name">
+
+        <button class="btn-primary" onclick="saveRank()">Save</button>
+        <button class="danger-btn" onclick="closeRankModal()">Cancel</button>
+    </div>
+</div>
+
+<script>
+const API = "https://opslink-api.onrender.com";
+const token = localStorage.getItem("token");
+const communityId = localStorage.getItem("selectedCommunity");
+
+let currentDept = null;
+let editingRankId = null;
+
+/* ================= LOAD DEPARTMENTS ================= */
+async function loadDepartments() {
+    const res = await fetch(`${API}/departments/${communityId}`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const select = document.getElementById("deptSelect");
+
+    data.forEach(d => {
+        const option = document.createElement("option");
+        option.value = d._id;
+        option.innerText = `${d.shortCode || ""} ${d.name}`;
+        select.appendChild(option);
+    });
+}
+
+/* ================= LOAD RANKS ================= */
+async function loadRanks() {
+    const deptId = document.getElementById("deptSelect").value;
+    currentDept = deptId;
+
+    if (!deptId) {
+        document.getElementById("rankList").innerText = "Select a department.";
+        return;
+    }
+
+    const res = await fetch(`${API}/ranks/${deptId}`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const list = document.getElementById("rankList");
+    list.innerHTML = "";
+
+    if (data.length === 0) {
+        list.innerHTML = "<p>No ranks added yet.</p>";
+        return;
+    }
+
+    data.forEach((rank, index) => {
+        const div = document.createElement("div");
+        div.className = "rank-card";
+
+        div.innerHTML = `
+            <div class="rank-name">${rank.name}</div>
+
+            <div>
+                <button class="btn-order" onclick="moveRank(${index}, -1)">▲</button>
+                <button class="btn-order" onclick="moveRank(${index}, 1)">▼</button>
+
+                <button class="btn-small" onclick="openEditRank('${rank._id}', '${rank.name}')">Edit</button>
+                <button class="btn-small danger-btn" onclick="deleteRank('${rank._id}')">Delete</button>
+            </div>
+        `;
+
+        list.appendChild(div);
+    });
+
+    window.rankData = data; // store temporarily for reorder
+}
+
+/* ================= ADD / EDIT RANK ================= */
+function openRankModal() {
+    editingRankId = null;
+    document.getElementById("rankModalTitle").innerText = "Add Rank";
+    document.getElementById("rankName").value = "";
+    document.getElementById("rankModal").style.display = "flex";
+}
+
+function openEditRank(id, name) {
+    editingRankId = id;
+    document.getElementById("rankModalTitle").innerText = "Edit Rank";
+    document.getElementById("rankName").value = name;
+    document.getElementById("rankModal").style.display = "flex";
+}
+
+function closeRankModal() {
+    document.getElementById("rankModal").style.display = "none";
+}
+
+/* ================= SAVE RANK ================= */
+async function saveRank() {
+    const name = document.getElementById("rankName").value;
+    const deptId = currentDept;
+
+    let endpoint = `${API}/ranks/${deptId}/create`;
+    let method = "POST";
+
+    if (editingRankId) {
+        endpoint = `${API}/ranks/${deptId}/update/${editingRankId}`;
+        method = "PUT";
+    }
+
+    await fetch(endpoint, {
+        method,
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name })
+    });
+
+    closeRankModal();
+    loadRanks();
+}
+
+/* ================= DELETE ================= */
+async function deleteRank(id) {
+    if (!confirm("Delete this rank?")) return;
+
+    await fetch(`${API}/ranks/${currentDept}/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    loadRanks();
+}
+
+/* ================= MOVE RANK (UP/DOWN) ================= */
+async function moveRank(index, direction) {
+    const newOrder = [...window.rankData];
+    const target = index + direction;
+
+    if (target < 0 || target >= newOrder.length) return;
+
+    // swap
+    [newOrder[index], newOrder[target]] = [newOrder[target], newOrder[index]];
+
+    // send new order to backend
+    await fetch(`${API}/ranks/${currentDept}/reorder`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ order: newOrder.map(r => r._id) })
+    });
+
+    loadRanks();
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+/* INIT */
+loadDepartments();
+</script>
+
+</body>
+</html>
