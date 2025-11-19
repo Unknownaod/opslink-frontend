@@ -461,17 +461,22 @@ body {
 
 
 <!-- ============================================================
-     UNIT SELECT MODAL (SHOWN ON PAGE LOAD)
+     UNIT CREATION MODAL (REPLACES OLD UNIT SELECT)
      ============================================================ -->
-<div id="unitModal" class="modal">
+<div id="unitModal" class="modal" style="display:flex;">
   <div class="modal-content">
-    <h2>Select Your Unit</h2>
+    <h2>Create Your Unit</h2>
 
-    <select id="unitSelect"></select>
+    <input id="unitName" placeholder="Officer Name (e.g., J. Smith)" />
+    <input id="unitCallsign" placeholder="Callsign (e.g., 2B-21)" />
+    <input id="unitDept" placeholder="Department (LEO, Fire, EMS, Dispatch)" />
+    <input id="unitRank" placeholder="Rank (Officer, Trooper, Deputy)" />
+    <input id="unitType" placeholder="Unit Type (Patrol, Traffic, Medic etc.)" />
 
-    <button class="btn" onclick="confirmUnit()">Enter MDT</button>
+    <button class="btn" onclick="createUnit()">Enter MDT</button>
   </div>
 </div>
+
 
 <!-- Socket.io -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -524,57 +529,61 @@ document.querySelectorAll(".top-tab").forEach(tab => {
 /* ============================================================
    UNIT SELECT MODAL — LOAD UNITS
 ============================================================ */
-document.getElementById("unitModal").style.display = "flex";
-
-async function loadAvailableUnits() {
-    const res = await fetch(`${API}/units/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
-
-    const units = await res.json();
-    const select = document.getElementById("unitSelect");
-    select.innerHTML = "";
-
-    units.forEach(u => {
-        const opt = document.createElement("option");
-        opt.value = u._id;
-        opt.textContent = `${u.callsign} — ${u.type || "Unit"}`;
-        select.appendChild(opt);
-    });
-}
-
-loadAvailableUnits();
-
 /* ============================================================
-   CONFIRM UNIT LOGIN
+   UNIT CREATION (NEW)
 ============================================================ */
-async function confirmUnit() {
-    const unitId = document.getElementById("unitSelect").value;
-    if (!unitId) return;
 
-    const res = await fetch(`${API}/units/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+async function createUnit() {
+    const name = document.getElementById("unitName").value.trim();
+    const callsign = document.getElementById("unitCallsign").value.trim();
+    const department = document.getElementById("unitDept").value.trim();
+    const rank = document.getElementById("unitRank").value.trim();
+    const type = document.getElementById("unitType").value.trim();
 
-    const units = await res.json();
-    currentUnit = units.find(u => u._id === unitId);
-
-    if (!currentUnit) {
-        alert("Unit not found.");
+    if (!name || !callsign || !department) {
+        alert("Please enter at least Name, Callsign, and Department.");
         return;
     }
 
-    document.getElementById("unit-info").innerText =
-        `Unit: ${currentUnit.callsign} — ${currentUnit.type}`;
+    // Create unit in backend
+    const res = await fetch(`${API}/units/create`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            communityId,
+            name,
+            callsign,
+            department,
+            rank,
+            type
+        })
+    });
 
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Error creating unit.");
+        return;
+    }
+
+    // Save selected unit
+    currentUnit = data;
+
+    // Update UI header
+    document.getElementById("unit-info").innerText =
+        `Unit: ${currentUnit.callsign} — ${currentUnit.type || "Unit"}`;
+
+    // Close modal
     document.getElementById("unitModal").style.display = "none";
 
+    // Load UI features
     updateProfilePanel();
     initMap();
     loadCalls();
     loadBOLOs();
-
-    // Start location heartbeat
     startAutoLocationUpdate();
 }
 
