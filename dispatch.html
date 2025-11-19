@@ -7,210 +7,66 @@
 
 <style>
 /* ================================================================
-   OPSLINK DISPATCH CONSOLE — SONORAN STYLE
-   Accent: #4e8cff
+   OPSLINKCAD – FULL DISPATCH CONSOLE (ALL FEATURES)
+   SonoranCAD Style — Dark Blue Accent
    ================================================================ */
-
 :root {
-  --bg-main: #0c1118;
-  --bg-elevated: #131a24;
-  --bg-panel: #161e29;
-  --border: #1f2a38;
-  --accent: #4e8cff;
-  --accent-hover: #73a5ff;
-  --danger: #ff3b3b;
-  --text: #e8ecf5;
-  --text-soft: #9aa7b9;
+  --bg-main:#0c1118;--bg-elevated:#131a24;--bg-panel:#161e29;
+  --border:#1f2a38;--accent:#4e8cff;--accent-hover:#73a5ff;
+  --danger:#ff3b3b;--warning:#ffcc00;--text:#e8ecf5;--text-soft:#9aa7b9;
 }
+body{margin:0;background:var(--bg-main);color:var(--text);font-family:Segoe UI, sans-serif;overflow:hidden;height:100vh;}
+#topnav{height:55px;background:var(--bg-elevated);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;font-size:20px;font-weight:bold;color:var(--accent);justify-content:space-between;}
+#layout{display:grid;grid-template-columns:340px 1fr 380px;height:calc(100vh - 55px);}
+#call-create,#call-details,#unit-board{overflow-y:auto;padding:20px;}
+#call-create{background:var(--bg-elevated);border-right:1px solid var(--border);}
+#unit-board{background:var(--bg-elevated);border-left:1px solid var(--border);}
+#call-board{padding:20px;overflow-y:auto;}
+h2{margin-top:0;color:var(--accent);}
+label{display:block;margin-top:12px;font-size:14px;}
+input,select,textarea{
+  width:100%;padding:10px;margin-top:5px;background:var(--bg-panel);
+  border:1px solid var(--border);border-radius:6px;color:var(--text);
+}
+textarea{resize:vertical;height:80px;}
+.btn{margin-top:15px;width:100%;padding:12px;background:var(--accent);border:none;color:white;border-radius:6px;cursor:pointer;font-size:15px;}
+.btn:hover{background:var(--accent-hover);}
+.small-btn{padding:8px 12px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text);border-radius:6px;cursor:pointer;font-size:13px;margin-right:4px;}
+.small-btn:hover{background:var(--accent);}
 
-body {
-  margin: 0;
-  background: var(--bg-main);
-  color: var(--text);
-  font-family: "Segoe UI", sans-serif;
-  overflow: hidden;
-  height: 100vh;
-}
+/* CALL CARDS */
+.call-card{background:var(--bg-panel);padding:15px;border:1px solid var(--border);border-radius:6px;margin-bottom:15px;}
+.call-card h3{margin:0 0 10px 0;color:var(--accent);}
+.call-actions{display:flex;gap:6px;margin-top:12px;}
 
-/* ============================================
-   TOP NAV
-   ============================================ */
-#topnav {
-  height: 55px;
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--accent);
-  justify-content: space-between;
-}
+/* UNIT CARDS */
+.unit-card{background:var(--bg-panel);border:1px solid var(--border);margin-bottom:12px;padding:12px;border-radius:6px;}
+.unit-title{font-size:17px;color:var(--accent);}
+.status{font-size:13px;color:var(--text-soft);}
+.panic{background:var(--danger) !important;border-color:#ff7474 !important;}
 
-#topnav .right {
-  font-size: 14px;
-  color: var(--text-soft);
+/* CALL DETAILS PANEL (Slide-in) */
+#call-details {
+  position:fixed;right:-420px;top:55px;width:420px;height:calc(100vh - 55px);
+  background:var(--bg-panel);border-left:1px solid var(--border);
+  transition:0.3s;padding:20px;overflow-y:auto;z-index:20;
 }
+#call-details.open{right:0;}
+.detail-row{margin-bottom:12px;}
+.detail-row label{font-size:13px;margin-bottom:4px;}
+.detail-value{background:var(--bg-elevated);padding:8px;border-radius:6px;border:1px solid var(--border);}
 
-/* ============================================
-   GRID LAYOUT
-   ============================================ */
-#layout {
-  display: grid;
-  grid-template-columns: 340px 1fr 340px;
-  height: calc(100vh - 55px);
-}
+/* PANIC BANNER */
+#panic-banner{display:none;background:var(--danger);padding:12px;text-align:center;font-weight:bold;animation:flash 0.6s infinite alternate;}
+@keyframes flash{from{opacity:1;}to{opacity:0.4;}}
 
-/* ============================================
-   LEFT PANEL — CALL CREATION
-   ============================================ */
-#call-create {
-  background: var(--bg-elevated);
-  border-right: 1px solid var(--border);
-  padding: 20px;
-  overflow-y: auto;
-}
-
-#call-create h2 {
-  margin-top: 0;
-  color: var(--accent);
-}
-
-label {
-  display: block;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
-}
-
-textarea {
-  resize: vertical;
-  height: 80px;
-}
-
-.btn {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  border: none;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 15px;
-}
-
-.btn:hover {
-  background: var(--accent-hover);
-}
-
-/* ============================================
-   MIDDLE PANEL — ACTIVE CALLS
-   ============================================ */
-#call-board {
-  padding: 20px;
-  overflow-y: scroll;
-}
-
-.call-card {
-  background: var(--bg-panel);
-  margin-bottom: 18px;
-  padding: 15px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-.call-card h3 {
-  margin: 0 0 8px 0;
-  color: var(--accent);
-}
-
-.call-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.small-btn {
-  flex: 1;
-  padding: 10px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.small-btn:hover {
-  background: var(--accent);
-}
-
-/* ============================================
-   RIGHT PANEL — UNIT BOARD
-   ============================================ */
-#unit-board {
-  background: var(--bg-elevated);
-  border-left: 1px solid var(--border);
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.unit-card {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-}
-
-.unit-title {
-  font-size: 17px;
-  color: var(--accent);
-}
-
-.status {
-  font-size: 13px;
-  color: var(--text-soft);
-}
-
-.panic {
-  background: var(--danger) !important;
-  border: 1px solid #ff7272 !important;
-}
-
-/* ==============================================
-   PANIC ALERT BANNER
-   ============================================== */
-#panic-banner {
-  display: none;
-  background: var(--danger);
-  padding: 12px;
-  text-align: center;
-  font-weight: bold;
-  animation: flash 0.6s infinite alternate;
-}
-
-@keyframes flash {
-  from { opacity: 1; }
-  to { opacity: 0.4; }
-}
+/* NOTES SECTION */
+.note{background:var(--bg-elevated);padding:10px;border-radius:6px;border:1px solid var(--border);margin-bottom:8px;}
 </style>
 </head>
 <body>
 
-<div id="panic-banner">🚨 PANIC BUTTON ACTIVATED — UNIT NEEDS HELP!</div>
+<div id="panic-banner">🚨 PANIC BUTTON ACTIVATED — UNIT NEEDS ASSISTANCE NOW!</div>
 
 <div id="topnav">
   <div>OpsLinkCAD Dispatch</div>
@@ -219,59 +75,48 @@ textarea {
 
 <div id="layout">
 
-  <!-- ============================================
-       LEFT — CALL CREATION
-       ============================================ -->
+  <!-- LEFT — CALL CREATION -->
   <div id="call-create">
     <h2>Create Call</h2>
-
-    <label>Call Type</label>
-    <input id="callType" placeholder="Example: Traffic Stop, Suspicious Person" />
-
+    <label>Call Type</label><input id="callType" />
     <label>Priority</label>
     <select id="priority">
       <option value="1">Priority 1 - Emergency</option>
       <option value="2">Priority 2 - Urgent</option>
       <option value="3" selected>Priority 3 - Routine</option>
     </select>
-
-    <label>Subtype (Optional)</label>
-    <input id="subtype" placeholder="Example: Vehicle Accident, Noise Complaint" />
-
-    <label>Location</label>
-    <input id="location" placeholder="Example: 123 Main St" />
-
-    <label>Cross Streets</label>
-    <input id="cross" placeholder="Example: 1st Ave / Pine St" />
-
-    <label>Description</label>
-    <textarea id="description"></textarea>
-
-    <label>Caller Name</label>
-    <input id="callerName" placeholder="John Doe" />
-
-    <label>Caller Phone</label>
-    <input id="callerPhone" placeholder="555-123-4567" />
-
+    <label>Subtype</label><input id="subtype" />
+    <label>Location</label><input id="location" />
+    <label>Cross Streets</label><input id="cross" />
+    <label>Description</label><textarea id="description"></textarea>
+    <label>Caller Name</label><input id="callerName" />
+    <label>Caller Phone</label><input id="callerPhone" />
     <button class="btn" onclick="createCall()">Create Call</button>
   </div>
 
-  <!-- ============================================
-       MIDDLE — CALL LIST
-       ============================================ -->
+  <!-- MIDDLE — CALL LIST -->
   <div id="call-board">
     <h2>Active Calls</h2>
     <div id="callsContainer"></div>
   </div>
 
-  <!-- ============================================
-       RIGHT — UNIT BOARD
-       ============================================ -->
+  <!-- RIGHT — UNIT BOARD -->
   <div id="unit-board">
     <h2>Units</h2>
     <div id="unitsContainer"></div>
   </div>
+</div>
 
+<!-- CALL DETAILS SLIDE-IN PANEL -->
+<div id="call-details">
+  <h2 id="cd-title">Call Details</h2>
+  <div id="cd-content"></div>
+
+  <h3 style="margin-top:25px;">Notes</h3>
+  <div id="notesContainer"></div>
+
+  <textarea id="noteInput" placeholder="Add note..."></textarea>
+  <button class="btn" onclick="addNote()">Add Note</button>
 </div>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -283,6 +128,7 @@ const API = "https://opslink-api.onrender.com";
 const socket = io(API);
 
 let communityId = localStorage.getItem("communityId");
+let selectedCall = null;
 
 // ======================================================
 // LOAD CALLS
@@ -297,22 +143,18 @@ async function loadCalls() {
   calls.forEach(call => {
     const div = document.createElement("div");
     div.className = "call-card";
-
     div.innerHTML = `
       <h3>Call #${call.callNumber}</h3>
       <p><b>Type:</b> ${call.type}</p>
       <p><b>Priority:</b> ${call.priority}</p>
       <p><b>Location:</b> ${call.location}</p>
-      <p><b>Description:</b> ${call.description}</p>
       <p><b>Caller:</b> ${call.callerName || "Unknown"} (${call.callerPhone || "N/A"})</p>
 
       <div class="call-actions">
-        <button class="small-btn" onclick="openNotes('${call._id}')">Notes</button>
-        <button class="small-btn" onclick="detachUnit('${call._id}')">Detach Unit</button>
+        <button class="small-btn" onclick="openCall('${call._id}')">Open</button>
         <button class="small-btn" onclick="closeCall('${call._id}')">Close</button>
       </div>
     `;
-
     container.appendChild(div);
   });
 }
@@ -331,13 +173,14 @@ async function loadUnits() {
     const div = document.createElement("div");
     div.className = "unit-card";
     if (u.status === "PANIC") div.classList.add("panic");
-
     div.innerHTML = `
       <div class="unit-title">${u.callsign}</div>
       <div class="status">Status: ${u.status}</div>
       <div class="status">Dept: ${u.departmentName}</div>
+      <button class="small-btn" onclick="attachToCallFromUnit('${u._id}')">Attach</button>
+      <button class="small-btn" onclick="force108('${u._id}')">Force 10-8</button>
+      <button class="small-btn" onclick="force107('${u._id}')">Force 10-7</button>
     `;
-
     container.appendChild(div);
   });
 }
@@ -348,66 +191,138 @@ async function loadUnits() {
 async function createCall() {
   const body = {
     communityId,
-    type: document.getElementById("callType").value,
-    priority: document.getElementById("priority").value,
-    subtype: document.getElementById("subtype").value,
-    location: document.getElementById("location").value,
-    cross: document.getElementById("cross").value,
-    description: document.getElementById("description").value,
-    callerName: document.getElementById("callerName").value,
-    callerPhone: document.getElementById("callerPhone").value
+    type:callType.value,priority:priority.value,subtype:subtype.value,
+    location:location.value,cross:cross.value,description:description.value,
+    callerName:callerName.value,callerPhone:callerPhone.value
   };
 
-  await fetch(`${API}/calls/create`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(body)
+  await fetch(`${API}/calls/create`,{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
   });
 
-  socket.emit("call:update", {});
+  socket.emit("call:update",{});
   loadCalls();
 }
 
 // ======================================================
 // CLOSE CALL
 // ======================================================
-async function closeCall(callId) {
-  await fetch(`${API}/calls/update/${callId}`, {
-    method: "PUT",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ status: "Closed" })
+async function closeCall(id){
+  await fetch(`${API}/calls/update/${id}`,{
+    method:"PUT",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({status:"Closed"})
+  });
+  socket.emit("call:update",{});
+  loadCalls();
+  closeDetails();
+}
+
+// ======================================================
+// OPEN CALL DETAILS
+// ======================================================
+async function openCall(id){
+  selectedCall=id;
+  const res=await fetch(`${API}/calls/${communityId}`);
+  const calls=await res.json();
+  const call=calls.find(c=>c._id===id);
+
+  document.getElementById("cd-title").innerText=`Call #${call.callNumber}`;
+  document.getElementById("cd-content").innerHTML=`
+    <div class="detail-row"><label>Type</label><div class="detail-value">${call.type}</div></div>
+    <div class="detail-row"><label>Priority</label><div class="detail-value">${call.priority}</div></div>
+    <div class="detail-row"><label>Location</label><div class="detail-value">${call.location}</div></div>
+    <div class="detail-row"><label>Description</label><div class="detail-value">${call.description}</div></div>
+    <button class="btn" onclick="attachUnit()">Attach Unit</button>
+    <button class="btn" onclick="detachUnit()">Detach Unit</button>
+  `;
+
+  loadNotes(id);
+
+  document.getElementById("call-details").classList.add("open");
+}
+
+function closeDetails(){
+  document.getElementById("call-details").classList.remove("open");
+}
+
+// ======================================================
+// NOTES
+// ======================================================
+async function loadNotes(id){
+  const res=await fetch(`${API}/calls/${communityId}`);
+  const calls=await res.json();
+  const call=calls.find(c=>c._id===id);
+
+  const box=document.getElementById("notesContainer");
+  box.innerHTML="";
+
+  call.notes.forEach(n=>{
+    const d=document.createElement("div");
+    d.className="note";
+    d.innerText=`${n.text}`;
+    box.appendChild(d);
+  });
+}
+
+async function addNote(){
+  const text=document.getElementById("noteInput").value;
+  if(!text) return;
+
+  await fetch(`${API}/calls/addNote/${selectedCall}`,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({userId:"dispatcher",text})
   });
 
-  socket.emit("call:update", {});
-  loadCalls();
+  document.getElementById("noteInput").value="";
+  socket.emit("call:update",{});
+  loadNotes(selectedCall);
 }
 
 // ======================================================
-// DETACH UNIT
+// ATTACH / DETACH
 // ======================================================
-async function detachUnit(callId) {
-  // Placeholder — real version will list units attached
-  alert("Detach unit system coming next.");
+async function attachUnit(){
+  alert("Attach unit UI upgrading next build.");
+}
+async function detachUnit(){
+  alert("Detach unit UI upgrading next build.");
+}
+async function attachToCallFromUnit(id){
+  alert("Full attach menu coming next build.");
 }
 
 // ======================================================
-// NOTES PANEL (COMING NEXT BUILD)
+// FORCE ACTIONS
 // ======================================================
-function openNotes(callId) {
-  alert("Notes system coming next build.");
+async function force108(unitId){
+  await fetch(`${API}/units/status/${unitId}`,{
+    method:"PUT",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({status:"10-8"})
+  });
+  socket.emit("unit:status",{});
+}
+async function force107(unitId){
+  await fetch(`${API}/units/status/${unitId}`,{
+    method:"PUT",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({status:"10-7"})
+  });
+  socket.emit("unit:status",{});
 }
 
 // ======================================================
 // SOCKET EVENTS
 // ======================================================
-socket.on("unit:status", () => loadUnits());
-socket.on("call:update", () => loadCalls());
-socket.on("panic:button", (data) => {
-  document.getElementById("panic-banner").style.display = "block";
+socket.on("unit:status",()=>loadUnits());
+socket.on("call:update",()=>{
+  loadCalls();
+  if(selectedCall) openCall(selectedCall);
+});
+socket.on("panic:button",(data)=>{
+  document.getElementById("panic-banner").style.display="block";
   loadUnits();
 });
 
-// Initial load
+// INITIAL LOAD
 loadCalls();
 loadUnits();
 </script>
