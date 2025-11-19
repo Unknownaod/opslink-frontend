@@ -13,52 +13,67 @@ body {
     margin: 0;
     background: #0b1119;
     font-family: "Segoe UI", sans-serif;
+
+    /* FIXED: FULL PAGE CENTERING */
     display: flex;
-    height: 100vh;
     justify-content: center;
     align-items: center;
-    color: #dbe4f3;
+
+    /* Prevents shifting on mobile */
+    min-height: 100vh;
 }
 
 /* =============================
-   GLASS CARD
+   GLASS CARD WRAPPER
+   ============================= */
+.card-wrapper {
+    width: 100%;
+    max-width: 480px;  /* Perfect width */
+    padding: 20px;
+
+    display: flex;
+    justify-content: center;
+}
+
+/* =============================
+   CARD ITSELF
    ============================= */
 .card {
-    width: 420px;
+    width: 100%;
     background: rgba(255,255,255,0.05);
-    padding: 40px;
-    border-radius: 14px;
+    padding: 45px;
+    border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(12px);
     box-shadow: 0 0 25px rgba(0,0,0,0.4);
-    text-align: center;
+    color: #dbe4f3;
 }
 
 /* LOGO */
 .logo {
     font-size: 32px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    text-align: center;
 }
-.logo span {
-    color: #4e8cff;
-}
+.logo span { color: #4e8cff; }
 
 .subtitle {
-    margin-bottom: 25px;
+    margin-bottom: 35px;
     opacity: 0.7;
+    text-align: center;
+    font-size: 15px;
 }
 
-/* INPUT GROUP */
+/* INPUT GROUPS */
 .input-group {
-    text-align: left;
     margin-bottom: 18px;
 }
 
 label {
     font-size: 14px;
-    display: block;
     margin-bottom: 6px;
+    display: block;
 }
 
 .input-box {
@@ -88,19 +103,19 @@ label {
     display: none;
 }
 
-/* REGISTER BUTTON */
+/* SUBMIT BUTTON */
 .btn-primary {
     width: 100%;
     padding: 14px;
     background: #4e8cff;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 600;
     color: #fff;
-    font-weight: bold;
-    margin-top: 15px;
     cursor: pointer;
     transition: 0.25s;
+    margin-top: 10px;
 }
 
 .btn-primary:hover {
@@ -110,6 +125,7 @@ label {
 /* FOOTER LINKS */
 .bottom-links {
     margin-top: 25px;
+    text-align: center;
     font-size: 14px;
 }
 
@@ -128,47 +144,50 @@ label {
 </head>
 <body>
 
-<div class="card">
+<div class="card-wrapper">
+    <div class="card">
 
-    <div class="logo">OpsLink<span>CAD</span></div>
-    <div class="subtitle">Create your account</div>
+        <div class="logo">OpsLink<span>CAD</span></div>
+        <div class="subtitle">Create your account</div>
 
-    <!-- NAME -->
-    <div class="input-group">
-        <label>Full Name</label>
-        <input id="name" class="input-box" type="text" placeholder="John Doe">
-        <div id="nameError" class="error-text">Please enter your name</div>
+        <!-- FULL NAME -->
+        <div class="input-group">
+            <label>Full Name</label>
+            <input id="name" class="input-box" type="text" placeholder="John Doe">
+            <div id="nameError" class="error-text">Please enter your name</div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="input-group">
+            <label>Email</label>
+            <input id="email" class="input-box" type="email" placeholder="email@example.com">
+            <div id="emailError" class="error-text">Please enter a valid email</div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="input-group">
+            <label>Password</label>
+            <input id="password" class="input-box" type="password" placeholder="Enter a password">
+            <div id="passwordError" class="error-text">Password must be at least 6 characters</div>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <input id="confirmPassword" class="input-box" type="password" placeholder="Re-enter your password">
+            <div id="confirmError" class="error-text">Passwords do not match</div>
+        </div>
+
+        <button class="btn-primary" onclick="register()">Register</button>
+
+        <div class="bottom-links">
+            <a href="login.html">LOGIN</a>
+            <a href="register.html">REGISTER</a>
+        </div>
+
     </div>
-
-    <!-- EMAIL -->
-    <div class="input-group">
-        <label>Email</label>
-        <input id="email" class="input-box" type="email" placeholder="email@example.com">
-        <div id="emailError" class="error-text">Please enter a valid email</div>
-    </div>
-
-    <!-- PASSWORD -->
-    <div class="input-group">
-        <label>Password</label>
-        <input id="password" class="input-box" type="password" placeholder="Enter a password">
-        <div id="passwordError" class="error-text">Password must be at least 6 characters</div>
-    </div>
-
-    <!-- CONFIRM PASSWORD -->
-    <div class="input-group">
-        <label>Confirm Password</label>
-        <input id="confirmPassword" class="input-box" type="password" placeholder="Re-enter your password">
-        <div id="confirmError" class="error-text">Passwords do not match</div>
-    </div>
-
-    <button class="btn-primary" onclick="register()">Register</button>
-
-    <div class="bottom-links">
-        <a href="login.html">LOGIN</a>
-        <a href="register.html">REGISTER</a>
-    </div>
-
 </div>
+
 
 <script>
 async function register() {
@@ -179,9 +198,8 @@ async function register() {
 
     let hasError = false;
 
-    // Reset old errors
-    document.querySelectorAll(".error-text").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".input-box").forEach(el => el.classList.remove("input-error"));
+    document.querySelectorAll(".error-text").forEach(e => e.style.display = "none");
+    document.querySelectorAll(".input-box").forEach(i => i.classList.remove("input-error"));
 
     if (!name.value) {
         name.classList.add("input-error");
@@ -189,19 +207,19 @@ async function register() {
         hasError = true;
     }
 
-    if (!email.value || !email.value.includes("@")) {
+    if (!email.value.includes("@")) {
         email.classList.add("input-error");
         document.getElementById("emailError").style.display = "block";
         hasError = true;
     }
 
-    if (!pw.value || pw.value.length < 6) {
+    if (pw.value.length < 6) {
         pw.classList.add("input-error");
         document.getElementById("passwordError").style.display = "block";
         hasError = true;
     }
 
-    if (cpw.value !== pw.value) {
+    if (pw.value !== cpw.value) {
         cpw.classList.add("input-error");
         document.getElementById("confirmError").style.display = "block";
         hasError = true;
@@ -209,7 +227,6 @@ async function register() {
 
     if (hasError) return;
 
-    // SEND TO API
     const res = await fetch("https://opslink-api.onrender.com/auth/register", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -227,7 +244,6 @@ async function register() {
         return;
     }
 
-    // Save login info automatically
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
