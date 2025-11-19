@@ -1,68 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login – OpsLinkCAD</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login – OpsLinkCAD</title>
+
+<style>
+body {
+    margin: 0;
+    background: #070b12;
+    font-family: "Segoe UI", sans-serif;
+    color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    width: 360px;
+    background: rgba(255,255,255,0.04);
+    padding: 35px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 0 30px rgba(78,140,255,0.15);
+}
+
+.card h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #4e8cff;
+}
+
+.input-box {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: #0f141a;
+    border: 1px solid #2b3037;
+    color: white;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #4e8cff;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #6fa1ff;
+}
+
+.text-center {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.text-center a {
+    color: #4e8cff;
+    text-decoration: none;
+}
+</style>
 </head>
+
 <body>
 
-<header class="navbar">
-    <div class="logo">OpsLink<span>CAD</span></div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="login.html" class="btn-login active">Login</a>
-    </nav>
-</header>
+<div class="card">
+    <h1>Login</h1>
 
-<section class="auth-container">
-    <h1>Welcome Back</h1>
-    <p>Login to your OpsLinkCAD account.</p>
+    <div class="input-box">
+        <input id="email" type="email" placeholder="Email">
+    </div>
+    <div class="input-box">
+        <input id="password" type="password" placeholder="Password">
+    </div>
 
-    <form class="auth-form" onsubmit="login(event)">
-        <input id="email" type="email" placeholder="Email Address" required>
-        <input id="password" type="password" placeholder="Password" required>
+    <button class="btn" onclick="login()">Login</button>
 
-        <button class="btn-primary">Login</button>
-
-        <p class="auth-switch">
-            Don’t have an account? <a href="register.html">Create one</a>
-        </p>
-    </form>
-</section>
-
-<footer>
-    <p>© 2025 OpsLinkCAD – All rights reserved.</p>
-</footer>
-
+    <div class="text-center">
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+</div>
 
 <script>
-async function login(e) {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim();
+async function login() {
+    const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     const res = await fetch("https://opslink-api.onrender.com/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
 
-    if (!res.ok) {
-        alert(data.message || "Login failed");
-        return;
-    }
+    if (!res.ok) return alert(data.message || "Login failed");
 
-    // store token
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
-    // redirect to dashboard
     window.location.href = "dashboard.html";
 }
 </script>
