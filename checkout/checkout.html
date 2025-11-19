@@ -7,7 +7,7 @@
 
 <style>
 /* ============================================
-   GLOBAL THEME (Style-C Premium)
+   GLOBAL THEME (OpsLink Premium)
 ============================================ */
 body {
     margin: 0;
@@ -24,7 +24,7 @@ body {
     padding: 0 25px;
 }
 
-/* LEFT PANEL (FORM) */
+/* LEFT PANEL */
 .checkout-left {
     flex: 1;
     background: rgba(255,255,255,0.05);
@@ -85,9 +85,7 @@ input, select {
     background: #3b6fcc;
 }
 
-/* ============================================
-   RIGHT PANEL (SUMMARY)
-============================================ */
+/* RIGHT PANEL */
 .checkout-right {
     width: 350px;
     background: rgba(255,255,255,0.04);
@@ -125,6 +123,7 @@ input, select {
     font-weight: 700;
 }
 
+/* FEATURES */
 .feature-list {
     margin-top: 25px;
     font-size: 14px;
@@ -135,7 +134,6 @@ input, select {
     margin-bottom: 8px;
 }
 
-/* BADGE */
 .secure {
     text-align: center;
     margin-top: 18px;
@@ -159,7 +157,7 @@ input, select {
 
 <div class="checkout-wrapper">
 
-    <!-- ================= LEFT: PAYMENT FORM ================= -->
+    <!-- ================= LEFT PANEL ================= -->
     <div class="checkout-left">
 
         <div class="section-title">Customer Information</div>
@@ -184,8 +182,8 @@ input, select {
             <option value="AU">Australia</option>
         </select>
 
-        <label>Postal / ZIP Code</label>
-        <input id="zip" placeholder="Postal Code">
+        <!-- ZIP + STATE will go here dynamically -->
+        <div id="locationContainer"></div>
 
         <div class="section-title" style="margin-top:30px;">Payment Method</div>
 
@@ -198,7 +196,7 @@ input, select {
 
     </div>
 
-    <!-- ================= RIGHT: ORDER SUMMARY ================= -->
+    <!-- ================= RIGHT PANEL ================= -->
     <div class="checkout-right">
 
         <div class="summary-title">Order Summary</div>
@@ -206,17 +204,22 @@ input, select {
         <div class="summary-box">
             <div class="summary-item">
                 <span>OpsLink Premier</span>
-                <span>$7.99/mo</span>
+                <span>$12.99/mo</span>
             </div>
 
             <div class="summary-item">
-                <span>Billing Starts Today</span>
-                <span>$7.99</span>
+                <span>Subtotal</span>
+                <span id="subtotal">$12.99</span>
+            </div>
+
+            <div class="summary-item">
+                <span>Estimated Tax</span>
+                <span id="tax">$0.00</span>
             </div>
 
             <div class="total-line">
                 <span>Total Due Today</span>
-                <span>$7.99</span>
+                <span id="total">$12.99</span>
             </div>
         </div>
 
@@ -228,20 +231,19 @@ input, select {
             <div>✓ Cancel Anytime</div>
         </div>
 
-        <div class="secure">
-            🔒 Payments are securely processed and encrypted.
-        </div>
+        <div class="secure">🔒 Payments are securely processed and encrypted.</div>
     </div>
 
 </div>
 
 <!-- Stripe -->
 <script src="https://js.stripe.com/v3/"></script>
+
 <script>
-// ===========================
-// STRIPE INITIALIZATION
-// ===========================
-let stripe = Stripe("pk_live_51SVFpBLQjsrxMZMFPhO41fNL37kau7u4uITjjmXKkBabyHvx30X16scvSFDHBJDZ1GGC71GFKI1tPWM...");
+/* =====================================================
+   STRIPE
+===================================================== */
+let stripe = Stripe("YOUR_PUBLISHABLE_KEY");
 let elements = stripe.elements();
 let card = elements.create("card", {
     style: {
@@ -254,102 +256,91 @@ let card = elements.create("card", {
 });
 card.mount("#card-element");
 
-// ===========================
-// BASE PRICE
-// ===========================
+/* =====================================================
+   BASE PRICE
+===================================================== */
 const BASE_PRICE = 12.99;
 
-// ===========================
-// DOM ELEMENTS
-// ===========================
-const subtotalEl = document.getElementById("subtotal");
-const taxEl = document.getElementById("tax");
-const totalEl = document.getElementById("total");
+/* =====================================================
+   TAX RATES
+===================================================== */
 
-// ===========================
-// COUNTRY → PROVINCE/STATE SETUP
-// ===========================
-const countryEl = document.getElementById("country");
-
-// Create dynamic state selector
-let stateLabel = document.createElement("label");
-stateLabel.innerText = "State / Province";
-stateLabel.style.marginTop = "15px";
-
-let stateSelect = document.createElement("select");
-stateSelect.id = "stateSelect";
-stateSelect.style.width = "100%";
-stateSelect.style.padding = "12px";
-stateSelect.style.background = "#0b111a";
-stateSelect.style.border = "1px solid #1e2633";
-stateSelect.style.borderRadius = "8px";
-stateSelect.style.color = "#d8e0ea";
-stateSelect.style.fontSize = "15px";
-stateSelect.style.display = "none";
-
-// Insert state selector before ZIP input
-document.getElementById("zip").parentNode.insertBefore(stateLabel, document.getElementById("zip"));
-document.getElementById("zip").parentNode.insertBefore(stateSelect, document.getElementById("zip"));
-
-// Province lists
+// Canada HST/GST/QST
 const provinces_CA = {
-    "AB": 0.05,
-    "BC": 0.05,
-    "MB": 0.05,
-    "NB": 0.15,
-    "NL": 0.15,
-    "NT": 0.05,
-    "NS": 0.15,
-    "NU": 0.05,
-    "ON": 0.13,
-    "PE": 0.15,
-    "QC": 0.14975,
-    "SK": 0.05,
-    "YT": 0.05
+    "AB": 0.05, "BC": 0.05, "MB": 0.05, "NB": 0.15, "NL": 0.15,
+    "NT": 0.05, "NS": 0.15, "NU": 0.05, "ON": 0.13, "PE": 0.15,
+    "QC": 0.14975, "SK": 0.05, "YT": 0.05
 };
 
+// UK VAT
+const RATE_UK = 0.20;
+
+// Australia GST
+const RATE_AU = 0.10;
+
+// USA → no default tax
 const states_US = {
-    "AL": 0, "AK": 0, "AZ": 0, "AR": 0, "CA": 0,
-    "CO": 0, "CT": 0, "DE": 0, "FL": 0, "GA": 0,
-    "HI": 0, "ID": 0, "IL": 0, "IN": 0, "IA": 0,
-    "KS": 0, "KY": 0, "LA": 0, "ME": 0, "MD": 0,
-    "MA": 0, "MI": 0, "MN": 0, "MS": 0, "MO": 0,
-    "MT": 0, "NE": 0, "NV": 0, "NH": 0, "NJ": 0,
-    "NM": 0, "NY": 0, "NC": 0, "ND": 0, "OH": 0,
-    "OK": 0, "OR": 0, "PA": 0, "RI": 0, "SC": 0,
-    "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VT": 0,
-    "VA": 0, "WA": 0, "WV": 0, "WI": 0, "WY": 0
+    "AL":0,"AK":0,"AZ":0,"AR":0,"CA":0,"CO":0,"CT":0,"DE":0,"FL":0,"GA":0,
+    "HI":0,"ID":0,"IL":0,"IN":0,"IA":0,"KS":0,"KY":0,"LA":0,"ME":0,"MD":0,
+    "MA":0,"MI":0,"MN":0,"MS":0,"MO":0,"MT":0,"NE":0,"NV":0,"NH":0,"NJ":0,
+    "NM":0,"NY":0,"NC":0,"ND":0,"OH":0,"OK":0,"OR":0,"PA":0,"RI":0,"SC":0,
+    "SD":0,"TN":0,"TX":0,"UT":0,"VT":0,"VA":0,"WA":0,"WV":0,"WI":0,"WY":0
 };
 
-// ===========================
-// POPULATE STATES/PROVINCES
-// ===========================
-function updateStateOptions() {
+/* =====================================================
+   DYNAMIC LOCATION FIELDS
+===================================================== */
+
+const locationContainer = document.getElementById("locationContainer");
+
+// Create ZIP + STATE/PROVINCE fields
+locationContainer.innerHTML = `
+    <label>Postal / ZIP Code</label>
+    <input id="zip" placeholder="Postal Code">
+
+    <label id="stateLabel" style="display:none">State / Province</label>
+    <select id="stateSelect" style="
+        display:none;
+        width:100%;
+        padding:12px;
+        background:#0b111a;
+        border:1px solid #1e2633;
+        border-radius:8px;
+        color:#d8e0ea;
+        font-size:15px;
+    "></select>
+`;
+
+const countryEl = document.getElementById("country");
+const stateLabel = document.getElementById("stateLabel");
+const stateSelect = document.getElementById("stateSelect");
+const zipEl = document.getElementById("zip");
+
+function loadStates() {
     const country = countryEl.value;
+
     stateSelect.innerHTML = "";
 
     if (country === "CA") {
         stateLabel.style.display = "block";
         stateSelect.style.display = "block";
-
-        for (const abbr in provinces_CA) {
-            let opt = document.createElement("option");
-            opt.value = abbr;
-            opt.innerText = abbr;
+        for (let code in provinces_CA) {
+            const opt = document.createElement("option");
+            opt.value = code;
+            opt.innerText = code;
             stateSelect.appendChild(opt);
         }
-    } 
+    }
     else if (country === "US") {
         stateLabel.style.display = "block";
         stateSelect.style.display = "block";
-
-        for (const abbr in states_US) {
-            let opt = document.createElement("option");
-            opt.value = abbr;
-            opt.innerText = abbr;
+        for (let code in states_US) {
+            const opt = document.createElement("option");
+            opt.value = code;
+            opt.innerText = code;
             stateSelect.appendChild(opt);
         }
-    } 
+    }
     else {
         stateLabel.style.display = "none";
         stateSelect.style.display = "none";
@@ -358,12 +349,14 @@ function updateStateOptions() {
     updateTotals();
 }
 
-countryEl.addEventListener("change", updateStateOptions);
-stateSelect.addEventListener("change", updateTotals);
+/* =====================================================
+   PRICE CALCULATOR
+===================================================== */
 
-// ===========================
-// TAX + TOTAL CALCULATION
-// ===========================
+const subtotalEl = document.getElementById("subtotal");
+const taxEl = document.getElementById("tax");
+const totalEl = document.getElementById("total");
+
 function updateTotals() {
     const country = countryEl.value;
     const province = stateSelect.value;
@@ -374,25 +367,31 @@ function updateTotals() {
         taxRate = provinces_CA[province];
     }
 
-    if (country === "US" && states_US[province] !== undefined) {
-        taxRate = states_US[province];
-    }
+    if (country === "UK") taxRate = RATE_UK;
+    if (country === "AU") taxRate = RATE_AU;
+
+    // USA stays 0%
 
     const subtotal = BASE_PRICE;
-    const taxAmount = subtotal * taxRate;
-    const total = subtotal + taxAmount;
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax;
 
-    subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
-    taxEl.innerText = `$${taxAmount.toFixed(2)}`;
-    totalEl.innerText = `$${total.toFixed(2)}`;
+    subtotalEl.innerHTML = `$${subtotal.toFixed(2)}`;
+    taxEl.innerHTML = `$${tax.toFixed(2)}`;
+    totalEl.innerHTML = `$${total.toFixed(2)}`;
 }
 
-// Initial load
+/* INITIAL */
+loadStates();
 updateTotals();
 
-// ===========================
-// PAYMENT FLOW
-// ===========================
+countryEl.addEventListener("change", loadStates);
+stateSelect.addEventListener("change", updateTotals);
+zipEl.addEventListener("input", updateTotals);
+
+/* =====================================================
+   PAYMENT PROCESS
+===================================================== */
 async function startPayment() {
     document.getElementById("msg").innerText = "Processing...";
 
@@ -403,8 +402,8 @@ async function startPayment() {
         email: document.getElementById("email").value,
         address: document.getElementById("address").value,
         city: document.getElementById("city").value,
-        country: document.getElementById("country").value,
-        zip: document.getElementById("zip").value
+        country: countryEl.value,
+        zip: zipEl.value
     };
 
     const res = await fetch("https://opslink-api.onrender.com/billing/create-subscription", {
@@ -442,8 +441,5 @@ async function startPayment() {
 }
 </script>
 
-
 </body>
 </html>
-
-
