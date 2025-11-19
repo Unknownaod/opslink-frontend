@@ -313,11 +313,21 @@ body {
    MDT JAVASCRIPT
    ===================================== */
 
-const API = "https://opslink-api.onrender.com";  // YOUR BACKEND
+const API = "https://opslink-api.onrender.com";   // BACKEND URL
 const socket = io(API);
 
-let currentUnit = null;
-let communityId = null;
+// LOAD PERMISSIONS + COMMUNITY ID
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const communityId = localStorage.getItem("selectedCommunity");
+
+// LOCK MDT IF NO PERMISSION
+if (!permissions.includes("leo")) {
+    alert("You do not have access to the Law Enforcement MDT.");
+    window.location.href = "community.html";
+}
+
+// UNIT DATA
+let currentUnit = null;  // OK
 
 /* =====================================
    SIDEBAR NAVIGATION
