@@ -1,123 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manage Community – OpsLinkCAD</title>
-    <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* ==== SIDEBAR ==== */
+        :root {
+            --bg-main: #0f141a;
+            --bg-card: #161b22;
+            --bg-hover: #1a222e;
+
+            --border: #222c36;
+            --border-soft: #1f2630;
+
+            --accent: #4e8cff;
+            --accent-hover: #6fa2ff;
+
+            --text-main: #e5e9f0;
+            --text-soft: #9aa5b1;
+
+            --danger: #ff4c4c;
+            --danger-hover: #ff6060;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-main);
+            font-family: "Segoe UI", sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ===============================
+           SIDEBAR
+        =============================== */
         .sidebar {
-            width: 240px;
-            background: #0f141a;
+            width: 250px;
+            background: var(--bg-card);
             height: 100vh;
             position: fixed;
             top: 0; left: 0;
             padding: 20px;
-            border-right: 1px solid #161b22;
+            border-right: 1px solid var(--border-soft);
         }
 
-        .sidebar a {
+        .sidebar .logo {
+            font-size: 26px;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .sidebar a, .nav-item {
             display: block;
-            padding: 12px;
+            padding: 12px 14px;
             margin: 6px 0;
-            color: #c9d1d9;
-            text-decoration: none;
             border-radius: 6px;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
+            color: var(--text-soft);
+            transition: 0.2s;
         }
 
-        .sidebar a:hover, .sidebar a.active {
-            background: #1a222e;
-            color: #4e8cff;
+        .sidebar a:hover,
+        .nav-item:hover,
+        .sidebar a.active {
+            background: var(--bg-hover);
+            color: var(--accent);
         }
 
-        /* ==== MAIN LAYOUT ==== */
+        /* ===============================
+           MAIN
+        =============================== */
         .main {
             margin-left: 260px;
             padding: 40px;
         }
 
+        .dash-title {
+            font-size: 35px;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .user-tag {
+            opacity: 0.7;
+            margin-bottom: 25px;
+        }
+
+        /* ===============================
+           SECTIONS
+        =============================== */
         .section {
-            background: #161b22;
+            background: var(--bg-card);
             padding: 25px;
             border-radius: 10px;
-            border: 1px solid #222c36;
+            border: 1px solid var(--border);
             margin-bottom: 30px;
         }
 
         .section h2 {
-            margin-bottom: 10px;
-            color: #4e8cff;
+            margin-bottom: 8px;
+            color: var(--accent);
         }
 
         .divider {
             height: 1px;
-            background: #222;
+            width: 100%;
+            background: var(--border-soft);
             margin: 15px 0;
         }
 
-        /* ==== TABLES ==== */
-        table {
+        input.dash-input {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
             padding: 12px;
-            border-bottom: 1px solid #222;
+            border-radius: 6px;
+            border: 1px solid var(--border-soft);
+            background: #0f141a;
+            color: var(--text-main);
+            margin-bottom: 10px;
         }
 
-        th {
-            text-align: left;
-            color: #4e8cff;
+        .btn-primary {
+            padding: 10px 18px;
+            border-radius: 6px;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        /* ==== BUTTONS ==== */
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
         .btn-small {
             padding: 6px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: 1px solid #4e8cff;
-            color: #4e8cff;
-            background: transparent;
+            border-radius: 6px;
             font-size: 14px;
-            transition: .2s;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            transition: 0.2s;
         }
 
         .btn-small:hover {
-            background: #4e8cff;
+            background: var(--accent);
             color: #fff;
         }
 
         .danger-btn {
-            border-color: #ff5555;
-            color: #ff5555;
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
         .danger-btn:hover {
-            background: #ff5555;
-            color: white;
+            background: var(--danger);
+            color: #fff;
         }
 
-        /* ==== MODAL ==== */
+        /* ===============================
+           TABLES
+        =============================== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        th {
+            color: var(--accent);
+            text-align: left;
+        }
+
+        /* ===============================
+           COLLAPSIBLE SECTIONS
+        =============================== */
+        details {
+            background: #131a22;
+            border: 1px solid var(--border-soft);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        details[open] summary {
+            margin-bottom: 10px;
+        }
+
+        /* ===============================
+           MODAL
+        =============================== */
         .modal-bg {
-            display: none;
             position: fixed;
+            display: none;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: rgba(0,0,0,0.7);
             justify-content: center;
             align-items: center;
+            z-index: 999;
         }
 
         .modal {
-            background: #161b22;
+            background: var(--bg-card);
             padding: 25px;
-            width: 360px;
+            width: 380px;
             border-radius: 10px;
-            border: 1px solid #4e8cff;
+            border: 1px solid var(--accent);
         }
 
         .modal input {
@@ -125,178 +232,251 @@
             padding: 12px;
             margin: 10px 0;
             background: #0f141a;
-            border: 1px solid #333;
+            border: 1px solid var(--border-soft);
             border-radius: 6px;
             color: white;
+        }
+
+        .close-btn {
+            background: #222;
+            opacity: 0.7;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            border: none;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
 
+<!-- ===============================
+     SIDEBAR
+=============================== -->
 <div class="sidebar">
-    <div class="logo">OpsLink<span>CAD</span></div>
+    <div class="logo">OpsLink<span style="color:white">CAD</span></div>
 
     <a href="dashboard.html">Dashboard</a>
-    <a href="#" class="active nav-item" data-panel="panel-community">Community</a>
 
-    <!-- Permission Key Claim Tab -->
-    <a href="#" class="nav-item" data-panel="panel-claim">Enter Access Key</a>
+    <a class="nav-item active" data-panel="panel-community">Community</a>
 
-    <!-- Supervisor Panel -->
+    <a class="nav-item" data-panel="panel-claim">Enter Access Key</a>
+
     <a id="supervisorNav" class="nav-item" data-panel="panel-supervisor">Supervisor Panel</a>
-
-    <!-- Admin Panel -->
     <a id="adminNav" class="nav-item" data-panel="panel-admin">Admin Panel</a>
-
-    <!-- Dispatch -->
     <a id="dispatchNav" class="nav-item" data-panel="panel-dispatch">Dispatch Console</a>
-
-    <!-- Law Enforcement MDT -->
     <a id="mdtNav" class="nav-item" data-panel="panel-mdt">LEO MDT</a>
-
-    <!-- Fire / EMS MDT -->
     <a id="fireNav" class="nav-item" data-panel="panel-fire">Fire / EMS Panel</a>
-
-    <!-- Permission Keys -->
     <a id="permKeyNav" class="nav-item" data-panel="panel-keys">Permission Keys</a>
 
     <a href="#" onclick="logout()">Logout</a>
 </div>
 
-
+<!-- ===============================
+     MAIN CONTENT WRAPPER
+=============================== -->
 <div class="main">
 
     <h1 id="commName" class="dash-title">Loading...</h1>
     <p id="commDesc" class="user-tag"></p>
 
-    <!-- COMMUNITY SETTINGS -->
-    <div class="section">
-        <h2>Community Settings</h2>
-        <div class="divider"></div>
+    <!-- ============================
+         PANEL: COMMUNITY HOME
+    ============================ -->
+    <div id="panel-community" class="panel">
 
-        <input id="editName" class="dash-input" placeholder="Community Name">
-        <input id="editDesc" class="dash-input" placeholder="Description">
+        <!-- COMMUNITY SETTINGS -->
+        <div class="section">
+            <h2>Community Settings</h2>
+            <div class="divider"></div>
 
-        <button class="btn-primary" onclick="saveCommunity()">Save Changes</button>
-    </div>
+            <input id="editName" class="dash-input" placeholder="Community Name">
+            <input id="editDesc" class="dash-input" placeholder="Description">
 
-    <!-- DEPARTMENTS -->
-    <div class="section">
-        <h2>Departments</h2>
-        <div class="divider"></div>
-
-        <button class="btn-small" onclick="openModal('deptModal')">+ Add Department</button>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody id="deptList"></tbody>
-        </table>
-    </div>
-
-    <!-- RANKS -->
-    <div class="section">
-        <h2>Ranks</h2>
-        <div class="divider"></div>
-
-        <button class="btn-small" onclick="openModal('rankModal')">+ Add Rank</button>
-
-        <table>
-            <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody id="rankList"></tbody>
-        </table>
-    </div>
-
-    <!-- MEMBERS -->
-    <div class="section">
-        <h2>Members</h2>
-        <div class="divider"></div>
-
-        <div style="display:flex; gap:10px;">
-            <input id="memberSearch" placeholder="Search user email...">
-            <button class="btn-small" onclick="searchUser()">Search</button>
+            <button class="btn-primary" onclick="saveCommunity()">Save Changes</button>
         </div>
 
-        <div id="memberSearchResult" style="margin-top:10px;"></div>
+                <!-- ============================
+             DEPARTMENTS
+        ============================ -->
+        <div class="section">
+            <h2>Departments</h2>
+            <div class="divider"></div>
 
-        <h3 style="margin-top: 25px;">Current Members</h3>
+            <button class="btn-small" onclick="openModal('deptModal')">+ Add Department</button>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Email</th>
-                <th>Role</th>
-            </tr>
-            </thead>
-            <tbody id="memberList"></tbody>
-        </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="deptList"></tbody>
+            </table>
+        </div>
+
+        <!-- ============================
+             RANKS (COLLAPSIBLE)
+        ============================ -->
+        <div class="section">
+            <h2>Ranks</h2>
+            <div class="divider"></div>
+
+            <button class="btn-small" onclick="openModal('rankModal')">+ Add Rank</button>
+
+            <details open>
+                <summary>View All Ranks</summary>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankList"></tbody>
+                </table>
+            </details>
+        </div>
+
+        <!-- ============================
+             MEMBERS
+        ============================ -->
+        <div class="section">
+            <h2>Members</h2>
+            <div class="divider"></div>
+
+            <div style="display:flex; gap:10px;">
+                <input id="memberSearch" class="dash-input" placeholder="Search user email...">
+                <button class="btn-small" onclick="searchUser()">Search</button>
+            </div>
+
+            <div id="memberSearchResult" style="margin-top:15px;"></div>
+
+            <h3 style="margin-top:25px; color:var(--accent);">Current Members</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Permissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="memberList"></tbody>
+            </table>
+        </div>
+
+        <!-- ============================
+             DANGER ZONE
+        ============================ -->
+        <div class="section">
+            <h2 style="color:var(--danger)">Danger Zone</h2>
+            <div class="divider"></div>
+
+            <button class="danger-btn" onclick="deleteCommunity()">Delete Community</button>
+        </div>
+
+    </div> <!-- END panel-community -->
+
+
+    <!-- ============================
+         PANEL: CLAIM PERMISSION KEY
+    ============================ -->
+    <div id="panel-claim" class="panel" style="display:none;">
+        <div class="section">
+            <h2>Enter Access Key</h2>
+            <div class="divider"></div>
+
+            <p style="opacity:0.8;">
+                Enter a permission key provided by your community staff.
+            </p>
+
+            <input id="claimKeyInput" class="dash-input" placeholder="e.g. LEO-A4F92C">
+
+            <button class="btn-primary" onclick="claimKey()">Submit Key</button>
+
+            <p id="claimKeyResult" style="margin-top:12px;"></p>
+        </div>
     </div>
 
-    <!-- DANGER ZONE -->
-    <div class="section">
-        <h2 style="color:#ff5555;">Danger Zone</h2>
-        <div class="divider"></div>
 
-        <button class="danger-btn" onclick="deleteCommunity()">Delete Community</button>
+    <!-- ============================
+         PANEL: PLACEHOLDERS
+         (Actual pages exist separately)
+    ============================ -->
+    <div id="panel-supervisor" class="panel" style="display:none;">
+        <div class="section"><p>Supervisor Panel is a separate page.</p></div>
     </div>
-</div>
 
-
-<!-- PANEL: CLAIM PERMISSION KEY -->
-<div id="panel-claim" class="panel" style="display:none;">
-    <h2>Enter Access Key</h2>
-    <p style="color:#ccc;margin-bottom:15px;">
-        Enter a permission key provided by your Community Staff to unlock MDT/Dispatch/Fire/Supervisor access.
-    </p>
-
-    <div class="card" style="padding:20px;border:1px solid #1e293b;border-radius:8px;">
-        <label for="claimKeyInput" style="font-size:14px;">Permission Key</label>
-        <input id="claimKeyInput" type="text" placeholder="e.g. DISP-3FA2F1" 
-               style="width:100%;padding:12px;margin-top:6px;border-radius:6px;border:1px solid #333;background:#111;color:#fff;">
-        
-        <button class="btn" onclick="claimKey()" style="margin-top:15px;">
-            Submit Key
-        </button>
-
-        <p id="claimKeyResult" style="margin-top:15px;font-size:14px;"></p>
+    <div id="panel-admin" class="panel" style="display:none;">
+        <div class="section"><p>Admin Panel is a separate page.</p></div>
     </div>
-</div>
 
-    
-<!-- DEPARTMENT MODAL -->
+    <div id="panel-dispatch" class="panel" style="display:none;">
+        <div class="section">
+            <p>Click below to open Dispatch Console:</p>
+            <button class="btn-primary" onclick="window.location.href='dispatch.html'">Open Dispatch</button>
+        </div>
+    </div>
+
+    <div id="panel-mdt" class="panel" style="display:none;">
+        <div class="section">
+            <p>Click below to open LEO MDT:</p>
+            <button class="btn-primary" onclick="window.location.href='mdt.html'">Open MDT</button>
+        </div>
+    </div>
+
+    <div id="panel-fire" class="panel" style="display:none;">
+        <div class="section">
+            <p>Click below to open Fire / EMS MDT:</p>
+            <button class="btn-primary" onclick="window.location.href='fire.html'">Open Fire/EMS Panel</button>
+        </div>
+    </div>
+
+
+</div> <!-- END MAIN -->
+
+
+<!-- ============================
+     MODALS
+============================ -->
 <div id="deptModal" class="modal-bg">
     <div class="modal">
         <h2>Add Department</h2>
-        <input id="newDept" placeholder="Department Name">
+
+        <input id="newDeptName" placeholder="Department Name">
+        <input id="newDeptType" placeholder="Type (LEO / Fire / EMS / Dispatch)">
+
         <button class="btn-primary" onclick="addDepartment()">Add</button>
-        <button class="close-btn danger-btn" onclick="closeModal('deptModal')">Cancel</button>
+        <button class="close-btn" onclick="closeModal('deptModal')">Cancel</button>
     </div>
 </div>
 
-<!-- RANK MODAL -->
 <div id="rankModal" class="modal-bg">
     <div class="modal">
         <h2>Add Rank</h2>
-        <input id="newRank" placeholder="Rank Name">
+
+        <input id="newRankName" placeholder="Rank Name">
+        <input id="newRankDept" placeholder="Department ID (optional)">
+
         <button class="btn-primary" onclick="addRank()">Add</button>
-        <button class="close-btn danger-btn" onclick="closeModal('rankModal')">Cancel</button>
+        <button class="close-btn" onclick="closeModal('rankModal')">Cancel</button>
     </div>
 </div>
 
-<script>
+    <script>
 /* ============================================================
-   INITIAL SETUP
-   ============================================================ */
+   INIT / AUTH CHECK
+============================================================ */
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
@@ -310,8 +490,30 @@ const API = "https://opslink-api.onrender.com";
 
 
 /* ============================================================
-   APPLY PERMISSION LOCKS
-   ============================================================ */
+   PANEL SWITCHING
+============================================================ */
+document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach(i =>
+            i.classList.remove("active")
+        );
+        item.classList.add("active");
+
+        const target = item.dataset.panel;
+
+        document.querySelectorAll(".panel").forEach(p => {
+            p.style.display = "none";
+        });
+
+        const panel = document.getElementById(target);
+        if (panel) panel.style.display = "block";
+    });
+});
+
+
+/* ============================================================
+   PERMISSION LOCKS
+============================================================ */
 function applyPermissionLocks(member) {
     const role = member?.role || "member";
     const permissions = member?.permissions || [];
@@ -321,14 +523,14 @@ function applyPermissionLocks(member) {
         if (el) el.style.display = "none";
     }
 
-    // OWNER → Full access, nothing hidden
+    // OWNER = full access
     if (role === "owner") return;
 
     // Admin
     if (!permissions.includes("admin")) {
         hide("#adminNav");
-        hide('[data-panel="panel-admin"]');
         hide("#permKeyNav");
+        hide('[data-panel="panel-admin"]');
         hide('[data-panel="panel-keys"]');
     }
 
@@ -355,18 +557,12 @@ function applyPermissionLocks(member) {
         hide("#fireNav");
         hide('[data-panel="panel-fire"]');
     }
-
-    // Civ Panel (optional)
-    // if (!permissions.includes("civ")) {
-    //     hide("#civNav");
-    //     hide('[data-panel="panel-civ"]');
-    // }
 }
 
 
 /* ============================================================
    LOAD COMMUNITY DATA
-   ============================================================ */
+============================================================ */
 async function loadCommunity() {
     const res = await fetch(`${API}/community/${communityId}`, {
         headers: { "Authorization": "Bearer " + token }
@@ -374,22 +570,21 @@ async function loadCommunity() {
 
     const data = await res.json();
 
-    // FIND LOGGED-IN MEMBER
+    // Which member is logged in?
     const member = data.members.find(
         m => m.userId === user._id || m.userId?._id === user._id
     );
 
-    // SAVE PERMISSIONS FOR MDT/Dispatch/Admin pages
+    // Save locally
     localStorage.setItem("communityRole", member?.role || "member");
     localStorage.setItem("permissions", JSON.stringify(member?.permissions || []));
 
-    // APPLY PERMISSION LOCKS NOW THAT WE HAVE DATA
+    // Lock UI based on permissions
     applyPermissionLocks(member);
 
-    // LOAD COMMUNITY DETAILS
+    // Fill UI
     document.getElementById("commName").innerText = data.name;
     document.getElementById("commDesc").innerText = data.description;
-
     document.getElementById("editName").value = data.name;
     document.getElementById("editDesc").value = data.description;
 
@@ -401,7 +596,7 @@ async function loadCommunity() {
 
 /* ============================================================
    COMMUNITY SETTINGS
-   ============================================================ */
+============================================================ */
 async function saveCommunity() {
     const name = document.getElementById("editName").value;
     const description = document.getElementById("editDesc").value;
@@ -422,20 +617,21 @@ async function saveCommunity() {
 
 /* ============================================================
    DEPARTMENTS
-   ============================================================ */
+============================================================ */
 async function loadDepartments() {
-    const res = await fetch(`${API}/departments/${communityId}`, {
+    const res = await fetch(`${API}/departments/${communityId}/list`, {
         headers: { "Authorization": "Bearer " + token }
     });
 
-    const data = await res.json();
+    const deps = await res.json();
     const list = document.getElementById("deptList");
     list.innerHTML = "";
 
-    data.forEach(d => {
+    deps.forEach(d => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${d.name}</td>
+            <td>${d.type || "N/A"}</td>
             <td>
                 <button class="btn-small danger-btn" onclick="deleteDepartment('${d._id}')">Delete</button>
             </td>
@@ -445,7 +641,8 @@ async function loadDepartments() {
 }
 
 async function addDepartment() {
-    const name = document.getElementById("newDept").value;
+    const name = document.getElementById("newDeptName").value;
+    const type = document.getElementById("newDeptType").value;
 
     await fetch(`${API}/departments/${communityId}/create`, {
         method: "POST",
@@ -453,7 +650,7 @@ async function addDepartment() {
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, type })
     });
 
     closeModal("deptModal");
@@ -461,6 +658,8 @@ async function addDepartment() {
 }
 
 async function deleteDepartment(id) {
+    if (!confirm("Delete this department?")) return;
+
     await fetch(`${API}/departments/${communityId}/delete/${id}`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
@@ -472,20 +671,21 @@ async function deleteDepartment(id) {
 
 /* ============================================================
    RANKS
-   ============================================================ */
+============================================================ */
 async function loadRanks() {
     const res = await fetch(`${API}/community/${communityId}/ranks`, {
         headers: { "Authorization": "Bearer " + token }
     });
 
-    const data = await res.json();
+    const ranks = await res.json();
     const list = document.getElementById("rankList");
     list.innerHTML = "";
 
-    data.forEach(r => {
+    ranks.forEach(r => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${r.name}</td>
+            <td>${r.departmentId || "N/A"}</td>
             <td>
                 <button class="btn-small danger-btn" onclick="deleteRank('${r._id}')">Delete</button>
             </td>
@@ -495,7 +695,8 @@ async function loadRanks() {
 }
 
 async function addRank() {
-    const name = document.getElementById("newRank").value;
+    const name = document.getElementById("newRankName").value;
+    const departmentId = document.getElementById("newRankDept").value;
 
     await fetch(`${API}/community/${communityId}/ranks/create`, {
         method: "POST",
@@ -503,7 +704,7 @@ async function addRank() {
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, departmentId })
     });
 
     closeModal("rankModal");
@@ -511,6 +712,8 @@ async function addRank() {
 }
 
 async function deleteRank(id) {
+    if (!confirm("Delete this rank?")) return;
+
     await fetch(`${API}/community/${communityId}/ranks/delete/${id}`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
@@ -522,21 +725,28 @@ async function deleteRank(id) {
 
 /* ============================================================
    MEMBERS
-   ============================================================ */
+============================================================ */
 async function loadMembers() {
     const res = await fetch(`${API}/community/${communityId}/members`, {
         headers: { "Authorization": "Bearer " + token }
     });
 
-    const data = await res.json();
+    const members = await res.json();
     const list = document.getElementById("memberList");
     list.innerHTML = "";
 
-    data.forEach(m => {
+    members.forEach(m => {
+        const email = m.userEmail || m.email;
+        const perms = (m.permissions || []).join(", ") || "none";
+
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${m.email}</td>
+            <td>${email}</td>
             <td>${m.role}</td>
+            <td>${perms}</td>
+            <td>
+                <button class="btn-small danger-btn" onclick="removeMember('${m.userId}')">Remove</button>
+            </td>
         `;
         list.appendChild(row);
     });
@@ -581,32 +791,27 @@ async function addMember(id) {
     loadMembers();
 }
 
+async function removeMember(userId) {
+    if (!confirm("Remove this member?")) return;
 
-/* ============================================================
-   DELETE COMMUNITY
-   ============================================================ */
-async function deleteCommunity() {
-    if (!confirm("Are you sure? This cannot be undone.")) return;
-
-    await fetch(`${API}/community/delete/${communityId}`, {
+    await fetch(`${API}/community/${communityId}/removeUser/${userId}`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
     });
 
-    alert("Community deleted.");
-    window.location.href = "dashboard.html";
+    loadMembers();
 }
 
 
 /* ============================================================
    CLAIM PERMISSION KEY
-   ============================================================ */
+============================================================ */
 async function claimKey() {
     const key = document.getElementById("claimKeyInput").value.trim();
     const resBox = document.getElementById("claimKeyResult");
 
     if (!key) {
-        resBox.innerText = "Please enter a key.";
+        resBox.innerText = "Enter a key.";
         resBox.style.color = "red";
         return;
     }
@@ -628,40 +833,16 @@ async function claimKey() {
         return;
     }
 
-    // SUCCESS
-    resBox.innerText = `Access granted: ${data.granted.toUpperCase()} panel unlocked!`;
-    resBox.style.color = "limegreen";
+    resBox.innerText = `Access granted: ${data.granted.toUpperCase()}`;
+    resBox.style.color = "lime";
 
-    // Reload permissions
     loadCommunity();
 }
 
 
 /* ============================================================
-   PANEL NAVIGATION
-   ============================================================ */
-document.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-        document.querySelectorAll(".nav-item").forEach(i =>
-            i.classList.remove("active")
-        );
-        item.classList.add("active");
-
-        const target = item.dataset.panel;
-
-        document.querySelectorAll(".panel").forEach(p =>
-            p.style.display = "none"
-        );
-
-        const panel = document.getElementById(target);
-        if (panel) panel.style.display = "block";
-    });
-});
-
-
-/* ============================================================
    MODALS
-   ============================================================ */
+============================================================ */
 function openModal(id) {
     document.getElementById(id).style.display = "flex";
 }
@@ -672,8 +853,26 @@ function closeModal(id) {
 
 
 /* ============================================================
+   DELETE COMMUNITY
+============================================================ */
+async function deleteCommunity() {
+    if (!confirm("This action cannot be undone. Delete community?"))
+        return;
+
+    await fetch(`${API}/community/delete/${communityId}`, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    localStorage.removeItem("selectedCommunity");
+    alert("Community deleted.");
+    window.location.href = "dashboard.html";
+}
+
+
+/* ============================================================
    LOGOUT
-   ============================================================ */
+============================================================ */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
@@ -681,10 +880,7 @@ function logout() {
 
 
 /* ============================================================
-   INIT
-   ============================================================ */
+   LOAD EVERYTHING
+============================================================ */
 loadCommunity();
 </script>
-
-</body>
-</html>
