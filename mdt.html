@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>OpsLinkCAD MDT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+/* ===============================
+   OPSLINK MDT GLOBAL THEME
+   Sonoran Blue Accent (#4e8cff)
+   =============================== */
+
+:root {
+  --bg-main: #0c1118;
+  --bg-elevated: #131a24;
+  --bg-panel: #161e29;
+  --border-soft: #1f2a38;
+  --accent: #4e8cff;
+  --accent-hover: #73a5ff;
+
+  --text-main: #e5e9f0;
+  --text-soft: #aeb9c9;
+  --danger: #ff4c4c;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* ===============================
+   LEFT NAVIGATION PANE
+   =============================== */
+
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 230px;
+  height: 100vh;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+}
+
+#sidebar header {
+  padding: 18px;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.nav-item {
+  padding: 14px 20px;
+  cursor: pointer;
+  color: var(--text-soft);
+  font-size: 15px;
+  border-bottom: 1px solid var(--border-soft);
+  transition: 0.2s;
+}
+
+.nav-item:hover {
+  background: var(--bg-panel);
+  color: var(--accent);
+}
+
+.nav-item.active {
+  background: var(--bg-panel);
+  color: var(--accent);
+}
+
+/* ===============================
+   MAIN VIEW
+   =============================== */
+
+#main {
+  margin-left: 230px;
+  height: 100vh;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+/* ===============================
+   TOP UNIT HEADER
+   =============================== */
+
+#unit-header {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#unit-header .info {
+  font-size: 17px;
+}
+
+#panic-btn {
+  background: var(--danger);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#panic-btn:hover {
+  opacity: 0.8;
+}
+
+/* ===============================
+   STATUS BUTTONS
+   =============================== */
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.status-btn {
+  padding: 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.status-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ===============================
+   CALL LIST / VIEW
+   =============================== */
+
+.call-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.call-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--accent);
+}
+
+/* ===============================
+   POPUP MODALS
+   =============================== */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 450px;
+  background: var(--bg-panel);
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft);
+}
+
+.modal input, .modal select {
+  width: 100%;
+  padding: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 12px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+}
+</style>
+</head>
+<body>
+
+<!-- ============================
+     SIDEBAR NAVIGATION
+     ============================ -->
+<div id="sidebar">
+  <header>OpsLink MDT</header>
+
+  <div class="nav-item active" data-target="panel-dashboard">Dashboard</div>
+  <div class="nav-item" data-target="panel-calls">Calls</div>
+  <div class="nav-item" data-target="panel-search">Search</div>
+  <div class="nav-item" data-target="panel-bolos">BOLOs</div>
+</div>
+
+<!-- ============================
+     MAIN CONTENT
+     ============================ -->
+<div id="main">
+
+  <!-- ===== UNIT HEADER ===== -->
+  <div id="unit-header">
+    <div class="info" id="unit-info">Unit: None Selected</div>
+    <button id="panic-btn">PANIC</button>
+  </div>
+
+  <!-- ============================
+       PANELS
+       ============================ -->
+
+  <div id="panel-dashboard" class="panel active">
+    <h2>Unit Status</h2>
+
+    <div class="status-grid">
+      <div class="status-btn" data-status="10-8">10-8 (In Service)</div>
+      <div class="status-btn" data-status="10-7">10-7 (Out of Service)</div>
+      <div class="status-btn" data-status="Busy">Busy</div>
+      <div class="status-btn" data-status="Enroute">En Route</div>
+      <div class="status-btn" data-status="OnScene">On Scene</div>
+      <div class="status-btn" data-status="Clearing">Clear Call</div>
+      <div class="status-btn" data-status="TrafficStop">Traffic Stop</div>
+    </div>
+  </div>
+
+  <div id="panel-calls" class="panel">
+    <h2>Active Calls</h2>
+    <div id="calls-list"></div>
+  </div>
+
+  <div id="panel-search" class="panel">
+    <h2>Search</h2>
+
+    <h3 style="margin-top:15px;">Person Search</h3>
+    <input id="person-name" placeholder="Enter Name..." />
+    <button class="btn" onclick="searchPerson()">Search</button>
+    <div id="person-result"></div>
+
+    <h3 style="margin-top:25px;">Vehicle Search</h3>
+    <input id="plate" placeholder="Enter Plate..." />
+    <button class="btn" onclick="searchVehicle()">Search</button>
+    <div id="vehicle-result"></div>
+  </div>
+
+  <div id="panel-bolos" class="panel">
+    <h2>BOLO List</h2>
+    <p>BOLO system not implemented yet.</p>
+  </div>
+</div>
+
+<!-- ============================
+     MODAL FOR UNIT LOGIN
+     ============================ -->
+<div id="unitModal" class="modal">
+  <div class="modal-content">
+    <h2>Select Your Unit</h2>
+
+    <select id="unitSelect"></select>
+
+    <button class="btn" onclick="confirmUnit()">Enter MDT</button>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+/* =====================================
+   MDT JAVASCRIPT
+   ===================================== */
+
+const API = "https://opslink-api.onrender.com";  // YOUR BACKEND
+const socket = io(API);
+
+let currentUnit = null;
+let communityId = null;
+
+/* =====================================
+   SIDEBAR NAVIGATION
+   ===================================== */
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.onclick = () => {
+    document.querySelectorAll(".nav-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+
+    let target = item.dataset.target;
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+  }
+});
+
+/* =====================================
+   UNIT LOGIN MODAL
+   ===================================== */
+
+document.getElementById("unitModal").style.display = "flex";
+
+async function loadUnits() {
+  // You can replace this with stored communityId
+  communityId = localStorage.getItem("communityId");
+
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  const select = document.getElementById("unitSelect");
+  select.innerHTML = "";
+
+  units.forEach(u => {
+    const opt = document.createElement("option");
+    opt.value = u._id;
+    opt.textContent = `${u.callsign} (${u.departmentName})`;
+    select.appendChild(opt);
+  });
+}
+
+async function confirmUnit() {
+  const unitId = document.getElementById("unitSelect").value;
+
+  const res = await fetch(`${API}/units/${communityId}`);
+  const units = await res.json();
+
+  currentUnit = units.find(u => u._id === unitId);
+
+  document.getElementById("unit-info").innerText =
+    `Unit: ${currentUnit.callsign} — ${currentUnit.departmentName}`;
+
+  document.getElementById("unitModal").style.display = "none";
+
+  loadCalls();
+}
+
+loadUnits();
+
+/* =====================================
+   LOAD CALLS
+   ===================================== */
+
+async function loadCalls() {
+  const res = await fetch(`${API}/calls/${currentUnit.communityId}`);
+  const calls = await res.json();
+
+  const list = document.getElementById("calls-list");
+  list.innerHTML = "";
+
+  calls.forEach(call => {
+    const card = document.createElement("div");
+    card.className = "call-card";
+
+    card.innerHTML = `
+      <h3>Call #${call.callNumber}</h3>
+      <p><b>Type:</b> ${call.type}</p>
+      <p><b>Location:</b> ${call.location}</p>
+      <p><b>Description:</b> ${call.description}</p>
+      <button class="btn" onclick="attachToCall('${call._id}')">
+        Attach to Call
+      </button>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+/* =====================================
+   ATTACH UNIT TO CALL
+   ===================================== */
+
+async function attachToCall(callId) {
+  await fetch(`${API}/calls/attach/${callId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      unitId: currentUnit._id,
+      callsign: currentUnit.callsign
+    })
+  });
+
+  socket.emit("call:update", {});
+  loadCalls();
+}
+
+/* =====================================
+   STATUS BUTTONS
+   ===================================== */
+
+document.querySelectorAll(".status-btn").forEach(btn => {
+  btn.onclick = async () => {
+    const status = btn.dataset.status;
+
+    await fetch(`${API}/units/status/${currentUnit._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status })
+    });
+
+    socket.emit("unit:status", { 
+      unitId: currentUnit._id,
+      status
+    });
+  };
+});
+
+/* =====================================
+   SEARCH FUNCTIONS
+   ===================================== */
+
+async function searchPerson() {
+  const name = document.getElementById("person-name").value;
+  const res = await fetch(`${API}/search/person`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ name })
+  });
+
+  document.getElementById("person-result").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+async function searchVehicle() {
+  const plate = document.getElementById("plate").value;
+  const res = await fetch(`${API}/search/vehicle`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ plate })
+  });
+
+  document.getElementById("vehicle-result").innerText =
+    JSON.stringify(await res.json(), null, 2);
+}
+
+/* =====================================
+   PANIC BUTTON
+   ===================================== */
+
+document.getElementById("panic-btn").onclick = () => {
+  socket.emit("panic:button", {
+    unitId: currentUnit._id,
+    callsign: currentUnit.callsign
+  });
+};
+</script>
+
+</body>
+</html>
