@@ -5,24 +5,22 @@
 <title>Pricing – OpsLinkCAD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="stylesheet" href="css/style.css">
-
 <style>
 /* ================================
-   BASE
+   GLOBAL BASE THEME
 ================================ */
 body {
     margin: 0;
-    background: #070b12;
+    background: #06090f;
     font-family: "Segoe UI", sans-serif;
     color: #d8e0ea;
 }
 
 /* NAVBAR */
 .navbar {
-    background: rgba(10, 14, 22, 0.75);
-    padding: 16px 0;
+    background: rgba(10,14,22,0.75);
     backdrop-filter: blur(12px);
+    padding: 18px 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
@@ -45,9 +43,9 @@ body {
 }
 
 .navbar nav a {
-    margin-left: 28px;
+    margin-left: 26px;
     text-decoration: none;
-    color: #a1afc2;
+    color: #a3b0c4;
     font-size: 16px;
     transition: 0.25s;
 }
@@ -62,11 +60,6 @@ body {
     border-radius: 8px;
     color: white !important;
     font-weight: bold;
-    transition: 0.25s;
-}
-
-.btn-login:hover {
-    background: #3a6ccc;
 }
 
 .active-nav {
@@ -80,42 +73,43 @@ body {
     margin-top: 90px;
     text-align: center;
     font-size: 48px;
-    font-weight: 700;
-    background: linear-gradient(90deg, #4e8cff, #8ab8ff);
+    font-weight: 800;
+    background: linear-gradient(90deg, #4e8cff 0%, #8ab8ff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
     text-align: center;
-    color: #8a96a7;
-    margin-top: 12px;
+    color: #8793a3;
     font-size: 18px;
+    margin-top: 14px;
 }
 
 /* ================================
    BILLING TOGGLE
 ================================ */
 .toggle-wrapper {
-    margin-top: 40px;
     text-align: center;
+    margin-top: 40px;
 }
 
 .toggle-box {
-    background: rgba(255,255,255,0.07);
-    padding: 5px;
+    background: rgba(255,255,255,0.06);
+    padding: 6px;
     display: inline-flex;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .toggle-item {
-    padding: 10px 25px;
-    border-radius: 8px;
+    padding: 10px 28px;
     cursor: pointer;
-    color: #a6b3c5;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #aeb8c8;
     font-weight: 500;
-    transition: 0.25s;
+    transition: .25s;
 }
 
 .toggle-item.active {
@@ -124,81 +118,95 @@ body {
 }
 
 /* ================================
-   PRICING CARDS
+   PRICING GRID
 ================================ */
 .pricing-grid {
-    max-width: 1200px;
+    max-width: 1050px;
     margin: 65px auto;
-    padding: 0 40px;
+    padding: 0 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-    gap: 35px;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 28px;
 }
 
+/* ================================
+   PRICING CARD (COMPACT)
+================================ */
 .plan {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
-    padding: 40px;
     border-radius: 18px;
+    padding: 32px;
     text-align: center;
-    transition: 0.25s;
-    position: relative;
-    backdrop-filter: blur(14px);
+    transition: 0.25s ease;
+    backdrop-filter: blur(12px);
+
+    /* Compact + even height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 420px;
 }
 
 .plan:hover {
-    transform: translateY(-7px);
+    transform: translateY(-6px);
     border-color: #4e8cff;
     box-shadow: 0 0 25px rgba(78,140,255,0.25);
 }
 
 .plan h2 {
-    margin: 0;
-    font-size: 30px;
+    font-size: 28px;
+    margin-top: 0;
+    font-weight: 700;
 }
 
 /* PRICE */
 .price {
-    margin: 22px 0;
-    font-size: 44px;
+    font-size: 38px;
     font-weight: 700;
+    margin: 18px 0 6px 0;
 }
 
 .price span {
-    font-size: 18px;
+    font-size: 16px;
     opacity: 0.7;
 }
 
 /* FEATURES */
 .features {
+    margin-top: 12px;
     text-align: left;
-    margin-top: 20px;
-    line-height: 1.75;
+    padding: 0 15px;
     font-size: 15px;
-    opacity: 0.92;
-    min-height: 150px;
+    line-height: 1.5;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.features div {
+    white-space: nowrap;
 }
 
 /* BUTTON */
 .btn-select {
-    width: 100%;
-    display: block;
-    margin-top: 28px;
-    padding: 16px;
+    margin-top: 18px;
+    padding: 13px 14px;
     background: #4e8cff;
     color: white;
     border-radius: 10px;
     text-decoration: none;
-    font-weight: bold;
-    transition: 0.25s;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .25s;
 }
 
 .btn-select:hover {
     background: #3a6ccc;
 }
 
-/* POPULAR BADGE */
+/* MOST POPULAR BADGE */
 .popular {
     position: absolute;
     top: -12px;
@@ -209,18 +217,19 @@ body {
     font-size: 13px;
     font-weight: bold;
     color: white;
-    box-shadow: 0 0 15px rgba(78,140,255,0.7);
+    box-shadow: 0 0 15px rgba(78,140,255,0.65);
 }
 
 /* FOOTER */
 footer {
     text-align: center;
     padding: 50px;
-    margin-top: 90px;
+    margin-top: 70px;
     opacity: 0.7;
     font-size: 15px;
 }
 </style>
+
 </head>
 <body>
 
@@ -240,7 +249,7 @@ footer {
 <h1 class="title">Choose Your Plan</h1>
 <p class="subtitle">Premium-grade CAD solutions designed for real communities.</p>
 
-<!-- TOGGLE -->
+<!-- BILLING TOGGLE -->
 <div class="toggle-wrapper">
     <div class="toggle-box">
         <div class="toggle-item active" id="toggle-monthly" onclick="setPricing('monthly')">Monthly</div>
@@ -248,7 +257,8 @@ footer {
     </div>
 </div>
 
-<!-- GRID -->
+
+<!-- PRICING CARDS -->
 <div class="pricing-grid">
 
     <!-- FREE -->
@@ -257,26 +267,26 @@ footer {
         <div class="price" id="price-free">$0 <span>/month</span></div>
 
         <div class="features">
-            ✓ Unlimited Members<br>
-            ✓ LEO MDT + Dispatch<br>
-            ✓ Civilians Database<br>
-            ✓ Unlimited Units
+            <div>✓ Unlimited Members</div>
+            <div>✓ LEO MDT & Dispatch</div>
+            <div>✓ Civilians Database</div>
+            <div>✓ Unlimited Units</div>
         </div>
 
         <a href="register.html" class="btn-select">Start Free</a>
     </div>
 
     <!-- PRO -->
-    <div class="plan">
+    <div class="plan" style="position: relative;">
         <div class="popular">Most Popular</div>
         <h2>Pro</h2>
         <div class="price" id="price-pro">$4.99 <span>/month</span></div>
 
         <div class="features">
-            ✓ Everything in Free<br>
-            ✓ Fire/EMS Console<br>
-            ✓ Priority Support<br>
-            ✓ Advanced Call System
+            <div>✓ Everything in Free</div>
+            <div>✓ Fire/EMS Console</div>
+            <div>✓ Priority Support</div>
+            <div>✓ Advanced Call System</div>
         </div>
 
         <a href="#" class="btn-select">Upgrade to Pro</a>
@@ -288,10 +298,10 @@ footer {
         <div class="price" id="price-premier">$9.99 <span>/month</span></div>
 
         <div class="features">
-            ✓ Everything in Pro<br>
-            ✓ Unlimited Communities<br>
-            ✓ Custom Branding<br>
-            ✓ Enterprise Support
+            <div>✓ Everything in Pro</div>
+            <div>✓ Unlimited Communities</div>
+            <div>✓ Custom Branding</div>
+            <div>✓ Enterprise Support</div>
         </div>
 
         <a href="#" class="btn-select">Go Premier</a>
@@ -300,6 +310,7 @@ footer {
 </div>
 
 <footer>© 2025 OpsLinkCAD — All rights reserved.</footer>
+
 
 <script>
 function setPricing(mode) {
