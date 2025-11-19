@@ -301,6 +301,10 @@ async function loadCommunity() {
     // SAVE ROLE FOR ADMIN PANEL
     localStorage.setItem("communityRole", member?.role || "member");
 
+    // ⭐ SAVE PERMISSIONS FOR MDT/DISPATCH/ADMIN LOCKS
+    localStorage.setItem("permissions", JSON.stringify(member?.permissions || []));
+
+    // LOAD COMMUNITY DETAILS
     document.getElementById("commName").innerText = data.name;
     document.getElementById("commDesc").innerText = data.description;
 
@@ -311,6 +315,7 @@ async function loadCommunity() {
     loadRanks();
     loadMembers();
 }
+
     
 /* ========== SAVE SETTINGS ========== */
 async function saveCommunity() {
