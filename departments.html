@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments – OpsLinkCAD</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .sidebar {
+            width: 240px;
+            background: #0f141a;
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            border-right: 1px solid #161b22;
+            padding: 20px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 6px 0;
+            color: #c9d1d9;
+            text-decoration: none;
+        }
+
+        .sidebar a.active, .sidebar a:hover {
+            background: #1a222e;
+            color: #4e8cff;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .dept-card {
+            background: #161b22;
+            border: 1px solid #222c36;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .dept-card h3 {
+            margin-bottom: 8px;
+            font-size: 22px;
+            color: #4e8cff;
+        }
+
+        .dept-meta {
+            opacity: .7;
+            margin-bottom: 15px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #4e8cff;
+            background: transparent;
+            color: #4e8cff;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .btn-small:hover {
+            background: #4e8cff;
+            color: #fff;
+        }
+
+        .danger-btn {
+            border-color: #ff4c4c;
+            color: #ff4c4c;
+        }
+        .danger-btn:hover {
+            background: #ff4c4c;
+            color: #fff;
+        }
+
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: #161b22;
+            padding: 30px;
+            width: 380px;
+            border-radius: 12px;
+            border: 1px solid #4e8cff;
+        }
+
+        .modal input, .modal select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0f141a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">OpsLink<span>CAD</span></div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="community.html">Community</a>
+    <a href="departments.html" class="active">Departments</a>
+    <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+    <h1 class="dash-title">Departments</h1>
+    <p class="user-tag">Manage all departments for this community.</p>
+
+    <button class="btn-small" onclick="openModal()">+ Add Department</button>
+
+    <div id="departmentList" style="margin-top:25px;">
+        Loading...
+    </div>
+</div>
+
+<!-- MODAL: ADD OR EDIT DEPT -->
+<div id="deptModal" class="modal-bg">
+    <div class="modal">
+        <h2 id="modalTitle">Create Department</h2>
+
+        <input id="deptName" placeholder="Department Name">
+        <input id="deptShort" placeholder="Short Code (ex: LSPD, FIRE, EMS)">
+        
+        <select id="deptType">
+            <option value="LEO">Law Enforcement</option>
+            <option value="FIRE">Fire Department</option>
+            <option value="EMS">EMS</option>
+            <option value="COMM">Dispatch/Comms</option>
+            <option value="CIV">Civilian</option>
+        </select>
+
+        <button class="btn-primary" onclick="saveDept()">Save</button>
+        <button class="danger-btn" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+
+<script>
+const API = "https://opslink-api.onrender.com";
+const token = localStorage.getItem("token");
+const communityId = localStorage.getItem("selectedCommunity");
+
+if (!token || !communityId) window.locationHref = "dashboard.html";
+
+let editingDeptId = null;
+
+/* ================= LOAD DEPARTMENTS ================= */
+async function loadDepartments() {
+    const res = await fetch(`${API}/departments/${communityId}`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    const list = document.getElementById("departmentList");
+
+    if (!data || data.length === 0) {
+        list.innerHTML = "<p>No departments found.</p>";
+        return;
+    }
+
+    list.innerHTML = "";
+
+    data.forEach(dept => {
+        const div = document.createElement("div");
+        div.className = "dept-card";
+
+        div.innerHTML = `
+            <h3>${dept.name}</h3>
+            <div class="dept-meta">
+                Code: ${dept.shortCode || "N/A"} • Type: ${dept.type}
+            </div>
+
+            <button class="btn-small" onclick="openEditDept('${dept._id}', '${dept.name}', '${dept.shortCode}', '${dept.type}')">Edit</button>
+            <button class="btn-small danger-btn" onclick="deleteDepartment('${dept._id}')">Delete</button>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+/* ================= CREATE / EDIT ================= */
+function openModal() {
+    editingDeptId = null;
+    document.getElementById("modalTitle").innerText = "Create Department";
+    document.getElementById("deptName").value = "";
+    document.getElementById("deptShort").value = "";
+    document.getElementById("deptType").value = "LEO";
+    document.getElementById("deptModal").style.display = "flex";
+}
+
+function openEditDept(id, name, code, type) {
+    editingDeptId = id;
+    document.getElementById("modalTitle").innerText = "Edit Department";
+
+    document.getElementById("deptName").value = name;
+    document.getElementById("deptShort").value = code;
+    document.getElementById("deptType").value = type;
+
+    document.getElementById("deptModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("deptModal").style.display = "none";
+}
+
+/* ================= SAVE DEPARTMENT ================= */
+async function saveDept() {
+    const name = document.getElementById("deptName").value;
+    const shortCode = document.getElementById("deptShort").value;
+    const type = document.getElementById("deptType").value;
+
+    const body = { name, shortCode, type };
+
+    let endpoint = `${API}/departments/${communityId}/create`;
+    let method = "POST";
+
+    if (editingDeptId) {
+        endpoint = `${API}/departments/${communityId}/update/${editingDeptId}`;
+        method = "PUT";
+    }
+
+    await fetch(endpoint, {
+        method,
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+    });
+
+    closeModal();
+    loadDepartments();
+}
+
+/* ================= DELETE ================= */
+async function deleteDepartment(id) {
+    if (!confirm("Delete this department?")) return;
+
+    await fetch(`${API}/departments/${communityId}/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    loadDepartments();
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+/* INIT */
+loadDepartments();
+</script>
+
+</body>
+</html>
