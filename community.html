@@ -294,6 +294,10 @@
 </div>
 
 <script>
+/* ============================================================
+   INITIAL SETUP
+   ============================================================ */
+
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 const communityId = localStorage.getItem("selectedCommunity");
@@ -303,24 +307,84 @@ if (!token || !communityId) {
 }
 
 const API = "https://opslink-api.onrender.com";
-    
-/* ========== LOAD COMMUNITY ========== */
+
+
+/* ============================================================
+   APPLY PERMISSION LOCKS
+   ============================================================ */
+function applyPermissionLocks(member) {
+    const role = member?.role || "member";
+    const permissions = member?.permissions || [];
+
+    function hide(selector) {
+        const el = document.querySelector(selector);
+        if (el) el.style.display = "none";
+    }
+
+    // OWNER → Full access, nothing hidden
+    if (role === "owner") return;
+
+    // Admin
+    if (!permissions.includes("admin")) {
+        hide("#adminNav");
+        hide('[data-panel="panel-admin"]');
+        hide("#permKeyNav");
+        hide('[data-panel="panel-keys"]');
+    }
+
+    // Dispatch
+    if (!permissions.includes("dispatch") && !permissions.includes("admin")) {
+        hide("#dispatchNav");
+        hide('[data-panel="panel-dispatch"]');
+    }
+
+    // Supervisor
+    if (!permissions.includes("supervisor") && !permissions.includes("admin")) {
+        hide("#supervisorNav");
+        hide('[data-panel="panel-supervisor"]');
+    }
+
+    // LEO MDT
+    if (!permissions.includes("leo") && !permissions.includes("admin")) {
+        hide("#mdtNav");
+        hide('[data-panel="panel-mdt"]');
+    }
+
+    // Fire/EMS
+    if (!permissions.includes("fire") && !permissions.includes("admin")) {
+        hide("#fireNav");
+        hide('[data-panel="panel-fire"]');
+    }
+
+    // Civ Panel (optional)
+    // if (!permissions.includes("civ")) {
+    //     hide("#civNav");
+    //     hide('[data-panel="panel-civ"]');
+    // }
+}
+
+
+/* ============================================================
+   LOAD COMMUNITY DATA
+   ============================================================ */
 async function loadCommunity() {
     const res = await fetch(`${API}/community/${communityId}`, {
         headers: { "Authorization": "Bearer " + token }
     });
+
     const data = await res.json();
 
-    // FIND LOGGED-IN USER IN COMMUNITY
+    // FIND LOGGED-IN MEMBER
     const member = data.members.find(
         m => m.userId === user._id || m.userId?._id === user._id
     );
 
-    // SAVE ROLE FOR ADMIN PANEL
+    // SAVE PERMISSIONS FOR MDT/Dispatch/Admin pages
     localStorage.setItem("communityRole", member?.role || "member");
-
-    // ⭐ SAVE PERMISSIONS FOR MDT/DISPATCH/ADMIN LOCKS
     localStorage.setItem("permissions", JSON.stringify(member?.permissions || []));
+
+    // APPLY PERMISSION LOCKS NOW THAT WE HAVE DATA
+    applyPermissionLocks(member);
 
     // LOAD COMMUNITY DETAILS
     document.getElementById("commName").innerText = data.name;
@@ -334,55 +398,10 @@ async function loadCommunity() {
     loadMembers();
 }
 
-/// PERMISSION MANAGER \\\    
 
-    function applyPermissionLocks(member) {
-    const permissions = member?.permissions || [];
-    const role = member?.role || "member";
-
-    function hide(selector) {
-        const el = document.querySelector(selector);
-        if (el) el.style.display = "none";
-    }
-
-    if (role !== "owner") {
-
-        // Admin-only
-        if (!permissions.includes("admin")) {
-            hide('#adminNav');
-            hide('[data-panel="panel-admin"]');
-            hide('#permKeyNav');
-            hide('[data-panel="panel-keys"]');
-        }
-
-        // Dispatch
-        if (!permissions.includes("dispatch") && !permissions.includes("admin")) {
-            hide('#dispatchNav');
-            hide('[data-panel="panel-dispatch"]');
-        }
-
-        // Supervisor
-        if (!permissions.includes("supervisor") && !permissions.includes("admin")) {
-            hide('#supervisorNav');
-            hide('[data-panel="panel-supervisor"]');
-        }
-
-        // LEO MDT
-        if (!permissions.includes("leo") && !permissions.includes("admin")) {
-            hide('#mdtNav');
-            hide('[data-panel="panel-mdt"]');
-        }
-
-        // Fire/EMS
-        if (!permissions.includes("fire") && !permissions.includes("admin")) {
-            hide('#fireNav');
-            hide('[data-panel="panel-fire"]');
-        }
-    }
-}
-
-    
-/* ========== SAVE SETTINGS ========== */
+/* ============================================================
+   COMMUNITY SETTINGS
+   ============================================================ */
 async function saveCommunity() {
     const name = document.getElementById("editName").value;
     const description = document.getElementById("editDesc").value;
@@ -400,13 +419,16 @@ async function saveCommunity() {
     loadCommunity();
 }
 
-/* ========== DEPARTMENTS ========== */
+
+/* ============================================================
+   DEPARTMENTS
+   ============================================================ */
 async function loadDepartments() {
     const res = await fetch(`${API}/departments/${communityId}`, {
         headers: { "Authorization": "Bearer " + token }
     });
-    const data = await res.json();
 
+    const data = await res.json();
     const list = document.getElementById("deptList");
     list.innerHTML = "";
 
@@ -434,7 +456,7 @@ async function addDepartment() {
         body: JSON.stringify({ name })
     });
 
-    closeModal('deptModal');
+    closeModal("deptModal");
     loadDepartments();
 }
 
@@ -443,16 +465,20 @@ async function deleteDepartment(id) {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
     });
+
     loadDepartments();
 }
 
-/* ========== RANKS ========== */
+
+/* ============================================================
+   RANKS
+   ============================================================ */
 async function loadRanks() {
     const res = await fetch(`${API}/community/${communityId}/ranks`, {
         headers: { "Authorization": "Bearer " + token }
     });
-    const data = await res.json();
 
+    const data = await res.json();
     const list = document.getElementById("rankList");
     list.innerHTML = "";
 
@@ -480,7 +506,7 @@ async function addRank() {
         body: JSON.stringify({ name })
     });
 
-    closeModal('rankModal');
+    closeModal("rankModal");
     loadRanks();
 }
 
@@ -489,16 +515,20 @@ async function deleteRank(id) {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
     });
+
     loadRanks();
 }
 
-/* ========== MEMBERS ========== */
+
+/* ============================================================
+   MEMBERS
+   ============================================================ */
 async function loadMembers() {
     const res = await fetch(`${API}/community/${communityId}/members`, {
         headers: { "Authorization": "Bearer " + token }
     });
-    const data = await res.json();
 
+    const data = await res.json();
     const list = document.getElementById("memberList");
     list.innerHTML = "";
 
@@ -551,7 +581,10 @@ async function addMember(id) {
     loadMembers();
 }
 
-/* ========== DELETE COMMUNITY ========== */
+
+/* ============================================================
+   DELETE COMMUNITY
+   ============================================================ */
 async function deleteCommunity() {
     if (!confirm("Are you sure? This cannot be undone.")) return;
 
@@ -564,9 +597,11 @@ async function deleteCommunity() {
     window.location.href = "dashboard.html";
 }
 
-/// ENTER PERMISSION KEYS
 
-    async function claimKey() {
+/* ============================================================
+   CLAIM PERMISSION KEY
+   ============================================================ */
+async function claimKey() {
     const key = document.getElementById("claimKeyInput").value.trim();
     const resBox = document.getElementById("claimKeyResult");
 
@@ -582,10 +617,7 @@ async function deleteCommunity() {
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            communityId,
-            key
-        })
+        body: JSON.stringify({ communityId, key })
     });
 
     const data = await res.json();
@@ -600,13 +632,36 @@ async function deleteCommunity() {
     resBox.innerText = `Access granted: ${data.granted.toUpperCase()} panel unlocked!`;
     resBox.style.color = "limegreen";
 
-    // Reload role/permissions
+    // Reload permissions
     loadCommunity();
 }
 
 
-    
-/* ========== MODALS ========== */
+/* ============================================================
+   PANEL NAVIGATION
+   ============================================================ */
+document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach(i =>
+            i.classList.remove("active")
+        );
+        item.classList.add("active");
+
+        const target = item.dataset.panel;
+
+        document.querySelectorAll(".panel").forEach(p =>
+            p.style.display = "none"
+        );
+
+        const panel = document.getElementById(target);
+        if (panel) panel.style.display = "block";
+    });
+});
+
+
+/* ============================================================
+   MODALS
+   ============================================================ */
 function openModal(id) {
     document.getElementById(id).style.display = "flex";
 }
@@ -614,44 +669,20 @@ function openModal(id) {
 function closeModal(id) {
     document.getElementById(id).style.display = "none";
 }
-    
-/* ========== LOGOUT ========== */
+
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
 function logout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
 
 
-/* ========== PANEL NAVIGATION ========== */
-document.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-
-        // Remove active from other sidebar items
-        document.querySelectorAll(".nav-item").forEach(i =>
-            i.classList.remove("active")
-        );
-        item.classList.add("active");
-
-        // Figure out which panel this tab opens
-        const target = item.dataset.panel;
-
-        // Hide all panels
-        document.querySelectorAll(".panel").forEach(p => {
-            p.style.display = "none";
-        });
-
-        // Show selected panel
-        document.getElementById(target).style.display = "block";
-
-        // Additional actions
-        if (target === "panel-claim") {
-            // nothing special yet, but here if needed
-        }
-    });
-});
-
-    
-/* INIT */
+/* ============================================================
+   INIT
+   ============================================================ */
 loadCommunity();
 </script>
 
