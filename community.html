@@ -619,7 +619,7 @@ async function saveCommunity() {
    DEPARTMENTS
 ============================================================ */
 async function loadDepartments() {
-    const res = await fetch(`${API}/departments/${communityId}/list`, {
+    const res = await fetch(`${API}/departments/${communityId}`, {
         headers: { "Authorization": "Bearer " + token }
     });
 
@@ -644,7 +644,7 @@ async function addDepartment() {
     const name = document.getElementById("newDeptName").value;
     const type = document.getElementById("newDeptType").value;
 
-    await fetch(`${API}/departments/${communityId}/create`, {
+    const res = await fetch(`${API}/departments/${communityId}/create`, {
         method: "POST",
         headers: {
             "Authorization": "Bearer " + token,
@@ -653,6 +653,12 @@ async function addDepartment() {
         body: JSON.stringify({ name, type })
     });
 
+    if (!res.ok) {
+        const err = await res.json();
+        alert("Error: " + err.message);
+        return;
+    }
+
     closeModal("deptModal");
     loadDepartments();
 }
@@ -660,7 +666,7 @@ async function addDepartment() {
 async function deleteDepartment(id) {
     if (!confirm("Delete this department?")) return;
 
-    await fetch(`${API}/departments/${communityId}/delete/${id}`, {
+    await fetch(`${API}/departments/delete/${id}`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
     });
