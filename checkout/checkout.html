@@ -260,7 +260,7 @@ input, select {
 /* =====================================================
    STRIPE
 ===================================================== */
-let stripe = Stripe("YOUR_PUBLISHABLE_KEY");
+let stripe = Stripe("pk_live_51SVFpBLQjsrxMZMFiPh041fNL37kau7u4uITjjmKXkBabyHvx30Xl6scvSFDHBJDZlG6C71GFKltPWMEQwcU8z1R00j99wuaPd");
 let elements = stripe.elements();
 let card = elements.create("card", {
     style: {
@@ -481,6 +481,7 @@ async function startPayment() {
 
 </body>
 </html>
+
 
 
 
