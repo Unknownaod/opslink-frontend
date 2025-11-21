@@ -3,29 +3,31 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OpsLinkCAD – Next-Gen Dispatch Technology</title>
+<title>ERLC Dedicated CAD – Built For Serious Roleplay</title>
 
 <style>
-/* ================================
-   THEME VARIABLES
-================================ */
+/* =========================================
+   ERLC DEDICATED CAD — UNIQUE DESIGN
+   Tactical / Modern / Professional
+========================================= */
 :root {
-    --bg-main: #070b12;
-    --bg-card: rgba(255,255,255,0.04);
-    --bg-nav: rgba(0,0,0,0.35);
+    --bg-main: #05080d;
+    --bg-glass: rgba(255,255,255,0.03);
+    --bg-nav: rgba(0,0,0,0.40);
+    --border: rgba(255,255,255,0.08);
 
     --accent: #4e8cff;
-    --accent2: #81aaff;
-    --accent-glow: 0 0 22px rgba(78,140,255,0.5);
+    --accent2: #7aa6ff;
+    --accent-soft: rgba(78,140,255,0.4);
+    --accent-glow: 0 0 20px rgba(78,140,255,0.6);
 
-    --text-main: #e2e8f0;
-    --text-soft: #9aa5b9;
-    --border: rgba(255,255,255,0.07);
+    --text-main: #e5ecf8;
+    --text-soft: #9aa6bd;
+
+    --card-radius: 14px;
 }
 
-/* ================================
-   RESET + BODY
-================================ */
+/* BASE */
 body {
     margin: 0;
     background: var(--bg-main);
@@ -34,27 +36,24 @@ body {
     overflow-x: hidden;
 }
 
-/* ================================
-   NAVIGATION BAR
-================================ */
+/* NAV */
 .navbar {
     width: 100%;
-    padding: 18px 50px;
+    padding: 20px 55px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--bg-nav);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    z-index: 20;
-    box-sizing: border-box;
+    z-index: 50;
 }
 
 .logo {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 30px;
+    font-weight: 800;
     letter-spacing: 1px;
 }
 
@@ -64,15 +63,14 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 30px;
-    align-items: center;
+    gap: 35px;
 }
 
 .nav-links a {
     color: var(--text-main);
-    opacity: 0.8;
     text-decoration: none;
     font-size: 16px;
+    opacity: 0.75;
     transition: 0.2s;
 }
 
@@ -82,50 +80,50 @@ body {
 }
 
 .btn-login {
-    padding: 8px 20px;
+    padding: 10px 22px;
     background: var(--accent);
     color: #fff !important;
     border-radius: 999px;
-    border: 1px solid transparent;
     transition: 0.2s;
 }
 
 .btn-login:hover {
     background: var(--accent2);
-    transform: translateY(-2px);
     box-shadow: var(--accent-glow);
+    transform: translateY(-2px);
 }
 
-/* ================================
-   HERO SECTION
-================================ */
+/* HERO */
 .hero {
-    padding: 80px 50px;
+    padding: 120px 55px 80px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 60px;
+    align-items: center;
     flex-wrap: wrap;
 }
 
 .hero-left img {
-    width: 500px;
-    border-radius: 12px;
+    width: 520px;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    box-shadow: 0 0 25px rgba(0,0,0,0.45);
+}
+
+.hero-right {
+    max-width: 580px;
 }
 
 .hero-right h1 {
-    font-size: 50px;
-    line-height: 1.2;
-    margin-bottom: 15px;
+    font-size: 54px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
 }
 
 .hero-right p {
-    font-size: 18px;
     color: var(--text-soft);
-    margin-bottom: 25px;
-    max-width: 550px;
+    font-size: 19px;
+    margin-bottom: 30px;
 }
 
 .hero-buttons {
@@ -134,13 +132,13 @@ body {
 }
 
 .btn-primary {
-    padding: 14px 28px;
+    padding: 16px 32px;
     background: var(--accent);
-    border-radius: 8px;
-    color: #fff;
+    color: white;
+    border-radius: 12px;
     text-decoration: none;
-    font-size: 17px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: 600;
     transition: 0.2s;
 }
 
@@ -151,62 +149,117 @@ body {
 }
 
 .btn-secondary {
-    padding: 14px 28px;
-    background: transparent;
+    padding: 16px 32px;
     border: 1px solid var(--accent);
-    border-radius: 8px;
     color: var(--accent);
+    border-radius: 12px;
     text-decoration: none;
-    font-size: 17px;
     transition: 0.2s;
 }
 
 .btn-secondary:hover {
     background: var(--accent);
-    color: #fff;
+    color: white;
     box-shadow: var(--accent-glow);
     transform: translateY(-2px);
 }
 
-/* ================================
-   FEATURES
-================================ */
+/* SECTION TITLE */
+.section-title {
+    text-align: center;
+    font-size: 34px;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    color: var(--accent);
+}
+
+/* FEATURES */
 .features {
-    padding: 80px 50px;
+    padding: 40px 55px 100px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 28px;
 }
 
 .feature-card {
-    padding: 25px;
-    background: var(--bg-card);
+    background: var(--bg-glass);
+    padding: 28px;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
-    border-radius: 12px;
     transition: 0.25s;
 }
 
 .feature-card:hover {
-    transform: translateY(-5px);
     border-color: var(--accent);
+    transform: translateY(-6px);
     box-shadow: var(--accent-glow);
 }
 
 .feature-card h3 {
+    font-size: 23px;
     color: var(--accent);
-    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+/* NEW SECTION — ERLC SPECIFIC */
+.erlc-section {
+    padding: 80px 55px;
+    background: #0a111a;
+    border-top: 1px solid var(--border);
+}
+
+.erlc-section h2 {
+    text-align: center;
+    font-size: 34px;
+    color: var(--accent);
+    margin-bottom: 15px;
+}
+
+.erlc-section p {
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 18px;
+    max-width: 900px;
+    margin: auto;
+    margin-bottom: 50px;
+}
+
+.erlc-features {
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    flex-wrap: wrap;
+}
+
+.erlc-item {
+    padding: 22px 30px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    width: 280px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.erlc-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: var(--accent-glow);
+}
+
+.erlc-item h4 {
+    color: var(--accent);
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
-/* ================================
-   FOOTER
-================================ */
+/* FOOTER */
 footer {
     text-align: center;
-    padding: 30px;
+    padding: 35px;
     border-top: 1px solid var(--border);
-    opacity: 0.8;
-    margin-top: 50px;
+    color: var(--text-soft);
+    margin-top: 60px;
 }
 </style>
 </head>
@@ -215,79 +268,100 @@ footer {
 
 <!-- NAVBAR -->
 <header class="navbar">
-    <div class="logo">OpsLink<span>CAD</span></div>
+    <div class="logo">ERLC<span>CAD</span></div>
 
     <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="pricing.html">Pricing</a>
+        <a href="pricing.html">Plans</a>
         <a href="/auth/login.html" class="btn-login">Login</a>
     </div>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-
     <div class="hero-left">
-        <img src="assets/hero.png" alt="OpsLinkCAD Screenshot">
+        <img src="assets/hero.png" alt="ERLC CAD Screenshot">
     </div>
 
     <div class="hero-right">
-        <h1>The Most Advanced Roleplay CAD</h1>
+        <h1>Dedicated ERLC CAD Built for Serious Roleplay</h1>
         <p>
-            Real-time unit tracking. Ultra-fast dispatch. Modern MDT UI.  
-            OpsLinkCAD gives your community professional-grade tools with unlimited customization all in your browser.
+            Instant dispatching. Professional MDT workflows.  
+            Optimized specifically for ERLC communities looking for realism and performance.
         </p>
 
         <div class="hero-buttons">
-            <a href="/auth/register.html" class="btn-primary">Get Started</a>
-            <a href="pricing.html" class="btn-secondary">View Premier</a>
+            <a href="/auth/register.html" class="btn-primary">Launch Your CAD</a>
+            <a href="pricing.html" class="btn-secondary">View Plans</a>
         </div>
     </div>
-
 </section>
 
 <!-- FEATURES -->
+<h2 class="section-title">Why ERLC Communities Choose Us</h2>
+
 <section class="features">
     <div class="feature-card">
-        <h3>⚡ Real-Time Sync</h3>
-        <p>Units, calls, civilians every change updates instantly for all connected users.</p>
+        <h3>🚓 ERLC-Synced Workflows</h3>
+        <p>Designed around ERLC policing, fire, DOT, and civilian systems.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🖥️ Modern Interface</h3>
-        <p>Clean, responsive, and optimized for both desktop and mobile MDTs.</p>
+        <h3>⚡ Instant Dispatch Updates</h3>
+        <p>Every unit action updates across all MDTs instantly.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🔧 Fully Customizable</h3>
-        <p>Departments, ranks, codes, call types, permissions all editable.</p>
+        <h3>📱 Mobile MDT Ready</h3>
+        <p>Optimized layouts for phone/tablet patrol MDT usage.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🛡️ Secure Architecture</h3>
-        <p>Token-based auth, isolated communities, encrypted storage, safe for all RP groups.</p>
+        <h3>🛠 Custom Departments</h3>
+        <p>Create LEO, Fire/EMS, DOT, FBI, Civ, Admin panels.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🚓 Multi-Panel System</h3>
-        <p>Dispatch, LEO MDT, Fire/EMS MDT, Supervisor, Civilian Panel all included.</p>
+        <h3>🔔 Panic / 10-Codes</h3>
+        <p>Built-in panic tones, signal 100, hot calls, and more.</p>
     </div>
 
     <div class="feature-card">
-        <h3>🌐 Cloud Hosted</h3>
-        <p>No installation required your CAD is instantly available anywhere.</p>
+        <h3>🛡 Supervisor Tools</h3>
+        <p>Warnings, kicks, unit edits, attach/detach, SCU, active roster.</p>
+    </div>
+</section>
+
+<!-- ERLC SPECIFIC SECTION -->
+<section class="erlc-section">
+    <h2>Tailored for ERLC Roleplay</h2>
+    <p>
+        Unlike generic CADs, this system is built from the ground up for the  
+        **Emergency Response: Liberty County** environment. Your players will feel the difference.
+    </p>
+
+    <div class="erlc-features">
+        <div class="erlc-item">
+            <h4>Liberty County Calls</h4>
+            <p>Supports LRIC, gun store, bank, farms, tunnels, suburbs, & more.</p>
+        </div>
+
+        <div class="erlc-item">
+            <h4>Custom Patrol Codes</h4>
+            <p>10-codes, unit IDs (#L-###), supervisor levels, custom codes.</p>
+        </div>
+
+        <div class="erlc-item">
+            <h4>Realistic MDT UI</h4>
+            <p>Modeled after real Florida/US MDT systems.</p>
+        </div>
     </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-    © 2025 OpsLink Systems – All Rights Reserved.
+    © 2025 ERLC Dedicated CAD – All Rights Reserved.
 </footer>
 
 </body>
 </html>
-
-
-
-
-
