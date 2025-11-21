@@ -3,293 +3,318 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OpsLinkCAD – ERLC Dedicated Dispatch System</title>
+<title>OpsLinkCAD – ERLC Dedicated Dispatch Platform</title>
 
 <style>
-/* =========================================
-   OPSLINK ERLC DEDICATED CAD – CLEAN THEME
-========================================= */
+/* ============================
+   NEW 2025 OPSLINK STYLE
+   Premium • Glass • Neon
+============================ */
 :root {
-    --bg-main: #05080d;
-    --bg-glass: rgba(255,255,255,0.03);
-    --bg-nav: rgba(0,0,0,0.50);
-    --border: rgba(255,255,255,0.08);
+    --bg: #05070d;
+    --glass: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.12);
 
     --accent: #4e8cff;
-    --accent2: #7aa6ff;
-    --accent-glow: 0 0 15px rgba(78,140,255,0.5);
+    --accent2: #6ea2ff;
+    --glow: 0 0 18px rgba(78,140,255,.45);
 
-    --text-main: #e4e9f5;
-    --text-soft: #9aa6bd;
-
-    --card-radius: 14px;
+    --text: #e8eeff;
+    --soft: #9aa6c7;
+    --radius: 16px;
+    --radius-sm: 10px;
 }
 
-/* BASE */
 body {
     margin: 0;
-    background: var(--bg-main);
-    color: var(--text-main);
+    background: var(--bg);
     font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--text);
     overflow-x: hidden;
 }
 
 /* ============================
-   FIXED & PERFECT NAVBAR
+   NAVBAR — NEW COMPACT DESIGN
 ============================ */
-.navbar {
+.nav {
     width: 100%;
-    padding: 18px 55px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-nav);
-    backdrop-filter: blur(14px);
+    padding: 18px 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
     z-index: 50;
 }
 
+.nav-inner {
+    max-width: 1350px;
+    margin: auto;
+    padding: 0 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .logo {
     font-size: 30px;
     font-weight: 800;
+    letter-spacing: .5px;
 }
 .logo span { color: var(--accent); }
 
-/* FIXED RIGHT SIDE */
-.nav-right {
+.nav-links {
     display: flex;
-    align-items: center;
     gap: 32px;
+    align-items: center;
 }
 
-.nav-right a {
-    color: var(--text-main);
+.nav-links a {
+    color: var(--text);
     text-decoration: none;
+    opacity: .75;
     font-size: 16px;
-    opacity: 0.75;
-    transition: 0.25s;
-    padding: 4px 8px;
+    transition: .25s;
 }
-
-.nav-right a:hover {
+.nav-links a:hover {
     opacity: 1;
     color: var(--accent);
 }
 
-/* PERFECT LOGIN BUTTON */
-.btn-login {
-    padding: 10px 22px !important;
+/* Login button */
+.login-btn {
+    padding: 9px 22px;
     background: var(--accent);
-    color: #fff !important;
     border-radius: 999px;
-    transition: 0.25s;
-    text-decoration: none;
-    border: 1px solid transparent;
+    color: white !important;
     font-weight: 600;
+    transition: .25s;
 }
-
-.btn-login:hover {
+.login-btn:hover {
     background: var(--accent2);
-    box-shadow: var(--accent-glow);
+    box-shadow: var(--glow);
     transform: translateY(-2px);
 }
 
 /* ============================
-   HERO SECTION
+   HERO — NEW SHIFTED DESIGN
 ============================ */
 .hero {
-    padding: 110px 55px 80px;
+    max-width: 1350px;
+    margin: auto;
+    padding: 120px 40px 90px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 60px;
 }
 
-.hero-left img {
-    width: 520px;
-    border-radius: var(--card-radius);
-    border: 1px solid var(--border);
-    box-shadow: 0 0 25px rgba(0,0,0,0.45);
+.hero-left {
+    flex: 1;
 }
 
-.hero-right {
-    max-width: 580px;
-}
-
-.hero-right h1 {
-    font-size: 54px;
-    font-weight: 800;
+.hero-title {
+    font-size: 60px;
     line-height: 1.1;
+    font-weight: 800;
     margin-bottom: 20px;
 }
 
-.hero-right p {
+.hero-desc {
     font-size: 18px;
-    color: var(--text-soft);
-    margin-bottom: 32px;
+    color: var(--soft);
+    max-width: 500px;
+    margin-bottom: 35px;
 }
 
 .hero-buttons {
     display: flex;
-    gap: 20px;
+    gap: 18px;
 }
 
-.btn-primary {
-    padding: 16px 32px;
-    background: var(--accent);
-    color: white;
-    border-radius: 12px;
+.btn {
+    padding: 16px 34px;
+    border-radius: var(--radius-sm);
     text-decoration: none;
     font-size: 18px;
     font-weight: 600;
-    transition: 0.25s;
+    transition: .25s;
 }
 
-.btn-primary:hover {
-    background: var(--accent2);
-    box-shadow: var(--accent-glow);
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    padding: 16px 32px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    border-radius: 12px;
-    text-decoration: none;
-    transition: 0.25s;
-}
-
-.btn-secondary:hover {
+.btn-primary {
     background: var(--accent);
     color: white;
-    box-shadow: var(--accent-glow);
+}
+.btn-primary:hover {
+    background: var(--accent2);
+    box-shadow: var(--glow);
     transform: translateY(-2px);
+}
+
+.btn-outline {
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+.btn-outline:hover {
+    background: var(--accent);
+    color: white;
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+}
+
+/* HERO IMAGE */
+.hero-right {
+    flex: 1;
+}
+
+.hero-card {
+    width: 92%;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 0 35px rgba(0,0,0,0.4);
+}
+
+.hero-card img {
+    width: 200px;
+    margin-bottom: 18px;
 }
 
 /* ============================
-   FEATURES SECTION
+   FEATURES — NEW CARD GRID
 ============================ */
 .section-title {
     text-align: center;
     font-size: 34px;
-    margin-top: 45px;
-    margin-bottom: 25px;
+    margin: 10px 0 35px;
     color: var(--accent);
 }
 
 .features {
-    padding: 40px 55px 100px;
+    max-width: 1400px;
+    margin: auto;
+    padding: 10px 40px 110px;
+
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 30px;
 }
 
-.feature-card {
-    background: var(--bg-glass);
-    padding: 28px;
-    border-radius: var(--card-radius);
+.card {
+    background: var(--glass);
     border: 1px solid var(--border);
-    transition: 0.25s;
+    padding: 30px;
+    border-radius: var(--radius);
+    transition: .25s;
 }
-
-.feature-card:hover {
+.card:hover {
     border-color: var(--accent);
+    box-shadow: var(--glow);
     transform: translateY(-6px);
-    box-shadow: var(--accent-glow);
 }
-
-.feature-card h3 {
-    font-size: 22px;
+.card h3 {
     color: var(--accent);
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
 /* ============================
    FOOTER
 ============================ */
 footer {
-    text-align: center;
     padding: 35px;
     border-top: 1px solid var(--border);
-    color: var(--text-soft);
-    margin-top: 60px;
+    text-align: center;
+    color: var(--soft);
+    margin-top: 50px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<header class="navbar">
-    <div class="logo">OpsLink<span>CAD</span></div>
+<!-- NAV -->
+<header class="nav">
+    <div class="nav-inner">
 
-    <div class="nav-right">
-        <a href="index.html">Home</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="/auth/login.html" class="btn-login">Login</a>
+        <div class="logo">OpsLink<span>CAD</span></div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="/auth/login.html" class="login-btn">Login</a>
+        </div>
+
     </div>
 </header>
 
 <!-- HERO -->
 <section class="hero">
+
     <div class="hero-left">
-        <img src="assets/hero.png" alt="OpsLinkCAD Screenshot">
+        <div class="hero-title">Next-Gen ERLC CAD for Real Roleplay</div>
+
+        <div class="hero-desc">
+            Precision dispatching, real-time MDT sync, instant unit updates.  
+            OpsLinkCAD is engineered specifically for ERLC law enforcement, fire/EMS, DOT, and civilian operations.
+        </div>
+
+        <div class="hero-buttons">
+            <a href="/auth/register.html" class="btn btn-primary">Get Started</a>
+            <a href="pricing.html" class="btn btn-outline">View Plans</a>
+        </div>
     </div>
 
     <div class="hero-right">
-        <h1>Dedicated ERLC CAD Built for Serious Communities</h1>
-        <p>
-            Instant dispatching. Realistic MDT workflows.  
-            Optimized specifically for ERLC law enforcement, fire, DOT, and civilian systems.
-        </p>
-
-        <div class="hero-buttons">
-            <a href="/auth/register.html" class="btn-primary">Get Started</a>
-            <a href="pricing.html" class="btn-secondary">View Plans</a>
+        <div class="hero-card">
+            <img src="assets/hero.png" alt="OpsLinkCAD Logo">
+            <div style="font-size: 20px; opacity: .8;">OpsLink Systems</div>
         </div>
     </div>
+
 </section>
 
 <!-- FEATURES -->
-<h2 class="section-title">Why ERLC Communities Choose OpsLinkCAD</h2>
+<div class="section-title">Why OpsLinkCAD Leads ERLC Communities</div>
 
 <section class="features">
-    <div class="feature-card">
-        <h3>🚓 ERLC-Synced Panels</h3>
-        <p>Designed around ERLC policing, fire, DOT, and civilian RP.</p>
+    <div class="card">
+        <h3>🚓 ERLC-Specialized MDT</h3>
+        <p>Built around ERLC’s policing workflow — unit callsigns, 10-codes, BOLOs, hot calls.</p>
     </div>
 
-    <div class="feature-card">
-        <h3>⚡ Instant Multi-Unit Sync</h3>
-        <p>Dispatch, attach, update, panic — all in real time.</p>
+    <div class="card">
+        <h3>⚡ Real-Time Sync</h3>
+        <p>Every update broadcasts instantly to dispatch, LEO, fire, and civilian dashboards.</p>
     </div>
 
-    <div class="feature-card">
-        <h3>📱 Mobile MDT Ready</h3>
-        <p>Perfect for phone/tablet patrols.</p>
+    <div class="card">
+        <h3>📟 Panic & Signal 100</h3>
+        <p>Authentic panic alerts, priority tones, and radio control systems.</p>
     </div>
 
-    <div class="feature-card">
+    <div class="card">
+        <h3>🔥 Dynamic Fire / EMS</h3>
+        <p>Incident tracking, station assignments, tones, unit statuses, hydrant mapping.</p>
+    </div>
+
+    <div class="card">
         <h3>🛠 Custom Departments</h3>
-        <p>Create TPD, FHP, Fire/EMS, Civ, Admin, DOT, FBI — anything.</p>
+        <p>Create TPD, FHP, Sheriff, DOT, FBI, TAC units — unlimited departments & roles.</p>
     </div>
 
-    <div class="feature-card">
-        <h3>🔔 Panic & Signal 100</h3>
-        <p>Built-in panic system & radio restrictions.</p>
-    </div>
-
-    <div class="feature-card">
-        <h3>🛡 Supervisor Tools</h3>
-        <p>Unit control, warnings, call edits, SCU, roster tools.</p>
+    <div class="card">
+        <h3>🌐 Cloud Hosted</h3>
+        <p>No setup or installs — access from any device instantly.</p>
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-    © 2025 OpsLink Systems – All Rights Reserved.
+    © 2025 OpsLink Systems — All Rights Reserved.
 </footer>
 
 </body>
