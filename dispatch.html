@@ -85,6 +85,7 @@ th {
 td {
     padding: 8px;
     border-bottom: 1px solid #1f2933;
+    vertical-align: top;
 }
 
 /* BUTTONS */
@@ -112,21 +113,23 @@ button {
     font-size: 13px;
 }
 
-/* CALL STATUS COLORS */
+/* CALL STATUS COLORS (pending | active | closed) */
 .call-pending { color: #ffc107; }
 .call-active { color: #4ea1ff; }
 .call-closed { color: #6b7280; }
 
-/* UNIT STATUS COLORS */
+/* UNIT STATUS COLORS (10-8, 10-7, 10-6, 10-23, panic, signal100) */
 .status-pill {
     padding: 4px 8px;
     border-radius: 5px;
     font-size: 12px;
 }
-.status-108 { background: #2ecc71; color: #000; }
-.status-107 { background: #e74c3c; color: #fff; }
-.status-busy { background: #f1c40f; color: #000; }
+.status-108 { background: #2ecc71; color: #000; }   /* 10-8 */
+.status-107 { background: #e74c3c; color: #fff; }   /* 10-7 */
+.status-106 { background: #f1c40f; color: #000; }   /* 10-6 (busy) */
+.status-1023 { background: #3498db; color: #fff; }  /* 10-23 (on scene) */
 .status-panic { background: #ff0033; color: #fff; animation: pulse 1s infinite; }
+.status-signal100 { background: #8e44ad; color: #fff; }
 
 @keyframes pulse {
     0% { box-shadow: 0 0 0px #ff0033; }
@@ -143,16 +146,18 @@ button {
     display:none;
     justify-content:center;
     align-items:center;
+    z-index: 9999;
 }
 .modal {
     background:#161b22;
     padding:25px;
     border-radius:8px;
-    width:400px;
+    width:420px;
     border:1px solid #4ea1ff;
 }
 .modal input,
-.modal textarea {
+.modal textarea,
+.modal select {
     width:100%;
     padding:10px;
     margin-top:8px;
@@ -161,6 +166,12 @@ button {
     background:#0f141a;
     border:1px solid #333;
     color:white;
+}
+
+/* SMALL TEXT */
+.text-soft {
+    opacity: 0.7;
+    font-size: 12px;
 }
 </style>
 </head>
@@ -197,7 +208,7 @@ button {
                     <thead>
                         <tr>
                             <th>Call</th>
-                            <th>Status</th>
+                            <th>Status / Priority</th>
                             <th>Units</th>
                             <th></th>
                         </tr>
@@ -237,9 +248,24 @@ button {
     <div class="modal">
         <h2>Create New Call</h2>
 
-        <input id="callTitle" placeholder="Title">
-        <textarea id="callNotes" placeholder="Description..."></textarea>
-        <input id="callLocation" placeholder="Location">
+        <select id="callType">
+            <option value="">Call Type (e.g. Robbery, Traffic Stop, Fire)</option>
+            <option value="Traffic Stop">Traffic Stop</option>
+            <option value="Disturbance">Disturbance</option>
+            <option value="Domestic">Domestic</option>
+            <option value="Robbery">Robbery</option>
+            <option value="Medical">Medical</option>
+            <option value="Fire">Fire</option>
+        </select>
+
+        <select id="callPriority">
+            <option value="medium">Priority: Medium (P2)</option>
+            <option value="high">Priority: High (P1)</option>
+            <option value="low">Priority: Low (P3)</option>
+        </select>
+
+        <input id="callLocation" placeholder="Location (Address / Cross Streets)">
+        <textarea id="callDescription" placeholder="Description / Notes..."></textarea>
 
         <button class="btn-primary" onclick="createCall()">Create Call</button>
         <button class="btn-danger" onclick="closeNewCallModal()">Cancel</button>
@@ -255,11 +281,16 @@ button {
 
 const API = "https://opslink-api.onrender.com";
 const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const communityId = localStorage.getItem("selectedCommunity");
 
-const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
 const role = localStorage.getItem("communityRole") || "member";
+
+if (!token || !communityId) {
+    alert("Session expired. Please log in again.");
+    window.location.href = "login.html";
+}
 
 // 🚨 DISPATCH ACCESS CHECK
 if (!permissions.includes("dispatch") && role !== "owner" && !permissions.includes("admin")) {
@@ -271,139 +302,243 @@ if (!permissions.includes("dispatch") && role !== "owner" && !permissions.includ
 /* ============================================================
    SOCKET.IO
    ============================================================ */
-const socket = io(API);
+const socket = io(API, {
+    auth: { token }
+});
 
 socket.on("connect", () => {
-    document.getElementById("connectionStatus").innerText = "Connected to live servers ✓";
+    const el = document.getElementById("connectionStatus");
+    if (el) el.innerText = "Connected to live servers ✓";
 });
 
-socket.on("unit:status", loadUnits);
-socket.on("unit:location", loadUnits);
-socket.on("unit:panic", (data) => {
-    alert("🚨 PANIC BUTTON ACTIVATED by " + data.callsign);
+socket.on("disconnect", () => {
+    const el = document.getElementById("connectionStatus");
+    if (el) el.innerText = "Disconnected from live servers.";
+});
+
+// Live unit / call updates
+socket.on("unit:status", () => loadUnits());
+socket.on("unit:location", () => loadUnits());
+socket.on("unit:forceOffline", () => loadUnits());
+
+socket.on("unit:panic", (unit) => {
+    const callsign = unit?.callsign || "Unknown Unit";
+    alert("🚨 PANIC BUTTON ACTIVATED by " + callsign);
     loadUnits();
 });
-socket.on("unit:forceOffline", loadUnits);
 
-socket.on("call:update", loadCalls);
+socket.on("call:update", () => loadCalls());
 
 
 /* ============================================================
-   LOAD CALLS
+   LOAD CALLS  (uses Call model: callNumber, type, location, description, status, priority, units[])
+   GET /calls/:communityId
    ============================================================ */
 async function loadCalls() {
-    const res = await fetch(`${API}/calls/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
-    const calls = await res.json();
+    try {
+        const res = await fetch(`${API}/calls/${communityId}`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const list = document.getElementById("callList");
-    list.innerHTML = "";
+        const calls = await res.json();
+        const list = document.getElementById("callList");
+        list.innerHTML = "";
 
-    calls.forEach(call => {
-        const tr = document.createElement("tr");
+        if (!Array.isArray(calls) || !calls.length) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td colspan="4" class="text-soft">No active calls.</td>`;
+            list.appendChild(tr);
+            return;
+        }
 
-        tr.innerHTML = `
-            <td>${call.title}</td>
-            <td class="call-${call.status}">${call.status.toUpperCase()}</td>
-            <td>${(call.units || []).join(", ")}</td>
-            <td>
-                <button class="btn-dark btn-small" onclick="openCall(${JSON.stringify(call).replace(/"/g, '&quot;')})">Manage</button>
-            </td>
-        `;
+        calls.forEach(call => {
+            const tr = document.createElement("tr");
 
-        list.appendChild(tr);
-    });
+            // Call label: #123 – Type
+            const label = `#${call.callNumber ?? "—"} – ${call.type || "Unknown"}`;
+
+            // Status / CSS class
+            const status = call.status || "pending"; // pending | active | closed
+            const statusClass = `call-${status}`;
+
+            // Priority display
+            const priority = (call.priority || "medium").toUpperCase();
+
+            // Units (callsigns)
+            const units = (call.units || [])
+                .map(u => u.callsign)
+                .filter(Boolean)
+                .join(", ") || "None";
+
+            tr.innerHTML = `
+                <td>
+                    <div><strong>${label}</strong></div>
+                    <div class="text-soft">${call.location || "No location set"}</div>
+                </td>
+                <td>
+                    <div class="${statusClass}">${status.toUpperCase()}</div>
+                    <div class="text-soft">Priority: ${priority}</div>
+                </td>
+                <td>${units}</td>
+                <td>
+                    <button
+                        class="btn-dark btn-small"
+                        onclick="openCall(${encodeCall(call)})"
+                    >
+                        Manage
+                    </button>
+                </td>
+            `;
+
+            list.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("loadCalls error", err);
+    }
+}
+
+/* Helper to safely embed call object in onclick */
+function encodeCall(call) {
+    return JSON.stringify(call).replace(/"/g, '&quot;');
 }
 
 
 /* ============================================================
-   LOAD UNITS (LIVE)
+   LOAD UNITS (Unit model with status enum & type)
+   GET /units/:communityId
    ============================================================ */
 async function loadUnits() {
-    const res = await fetch(`${API}/units/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/units/${communityId}`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const units = await res.json();
-    const list = document.getElementById("unitList");
+        const units = await res.json();
+        const list = document.getElementById("unitList");
+        list.innerHTML = "";
 
-    list.innerHTML = "";
+        if (!Array.isArray(units) || !units.length) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td colspan="4" class="text-soft">No units currently on duty.</td>`;
+            list.appendChild(tr);
+            return;
+        }
 
-    units.forEach(u => {
-        const tr = document.createElement("tr");
+        units.forEach(u => {
+            const tr = document.createElement("tr");
 
-        let statusClass = "status-107";
+            const status = u.status || "10-7";
+            let statusClass = "status-107";
 
-        if (u.status === "10-8") statusClass = "status-108";
-        else if (u.status === "busy") statusClass = "status-busy";
-        else if (u.status === "panic") statusClass = "status-panic";
+            if (status === "10-8") statusClass = "status-108";
+            else if (status === "10-7") statusClass = "status-107";
+            else if (status === "10-6") statusClass = "status-106";
+            else if (status === "10-23") statusClass = "status-1023";
+            else if (status === "panic") statusClass = "status-panic";
+            else if (status === "signal100") statusClass = "status-signal100";
 
-        tr.innerHTML = `
-            <td>${u.callsign}</td>
-            <td><span class="status-pill ${statusClass}">${u.status}</span></td>
-            <td>${u.name || "Name"}</td>
-            <td>${u.type || "Type"}</td>
-        `;
+            tr.innerHTML = `
+                <td>${u.callsign || "Unknown"}</td>
+                <td><span class="status-pill ${statusClass}">${status}</span></td>
+                <td>${u.name || "—"}</td>
+                <td>${(u.type || "leo").toUpperCase()}</td>
+            `;
 
-        list.appendChild(tr);
-    });
+            list.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("loadUnits error", err);
+    }
 }
 
 
 /* ============================================================
    CREATE CALL
+   POST /calls/create
+   Body: { communityId, type, location, description, priority }
    ============================================================ */
 async function createCall() {
+    const type = document.getElementById("callType").value.trim();
+    const priority = document.getElementById("callPriority").value || "medium";
+    const location = document.getElementById("callLocation").value.trim();
+    const description = document.getElementById("callDescription").value.trim();
+
+    if (!type || !location) {
+        alert("Please provide at least a call type and location.");
+        return;
+    }
+
     const body = {
         communityId,
-        title: document.getElementById("callTitle").value,
-        notes: document.getElementById("callNotes").value,
-        location: document.getElementById("callLocation").value,
-        status: "pending"
+        type,
+        location,
+        description,
+        priority
     };
 
-    const res = await fetch(`${API}/calls/create`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-    });
+    try {
+        const res = await fetch(`${API}/calls/create`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
 
-    closeNewCallModal();
-    loadCalls();
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            alert(data.message || "Failed to create call.");
+            return;
+        }
+
+        closeNewCallModal();
+        socket.emit("call:update");
+        loadCalls();
+    } catch (err) {
+        console.error("createCall error", err);
+        alert("Error creating call.");
+    }
 }
 
 
 /* ============================================================
    MANAGE CALL
+   POST /calls/:id/status
    ============================================================ */
 function openCall(call) {
-    // Creates a popup for actions
-    let newStatus = prompt(
-        `Manage Call #${call._id}\n\nOptions:\n1 = Set Active\n2 = Close Call\n\nEnter number:`
+    const currentStatus = (call.status || "pending").toUpperCase();
+    const label = `#${call.callNumber ?? "—"} – ${call.type || "Unknown"}`;
+
+    let choice = prompt(
+        `Manage ${label}\nCurrent Status: ${currentStatus}\n\nOptions:\n` +
+        `1 = Set PENDING\n2 = Set ACTIVE\n3 = Set CLOSED\n\nEnter number:`
     );
 
-    if (!newStatus) return;
+    if (!choice) return;
 
-    if (newStatus === "1") updateCallStatus(call._id, "active");
-    if (newStatus === "2") updateCallStatus(call._id, "closed");
+    if (choice === "1") updateCallStatus(call._id, "pending");
+    if (choice === "2") updateCallStatus(call._id, "active");
+    if (choice === "3") updateCallStatus(call._id, "closed");
 }
 
 async function updateCallStatus(id, status) {
-    await fetch(`${API}/calls/${id}/status`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ status })
-    });
+    try {
+        await fetch(`${API}/calls/${id}/status`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ status })
+        });
 
-    socket.emit("call:update", { id, status });
-    loadCalls();
+        socket.emit("call:update", { id, status });
+        loadCalls();
+    } catch (err) {
+        console.error("updateCallStatus error", err);
+    }
 }
 
 
