@@ -284,6 +284,7 @@
     <a id="dispatchNav" class="nav-item" data-panel="panel-dispatch">Dispatch Console</a>
     <a id="mdtNav" class="nav-item" data-panel="panel-mdt">LEO MDT</a>
     <a id="fireNav" class="nav-item" data-panel="panel-fire">Fire / EMS Panel</a>
+    <a id="civNav" class="nav-item" data-panel="panel-civ">Civilian Panel</a>
     <a id="permKeyNav" class="nav-item" data-panel="panel-keys">Permission Keys</a>
 
     <a href="#" onclick="logout()">Logout</a>
@@ -475,6 +476,13 @@
         </div>
     </div>
 
+    <div id="panel-civ" class="panel" style="display:none;">
+    <div class="section">
+        <p>Click below to open the Civilian Panel:</p>
+        <button class="btn-primary" onclick="window.location.href='civilian.html'">Open Civilian Panel</button>
+    </div>
+</div>
+
 
 </div> <!-- END MAIN -->
 
@@ -591,6 +599,10 @@ document.querySelectorAll(".nav-item").forEach(item => {
             case "panel-fire":
                 // handled by redirect button
                 break;
+           case "panel-civ":
+          // no data loads needed yet
+          break;
+                
         }
     });
 });
@@ -643,6 +655,11 @@ function applyPermissionLocks(member) {
     if (!permissions.includes("fire") && !permissions.includes("admin")) {
         hide("#fireNav");
         hide('[data-panel="panel-fire"]');
+    }
+    // Civilian Panel permissions
+    if (!permissions.includes("civ") && !permissions.includes("admin")) {
+    hide("#civNav");
+    hide('[data-panel="panel-civ"]');}
     }
 }
 
