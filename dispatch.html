@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Dispatch Console – OpsLinkCAD</title>
-<link rel="stylesheet" href="css/style.css">
 
 <style>
+/* ============================================================
+   OPSLINK DISPATCH CONSOLE – DARK THEME
+   ============================================================ */
+
+:root {
+    --bg-main: #0f141a;
+    --bg-panel: #161b22;
+    --bg-sidebar: #0d1117;
+    --border: #1e2630;
+    --accent: #4ea1ff;
+    --danger: #d9534f;
+    --text: #c9d1d9;
+    --text-dim: #8894a6;
+}
+
 body {
     margin: 0;
-    background: #0f141a;
-    color: #c9d1d9;
-    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
 }
 
 /* SIDEBAR */
@@ -19,73 +33,66 @@ body {
     top: 0; left: 0;
     width: 240px;
     height: 100vh;
-    background: #0d1117;
+    background: var(--bg-sidebar);
     border-right: 1px solid #161b22;
     padding: 20px;
 }
 .sidebar .logo {
     font-size: 26px;
     font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 }
 .sidebar a {
     display: block;
     padding: 12px;
     margin-bottom: 8px;
-    color: #c9d1d9;
     text-decoration: none;
+    color: var(--text);
     border-radius: 6px;
-    transition: 0.15s;
+    transition: .15s;
 }
 .sidebar a:hover,
 .sidebar a.active {
     background: #1a222e;
-    color: #4ea1ff;
+    color: var(--accent);
 }
 
-/* MAIN */
+/* MAIN CONTENT */
 .main {
     margin-left: 260px;
     padding: 25px;
 }
-h1 {
-    margin-top: 0;
-}
+h1 { margin-top: 0; }
 
-/* GRID */
+/* GRID SPLIT */
 .grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 22px;
 }
 
 /* CARDS */
 .card {
-    background: #161b22;
-    border: 1px solid #1e2630;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
+    padding: 18px;
 }
-.card h2 {
-    margin-top: 0;
-    color: #58a6ff;
-}
+.card h2 { margin-top: 0; color: var(--accent); }
 
-/* TABLE */
+/* TABLES */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 th {
-    text-align: left;
     padding: 8px;
+    text-align: left;
     background: #1e2630;
 }
 td {
     padding: 8px;
     border-bottom: 1px solid #1f2933;
-    vertical-align: top;
 }
 
 /* BUTTONS */
@@ -96,45 +103,43 @@ button {
     cursor: pointer;
 }
 .btn-primary {
-    background: #4ea1ff;
-    color: white;
+    background: var(--accent);
+    color: #fff;
 }
 .btn-danger {
-    background: #d9534f;
-    color: white;
+    background: var(--danger);
+    color: #fff;
 }
 .btn-dark {
     background: #1f2630;
-    color: #4ea1ff;
-    border: 1px solid #4ea1ff;
+    border: 1px solid var(--accent);
+    color: var(--accent);
 }
-.btn-small {
-    padding: 6px 10px;
-    font-size: 13px;
-}
+.btn-small { padding: 5px 9px; font-size: 13px; }
 
-/* CALL STATUS COLORS (pending | active | closed) */
-.call-pending { color: #ffc107; }
-.call-active { color: #4ea1ff; }
+/* CALL STATUS COLORS */
+.call-pending { color: #ffb454; }
+.call-active { color: var(--accent); }
 .call-closed { color: #6b7280; }
 
-/* UNIT STATUS COLORS (10-8, 10-7, 10-6, 10-23, panic, signal100) */
+/* UNIT STATUS BADGES */
 .status-pill {
     padding: 4px 8px;
     border-radius: 5px;
     font-size: 12px;
 }
-.status-108 { background: #2ecc71; color: #000; }   /* 10-8 */
-.status-107 { background: #e74c3c; color: #fff; }   /* 10-7 */
-.status-106 { background: #f1c40f; color: #000; }   /* 10-6 (busy) */
-.status-1023 { background: #3498db; color: #fff; }  /* 10-23 (on scene) */
-.status-panic { background: #ff0033; color: #fff; animation: pulse 1s infinite; }
-.status-signal100 { background: #8e44ad; color: #fff; }
-
+.status-108 { background: #2ecc71; color: #000; }
+.status-107 { background: #e74c3c; color: #fff; }
+.status-busy { background: #f1c40f; color: #000; }
+.status-panic {
+    background: #ff0033;
+    color: #fff;
+    animation: pulse 1s infinite;
+}
 @keyframes pulse {
-    0% { box-shadow: 0 0 0px #ff0033; }
-    50% { box-shadow: 0 0 10px #ff0033; }
-    100% { box-shadow: 0 0 0px #ff0033; }
+    0% { box-shadow: 0 0 0 #ff0033; }
+    50% { box-shadow: 0 0 15px #ff0033; }
+    100% { box-shadow: 0 0 0 #ff0033; }
 }
 
 /* MODALS */
@@ -142,36 +147,27 @@ button {
     position: fixed;
     top:0; left:0;
     width:100%; height:100%;
-    background: rgba(0,0,0,0.7);
     display:none;
     justify-content:center;
     align-items:center;
-    z-index: 9999;
+    background: rgba(0,0,0,.75);
 }
 .modal {
-    background:#161b22;
-    padding:25px;
-    border-radius:8px;
-    width:420px;
-    border:1px solid #4ea1ff;
+    background: var(--bg-panel);
+    width: 420px;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
 }
 .modal input,
-.modal textarea,
-.modal select {
+.modal textarea {
     width:100%;
     padding:10px;
-    margin-top:8px;
-    margin-bottom:10px;
-    border-radius:6px;
     background:#0f141a;
-    border:1px solid #333;
-    color:white;
-}
-
-/* SMALL TEXT */
-.text-soft {
-    opacity: 0.7;
-    font-size: 12px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #fff;
+    margin-bottom:10px;
 }
 </style>
 </head>
@@ -181,391 +177,249 @@ button {
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">OpsLink<span style="color:#4ea1ff;">CAD</span></div>
-
     <a href="dashboard.html">Dashboard</a>
     <a href="community.html">Community</a>
-    <a href="#" class="active">Dispatch Console</a>
-    <a href="#" onclick="logout()">Logout</a>
+    <a class="active">Dispatch Console</a>
+    <a onclick="logout()">Logout</a>
 </div>
 
-
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div class="main">
-
     <h1>Dispatch Console</h1>
-    <p id="connectionStatus" style="opacity:.7;margin-bottom:20px;">Connecting to live servers...</p>
+    <p id="connectionStatus" style="opacity:.6;margin-bottom:12px;">Connecting...</p>
 
     <div class="grid">
 
-        <!-- ===================== CALLS PANEL ===================== -->
-        <div>
-            <div class="card">
-                <h2>Active Calls</h2>
+        <!-- CALLS -->
+        <div class="card">
+            <h2>Active Calls</h2>
+            <button class="btn-primary" onclick="openNewCallModal()">+ New Call</button>
 
-                <button class="btn-primary" onclick="openNewCallModal()">+ New Call</button>
-
-                <table style="margin-top:12px;">
-                    <thead>
-                        <tr>
-                            <th>Call</th>
-                            <th>Status / Priority</th>
-                            <th>Units</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="callList"></tbody>
-                </table>
-
-            </div>
+            <table style="margin-top:12px;">
+                <thead><tr>
+                    <th>Title</th><th>Status</th><th>Units</th><th></th>
+                </tr></thead>
+                <tbody id="callList"></tbody>
+            </table>
         </div>
 
-        <!-- ===================== UNITS PANEL ===================== -->
-        <div>
-            <div class="card">
-                <h2>Units On Duty</h2>
+        <!-- UNITS -->
+        <div class="card">
+            <h2>Units</h2>
+            <table>
+                <thead><tr>
+                    <th>Callsign</th><th>Status</th><th>Name</th><th>Type</th>
+                </tr></thead>
+                <tbody id="unitList"></tbody>
+            </table>
+        </div>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Unit</th>
-                            <th>Status</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unitList"></tbody>
-                </table>
-
-            </div>
+        <!-- BOLO -->
+        <div class="card" style="grid-column: 1 / span 2;">
+            <h2>BOLOs</h2>
+            <button class="btn-primary" onclick="openBoloModal()">+ Create BOLO</button>
+            <div id="boloList" style="margin-top:12px;"></div>
         </div>
 
     </div>
 </div>
 
-
-<!-- NEW CALL MODAL -->
+<!-- CALL MODAL -->
 <div id="newCallModal" class="modal-bg">
-    <div class="modal">
-        <h2>Create New Call</h2>
-
-        <select id="callType">
-            <option value="">Call Type (e.g. Robbery, Traffic Stop, Fire)</option>
-            <option value="Traffic Stop">Traffic Stop</option>
-            <option value="Disturbance">Disturbance</option>
-            <option value="Domestic">Domestic</option>
-            <option value="Robbery">Robbery</option>
-            <option value="Medical">Medical</option>
-            <option value="Fire">Fire</option>
-        </select>
-
-        <select id="callPriority">
-            <option value="medium">Priority: Medium (P2)</option>
-            <option value="high">Priority: High (P1)</option>
-            <option value="low">Priority: Low (P3)</option>
-        </select>
-
-        <input id="callLocation" placeholder="Location (Address / Cross Streets)">
-        <textarea id="callDescription" placeholder="Description / Notes..."></textarea>
-
-        <button class="btn-primary" onclick="createCall()">Create Call</button>
-        <button class="btn-danger" onclick="closeNewCallModal()">Cancel</button>
-    </div>
+<div class="modal">
+    <h2>Create Call</h2>
+    <input id="callTitle" placeholder="Call Title">
+    <textarea id="callNotes" placeholder="Notes..."></textarea>
+    <input id="callLocation" placeholder="Location">
+    <button class="btn-primary" onclick="createCall()">Create</button>
+    <button class="btn-danger" onclick="closeNewCallModal()">Cancel</button>
+</div>
 </div>
 
+<!-- BOLO MODAL -->
+<div id="boloModal" class="modal-bg">
+<div class="modal">
+    <h2>Create BOLO</h2>
+    <input id="boloType" placeholder="Vehicle / Person">
+    <input id="boloPlate" placeholder="Plate (optional)">
+    <textarea id="boloDesc" placeholder="Description"></textarea>
+    <button class="btn-primary" onclick="createBOLO()">Create</button>
+    <button class="btn-danger" onclick="closeBoloModal()">Cancel</button>
+</div>
+</div>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
 /* ============================================================
-   CONFIG / AUTH / PERMISSION LOCK
-   ============================================================ */
-
+   CONFIG
+============================================================ */
 const API = "https://opslink-api.onrender.com";
 const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user") || "null");
 const communityId = localStorage.getItem("selectedCommunity");
-
-const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
+const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
 const role = localStorage.getItem("communityRole") || "member";
 
-if (!token || !communityId) {
-    alert("Session expired. Please log in again.");
-    window.location.href = "login.html";
+if (!permissions.includes("dispatch") && !permissions.includes("admin") && role !== "owner") {
+    alert("Unauthorized");
+    location.href = "community.html";
 }
 
-// 🚨 DISPATCH ACCESS CHECK
-if (!permissions.includes("dispatch") && role !== "owner" && !permissions.includes("admin")) {
-    alert("You do not have dispatch access.");
-    window.location.href = "community.html";
-}
+/* SOCKET */
+const socket = io(API, { auth:{ token }});
+socket.on("connect", () => connectionStatus.innerText = "Connected ✓");
+socket.on("unit:status", loadUnits);
+socket.on("unit:location", loadUnits);
+socket.on("unit:panic", d => alert("🚨 PANIC by " + d.callsign));
+socket.on("unit:forceOffline", loadUnits);
+socket.on("call:update", loadCalls);
 
 
 /* ============================================================
-   SOCKET.IO
-   ============================================================ */
-const socket = io(API, {
-    auth: { token }
-});
-
-socket.on("connect", () => {
-    const el = document.getElementById("connectionStatus");
-    if (el) el.innerText = "Connected to live servers ✓";
-});
-
-socket.on("disconnect", () => {
-    const el = document.getElementById("connectionStatus");
-    if (el) el.innerText = "Disconnected from live servers.";
-});
-
-// Live unit / call updates
-socket.on("unit:status", () => loadUnits());
-socket.on("unit:location", () => loadUnits());
-socket.on("unit:forceOffline", () => loadUnits());
-
-socket.on("unit:panic", (unit) => {
-    const callsign = unit?.callsign || "Unknown Unit";
-    alert("🚨 PANIC BUTTON ACTIVATED by " + callsign);
-    loadUnits();
-});
-
-socket.on("call:update", () => loadCalls());
-
-
-/* ============================================================
-   LOAD CALLS  (uses Call model: callNumber, type, location, description, status, priority, units[])
-   GET /calls/:communityId
-   ============================================================ */
+   CALLS
+============================================================ */
 async function loadCalls() {
-    try {
-        const res = await fetch(`${API}/calls/${communityId}`, {
-            headers: { "Authorization": "Bearer " + token }
-        });
+    const res = await fetch(`${API}/calls/${communityId}`, {
+        headers:{ Authorization:"Bearer " + token }
+    });
 
-        const calls = await res.json();
-        const list = document.getElementById("callList");
-        list.innerHTML = "";
+    const calls = await res.json();
+    callList.innerHTML = "";
 
-        if (!Array.isArray(calls) || !calls.length) {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td colspan="4" class="text-soft">No active calls.</td>`;
-            list.appendChild(tr);
-            return;
-        }
+    calls.forEach(call => {
+        const units = call.units?.map(u => u.callsign).join(", ") || "None";
 
-        calls.forEach(call => {
-            const tr = document.createElement("tr");
-
-            // Call label: #123 – Type
-            const label = `#${call.callNumber ?? "—"} – ${call.type || "Unknown"}`;
-
-            // Status / CSS class
-            const status = call.status || "pending"; // pending | active | closed
-            const statusClass = `call-${status}`;
-
-            // Priority display
-            const priority = (call.priority || "medium").toUpperCase();
-
-            // Units (callsigns)
-            const units = (call.units || [])
-                .map(u => u.callsign)
-                .filter(Boolean)
-                .join(", ") || "None";
-
-            tr.innerHTML = `
-                <td>
-                    <div><strong>${label}</strong></div>
-                    <div class="text-soft">${call.location || "No location set"}</div>
-                </td>
-                <td>
-                    <div class="${statusClass}">${status.toUpperCase()}</div>
-                    <div class="text-soft">Priority: ${priority}</div>
-                </td>
-                <td>${units}</td>
-                <td>
-                    <button
-                        class="btn-dark btn-small"
-                        onclick="openCall(${encodeCall(call)})"
-                    >
-                        Manage
-                    </button>
-                </td>
-            `;
-
-            list.appendChild(tr);
-        });
-    } catch (err) {
-        console.error("loadCalls error", err);
-    }
+        callList.innerHTML += `
+        <tr>
+            <td>${call.title}</td>
+            <td class="call-${call.status}">${call.status.toUpperCase()}</td>
+            <td>${units}</td>
+            <td><button class="btn-dark btn-small" onclick='manageCall("${call._id}")'>Manage</button></td>
+        </tr>`;
+    });
 }
 
-/* Helper to safely embed call object in onclick */
-function encodeCall(call) {
-    return JSON.stringify(call).replace(/"/g, '&quot;');
-}
-
-
-/* ============================================================
-   LOAD UNITS (Unit model with status enum & type)
-   GET /units/:communityId
-   ============================================================ */
-async function loadUnits() {
-    try {
-        const res = await fetch(`${API}/units/${communityId}`, {
-            headers: { "Authorization": "Bearer " + token }
-        });
-
-        const units = await res.json();
-        const list = document.getElementById("unitList");
-        list.innerHTML = "";
-
-        if (!Array.isArray(units) || !units.length) {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td colspan="4" class="text-soft">No units currently on duty.</td>`;
-            list.appendChild(tr);
-            return;
-        }
-
-        units.forEach(u => {
-            const tr = document.createElement("tr");
-
-            const status = u.status || "10-7";
-            let statusClass = "status-107";
-
-            if (status === "10-8") statusClass = "status-108";
-            else if (status === "10-7") statusClass = "status-107";
-            else if (status === "10-6") statusClass = "status-106";
-            else if (status === "10-23") statusClass = "status-1023";
-            else if (status === "panic") statusClass = "status-panic";
-            else if (status === "signal100") statusClass = "status-signal100";
-
-            tr.innerHTML = `
-                <td>${u.callsign || "Unknown"}</td>
-                <td><span class="status-pill ${statusClass}">${status}</span></td>
-                <td>${u.name || "—"}</td>
-                <td>${(u.type || "leo").toUpperCase()}</td>
-            `;
-
-            list.appendChild(tr);
-        });
-    } catch (err) {
-        console.error("loadUnits error", err);
-    }
-}
-
-
-/* ============================================================
-   CREATE CALL
-   POST /calls/create
-   Body: { communityId, type, location, description, priority }
-   ============================================================ */
 async function createCall() {
-    const type = document.getElementById("callType").value.trim();
-    const priority = document.getElementById("callPriority").value || "medium";
-    const location = document.getElementById("callLocation").value.trim();
-    const description = document.getElementById("callDescription").value.trim();
+    await fetch(`${API}/calls/create`, {
+        method:"POST",
+        headers:{ Authorization:"Bearer "+token, "Content-Type":"application/json" },
+        body:JSON.stringify({
+            communityId,
+            title:callTitle.value,
+            notes:callNotes.value,
+            location:callLocation.value
+        })
+    });
 
-    if (!type || !location) {
-        alert("Please provide at least a call type and location.");
-        return;
-    }
+    closeNewCallModal();
+    socket.emit("call:update");
+    loadCalls();
+}
 
-    const body = {
-        communityId,
-        type,
-        location,
-        description,
-        priority
-    };
+async function manageCall(id) {
+    const choice = prompt("1 = ACTIVE\n2 = CLOSED");
+    if (choice === "1") updateCallStatus(id,"active");
+    if (choice === "2") updateCallStatus(id,"closed");
+}
 
-    try {
-        const res = await fetch(`${API}/calls/create`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-            alert(data.message || "Failed to create call.");
-            return;
-        }
-
-        closeNewCallModal();
-        socket.emit("call:update");
-        loadCalls();
-    } catch (err) {
-        console.error("createCall error", err);
-        alert("Error creating call.");
-    }
+async function updateCallStatus(id,status) {
+    await fetch(`${API}/calls/${id}/status`, {
+        method:"POST",
+        headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
+        body:JSON.stringify({status})
+    });
+    socket.emit("call:update");
+    loadCalls();
 }
 
 
 /* ============================================================
-   MANAGE CALL
-   POST /calls/:id/status
-   ============================================================ */
-function openCall(call) {
-    const currentStatus = (call.status || "pending").toUpperCase();
-    const label = `#${call.callNumber ?? "—"} – ${call.type || "Unknown"}`;
+   UNITS
+============================================================ */
+async function loadUnits() {
+    const res = await fetch(`${API}/units/${communityId}`, {
+        headers:{ Authorization:"Bearer "+token }
+    });
+    const units = await res.json();
+    unitList.innerHTML = "";
 
-    let choice = prompt(
-        `Manage ${label}\nCurrent Status: ${currentStatus}\n\nOptions:\n` +
-        `1 = Set PENDING\n2 = Set ACTIVE\n3 = Set CLOSED\n\nEnter number:`
-    );
+    units.forEach(u => {
+        const st = u.status === "10-8" ? "status-108"
+                 : u.status === "panic" ? "status-panic"
+                 : u.status === "10-7" ? "status-107"
+                 : "status-busy";
 
-    if (!choice) return;
-
-    if (choice === "1") updateCallStatus(call._id, "pending");
-    if (choice === "2") updateCallStatus(call._id, "active");
-    if (choice === "3") updateCallStatus(call._id, "closed");
-}
-
-async function updateCallStatus(id, status) {
-    try {
-        await fetch(`${API}/calls/${id}/status`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ status })
-        });
-
-        socket.emit("call:update", { id, status });
-        loadCalls();
-    } catch (err) {
-        console.error("updateCallStatus error", err);
-    }
+        unitList.innerHTML += `
+        <tr>
+            <td>${u.callsign}</td>
+            <td><span class="status-pill ${st}">${u.status}</span></td>
+            <td>${u.name}</td>
+            <td>${u.type}</td>
+        </tr>`;
+    });
 }
 
 
 /* ============================================================
-   MODAL CONTROL
-   ============================================================ */
-function openNewCallModal() {
-    document.getElementById("newCallModal").style.display = "flex";
+   BOLO SYSTEM
+============================================================ */
+async function loadBOLOs() {
+    const res = await fetch(`${API}/bolos/${communityId}`,{
+        headers:{Authorization:"Bearer "+token}
+    });
+    const bolos = await res.json();
+    boloList.innerHTML = "";
+
+    bolos.forEach(b => boloList.innerHTML += `
+        <div class="card">
+            <b>${b.type}</b> — ${b.description}<br>
+            Plate: ${b.plate || "N/A"}<br>
+            <button class="btn-danger btn-small" onclick='deleteBOLO("${b._id}")'>Delete</button>
+        </div>
+    `);
 }
-function closeNewCallModal() {
-    document.getElementById("newCallModal").style.display = "none";
+
+async function createBOLO() {
+    await fetch(`${API}/bolos/create`,{
+        method:"POST",
+        headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
+        body:JSON.stringify({
+            communityId,
+            type:boloType.value,
+            plate:boloPlate.value,
+            description:boloDesc.value
+        })
+    });
+
+    closeBoloModal();
+    loadBOLOs();
+}
+
+async function deleteBOLO(id) {
+    await fetch(`${API}/bolos/delete/${id}`,{
+        method:"DELETE",
+        headers:{Authorization:"Bearer "+token}
+    });
+    loadBOLOs();
 }
 
 
 /* ============================================================
-   LOGOUT
-   ============================================================ */
-function logout() {
+   MODALS & LOGOUT
+============================================================ */
+function openNewCallModal(){ newCallModal.style.display = "flex"; }
+function closeNewCallModal(){ newCallModal.style.display = "none"; }
+function openBoloModal(){ boloModal.style.display = "flex"; }
+function closeBoloModal(){ boloModal.style.display = "none"; }
+
+function logout(){
     localStorage.clear();
-    window.location.href = "login.html";
+    location.href = "login.html";
 }
-
 
 /* INIT */
 loadCalls();
 loadUnits();
+loadBOLOs();
 </script>
-
 </body>
 </html>
