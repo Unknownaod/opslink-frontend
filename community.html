@@ -420,7 +420,28 @@
         </div>
     </div>
 
+// PERMISSION KEYS
+    
+<div id="panel-keys" class="panel" style="display:none;">
+  <div class="section">
 
+    <h2>Permission Keys</h2>
+    <div class="divider"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Key</th>
+        </tr>
+      </thead>
+      <tbody id="keyList"></tbody>
+    </table>
+
+  </div>
+</div>
+
+    
     <!-- ============================
          PANEL: PLACEHOLDERS
          (Actual pages exist separately)
@@ -518,25 +539,62 @@ let ranksCache = [];
 
 
 /* ============================================================
-   PANEL SWITCHING
+   PANEL SWITCHING (FULLY UPDATED)
 ============================================================ */
 document.querySelectorAll(".nav-item").forEach(item => {
     item.addEventListener("click", () => {
+
+        // Remove active class from all nav items
         document.querySelectorAll(".nav-item").forEach(i =>
             i.classList.remove("active")
         );
         item.classList.add("active");
 
+        // Get panel identifier
         const target = item.dataset.panel;
 
+        // Hide all panels
         document.querySelectorAll(".panel").forEach(p => {
             p.style.display = "none";
         });
 
+        // Show selected panel
         const panel = document.getElementById(target);
         if (panel) panel.style.display = "block";
+
+        // 🔥 PANEL-SPECIFIC LOADERS
+        switch (target) {
+            case "panel-community":
+                loadCommunity();
+                break;
+
+            case "panel-keys":
+                loadPermissionKeys();
+                break;
+
+            case "panel-dispatch":
+                // Reserved – opens external page
+                break;
+
+            case "panel-supervisor":
+                // Reserved for future data loads
+                break;
+
+            case "panel-admin":
+                // Reserved for admin loads
+                break;
+
+            case "panel-mdt":
+                // handled by redirect button
+                break;
+
+            case "panel-fire":
+                // handled by redirect button
+                break;
+        }
     });
 });
+
 
 
 /* ============================================================
@@ -1059,7 +1117,36 @@ async function claimKey() {
     }
 }
 
+// LOAD PERMISSION KEYS
 
+    async function loadPermissionKeys() {
+  try {
+    const res = await fetch(`${API}/community/${communityId}`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    if (!res.ok) return alert(data.message || "Failed to load keys.");
+
+    const list = document.getElementById("keyList");
+    list.innerHTML = "";
+
+    Object.entries(data.permissionKeys || {}).forEach(([role, key]) => {
+      list.innerHTML += `
+        <tr>
+          <td>${role.toUpperCase()}</td>
+          <td>${key || "<i style='opacity:.7;'>None assigned</i>"}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error("loadPermissionKeys error:", err);
+    alert("Error loading permission keys.");
+  }
+}
+
+    
 /* ============================================================
    MODALS
 ============================================================ */
