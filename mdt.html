@@ -599,19 +599,19 @@ async function loadExistingSession() {
  * returns: { unit: { ... } }
  */
 async function createUnitSession() {
-  const name = document.getElementById("unitName").value.trim();
-  const callsign = document.getElementById("unitCallsign").value.trim();
-  const department = document.getElementById("unitDepartment").value.trim();
-  const rank = document.getElementById("unitRank").value.trim();
-  const type = document.getElementById("unitType").value.trim();
+  const name = unitName.value.trim();
+  const callsign = unitCallsign.value.trim();
+  const departmentId = unitDepartment.value.trim();
+  const rank = unitRank.value.trim();
+  const type = unitType.value.trim();
 
-  if (!name || !callsign || !department) {
-    alert("Please enter at least Name, Callsign, and Department.");
-    return;
+  if (!name || !callsign || !departmentId) {
+    return alert("Please enter Name, Callsign, and Department.");
   }
 
   try {
-    const res = await fetch(`${API}/mdt/session/start`, {
+    // 1️⃣ Create Unit
+    const unitRes = await fetch(`${API}/units/create`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + token,
@@ -621,48 +621,55 @@ async function createUnitSession() {
         communityId,
         name,
         callsign,
-        department,
+        departmentId,
         rank,
         type,
       }),
     });
 
-    const data = await res.json();
+    const unit = await unitRes.json();
 
-    if (!res.ok) {
-      alert(data.message || "Error starting MDT session.");
-      return;
+    if (!unitRes.ok) {
+      return alert(unit.message || "Error creating unit.");
     }
 
-    // Expecting { unit: {...} }
-    currentUnit = data.unit || data;
+    currentUnit = unit;
 
+    // 2️⃣ Start MDT Session for this Unit
+    const sessionRes = await fetch(`${API}/mdt/session/start`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        communityId,
+        unitId: unit._id, // REQUIRED by backend
+      }),
+    });
+
+    const session = await sessionRes.json();
+
+    if (!sessionRes.ok) {
+      return alert(session.message || "Error starting MDT session.");
+    }
+
+    // 3️⃣ Update UI
     updateUnitHeader();
     updateProfilePanel();
     closeUnitModal();
 
-    // Prepare MDT stuff
     initMap();
     loadCalls();
     loadBOLOs();
     startAutoLocationUpdate();
+
   } catch (err) {
     console.error("createUnitSession error:", err);
     alert("Error starting MDT session.");
   }
 }
 
-function updateUnitHeader() {
-  const el = document.getElementById("unit-info");
-  if (!currentUnit) {
-    el.innerText = "Unit: No active session";
-    return;
-  }
-
-  el.innerText = `Unit: ${currentUnit.callsign} — ${
-    currentUnit.name || "Officer"
-  }`;
-}
 
 /* ============================================================
    UPDATE PROFILE PANEL
