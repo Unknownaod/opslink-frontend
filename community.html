@@ -113,7 +113,8 @@
             margin: 15px 0;
         }
 
-        input.dash-input {
+        input.dash-input,
+        .dash-input-select {
             width: 100%;
             padding: 12px;
             border-radius: 6px;
@@ -227,7 +228,8 @@
             border: 1px solid var(--accent);
         }
 
-        .modal input {
+        .modal input,
+        .modal select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -249,6 +251,16 @@
 
         .close-btn:hover {
             opacity: 1;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            border: 1px solid var(--border-soft);
+            margin-right: 4px;
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -301,7 +313,7 @@
             <button class="btn-primary" onclick="saveCommunity()">Save Changes</button>
         </div>
 
-                <!-- ============================
+        <!-- ============================
              DEPARTMENTS
         ============================ -->
         <div class="section">
@@ -454,7 +466,14 @@
         <h2>Add Department</h2>
 
         <input id="newDeptName" placeholder="Department Name">
-        <input id="newDeptType" placeholder="Type (LEO / Fire / EMS / Dispatch)">
+
+        <!-- Type is now a select matching backend enums (leo, fire, ems, dispatch) -->
+        <select id="newDeptType">
+            <option value="leo">Law Enforcement (LEO)</option>
+            <option value="fire">Fire</option>
+            <option value="ems">EMS</option>
+            <option value="dispatch">Dispatch</option>
+        </select>
 
         <button class="btn-primary" onclick="addDepartment()">Add</button>
         <button class="close-btn" onclick="closeModal('deptModal')">Cancel</button>
@@ -466,27 +485,36 @@
         <h2>Add Rank</h2>
 
         <input id="newRankName" placeholder="Rank Name">
-        <input id="newRankDept" placeholder="Department ID (optional)">
+
+        <!-- Populated dynamically with departments -->
+        <select id="newRankDept">
+            <option value="">Global / All Departments</option>
+        </select>
+        <small style="display:block; opacity:0.7;">Optional – link this rank to a specific department.</small>
 
         <button class="btn-primary" onclick="addRank()">Add</button>
         <button class="close-btn" onclick="closeModal('rankModal')">Cancel</button>
     </div>
 </div>
 
-    <script>
+<script>
 /* ============================================================
    INIT / AUTH CHECK
 ============================================================ */
 
 const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const communityId = localStorage.getItem("selectedCommunity");
 
-if (!token || !communityId) {
+if (!token || !communityId || !user) {
     window.location.href = "dashboard.html";
 }
 
 const API = "https://opslink-api.onrender.com";
+
+// Caches for mapping IDs -> names
+let departmentsCache = [];
+let ranksCache = [];
 
 
 /* ============================================================
@@ -519,8 +547,9 @@ function applyPermissionLocks(member) {
     const permissions = member?.permissions || [];
 
     function hide(selector) {
-        const el = document.querySelector(selector);
-        if (el) el.style.display = "none";
+        document.querySelectorAll(selector).forEach(el => {
+            el.style.display = "none";
+        });
     }
 
     // OWNER = full access
@@ -564,33 +593,44 @@ function applyPermissionLocks(member) {
    LOAD COMMUNITY DATA
 ============================================================ */
 async function loadCommunity() {
-    const res = await fetch(`${API}/community/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    // Which member is logged in?
-    const member = data.members.find(
-        m => m.userId === user._id || m.userId?._id === user._id
-    );
+        if (!res.ok) {
+            alert(data.message || "Failed to load community.");
+            return;
+        }
 
-    // Save locally
-    localStorage.setItem("communityRole", member?.role || "member");
-    localStorage.setItem("permissions", JSON.stringify(member?.permissions || []));
+        // Which member is logged in?
+        const member = (data.members || []).find(
+            m => m.userId === user._id || m.userId?._id === user._id
+        );
 
-    // Lock UI based on permissions
-    applyPermissionLocks(member);
+        // Save locally
+        localStorage.setItem("communityRole", member?.role || "member");
+        localStorage.setItem("permissions", JSON.stringify(member?.permissions || []));
 
-    // Fill UI
-    document.getElementById("commName").innerText = data.name;
-    document.getElementById("commDesc").innerText = data.description;
-    document.getElementById("editName").value = data.name;
-    document.getElementById("editDesc").value = data.description;
+        // Lock UI based on permissions
+        applyPermissionLocks(member);
 
-    loadDepartments();
-    loadRanks();
-    loadMembers();
+        // Fill UI
+        document.getElementById("commName").innerText = data.name || "Unnamed Community";
+        document.getElementById("commDesc").innerText = data.description || "";
+        document.getElementById("editName").value = data.name || "";
+        document.getElementById("editDesc").value = data.description || "";
+
+        // Load related lists in order so caches exist
+        await loadDepartments();
+        await loadRanks();
+        await loadMembers();
+    } catch (err) {
+        console.error("loadCommunity error:", err);
+        alert("Error loading community.");
+    }
 }
 
 
@@ -598,20 +638,32 @@ async function loadCommunity() {
    COMMUNITY SETTINGS
 ============================================================ */
 async function saveCommunity() {
-    const name = document.getElementById("editName").value;
-    const description = document.getElementById("editDesc").value;
+    const name = document.getElementById("editName").value.trim();
+    const description = document.getElementById("editDesc").value.trim();
 
-    await fetch(`${API}/community/update/${communityId}`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, description })
-    });
+    try {
+        const res = await fetch(`${API}/community/update/${communityId}`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, description })
+        });
 
-    alert("Community updated!");
-    loadCommunity();
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to update community.");
+            return;
+        }
+
+        alert("Community updated!");
+        loadCommunity();
+    } catch (err) {
+        console.error("saveCommunity error:", err);
+        alert("Error saving community.");
+    }
 }
 
 
@@ -619,59 +671,109 @@ async function saveCommunity() {
    DEPARTMENTS
 ============================================================ */
 async function loadDepartments() {
-    const res = await fetch(`${API}/departments/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/departments/${communityId}`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const deps = await res.json();
-    const list = document.getElementById("deptList");
-    list.innerHTML = "";
+        const deps = await res.json();
 
-    deps.forEach(d => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${d.name}</td>
-            <td>${d.type || "N/A"}</td>
-            <td>
-                <button class="btn-small danger-btn" onclick="deleteDepartment('${d._id}')">Delete</button>
-            </td>
-        `;
-        list.appendChild(row);
-    });
+        if (!res.ok) {
+            alert(deps.message || "Failed to load departments.");
+            return;
+        }
+
+        departmentsCache = deps || [];
+
+        const list = document.getElementById("deptList");
+        list.innerHTML = "";
+
+        departmentsCache.forEach(d => {
+            const typeLabel = (d.type || "N/A").toString().toUpperCase();
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${d.name}</td>
+                <td>${typeLabel}</td>
+                <td>
+                    <button class="btn-small danger-btn" onclick="deleteDepartment('${d._id}')">Delete</button>
+                </td>
+            `;
+            list.appendChild(row);
+        });
+
+        // Also populate rank department select
+        const rankDeptSelect = document.getElementById("newRankDept");
+        if (rankDeptSelect) {
+            rankDeptSelect.innerHTML = `<option value="">Global / All Departments</option>`;
+            departmentsCache.forEach(d => {
+                const opt = document.createElement("option");
+                opt.value = d._id;
+                opt.textContent = `${d.name} (${(d.type || "").toUpperCase()})`;
+                rankDeptSelect.appendChild(opt);
+            });
+        }
+    } catch (err) {
+        console.error("loadDepartments error:", err);
+        alert("Error loading departments.");
+    }
 }
 
 async function addDepartment() {
-    const name = document.getElementById("newDeptName").value;
-    const type = document.getElementById("newDeptType").value;
+    const name = document.getElementById("newDeptName").value.trim();
+    const type = document.getElementById("newDeptType").value; // already valid enum
 
-    const res = await fetch(`${API}/departments/${communityId}/create`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, type })
-    });
-
-    if (!res.ok) {
-        const err = await res.json();
-        alert("Error: " + err.message);
+    if (!name) {
+        alert("Enter a department name.");
         return;
     }
 
-    closeModal("deptModal");
-    loadDepartments();
+    try {
+        const res = await fetch(`${API}/departments/${communityId}/create`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, type })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Error creating department.");
+            return;
+        }
+
+        document.getElementById("newDeptName").value = "";
+        closeModal("deptModal");
+        loadDepartments();
+    } catch (err) {
+        console.error("addDepartment error:", err);
+        alert("Error creating department.");
+    }
 }
 
 async function deleteDepartment(id) {
     if (!confirm("Delete this department?")) return;
 
-    await fetch(`${API}/departments/delete/${id}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/departments/delete/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    loadDepartments();
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            alert(data.message || "Failed to delete department.");
+            return;
+        }
+
+        loadDepartments();
+    } catch (err) {
+        console.error("deleteDepartment error:", err);
+        alert("Error deleting department.");
+    }
 }
 
 
@@ -679,53 +781,105 @@ async function deleteDepartment(id) {
    RANKS
 ============================================================ */
 async function loadRanks() {
-    const res = await fetch(`${API}/community/${communityId}/ranks`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}/ranks`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const ranks = await res.json();
-    const list = document.getElementById("rankList");
-    list.innerHTML = "";
+        const ranks = await res.json();
 
-    ranks.forEach(r => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${r.name}</td>
-            <td>${r.departmentId || "N/A"}</td>
-            <td>
-                <button class="btn-small danger-btn" onclick="deleteRank('${r._id}')">Delete</button>
-            </td>
-        `;
-        list.appendChild(row);
-    });
+        if (!res.ok) {
+            alert(ranks.message || "Failed to load ranks.");
+            return;
+        }
+
+        ranksCache = ranks || [];
+
+        const list = document.getElementById("rankList");
+        list.innerHTML = "";
+
+        ranksCache.forEach(r => {
+            const deptId = r.departmentId?._id || r.departmentId || "";
+            let deptLabel = "Global / Any";
+
+            if (deptId) {
+                const found = departmentsCache.find(d => d._id === deptId);
+                deptLabel = found ? found.name : deptId;
+            }
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${r.name}</td>
+                <td>${deptLabel}</td>
+                <td>
+                    <button class="btn-small danger-btn" onclick="deleteRank('${r._id}')">Delete</button>
+                </td>
+            `;
+            list.appendChild(row);
+        });
+    } catch (err) {
+        console.error("loadRanks error:", err);
+        alert("Error loading ranks.");
+    }
 }
 
 async function addRank() {
-    const name = document.getElementById("newRankName").value;
-    const departmentId = document.getElementById("newRankDept").value;
+    const name = document.getElementById("newRankName").value.trim();
+    const departmentId = document.getElementById("newRankDept").value || null;
 
-    await fetch(`${API}/community/${communityId}/ranks/create`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, departmentId })
-    });
+    if (!name) {
+        alert("Enter a rank name.");
+        return;
+    }
 
-    closeModal("rankModal");
-    loadRanks();
+    try {
+        const res = await fetch(`${API}/community/${communityId}/ranks/create`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, departmentId })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to create rank.");
+            return;
+        }
+
+        document.getElementById("newRankName").value = "";
+        document.getElementById("newRankDept").value = "";
+        closeModal("rankModal");
+        loadRanks();
+    } catch (err) {
+        console.error("addRank error:", err);
+        alert("Error creating rank.");
+    }
 }
 
 async function deleteRank(id) {
     if (!confirm("Delete this rank?")) return;
 
-    await fetch(`${API}/community/${communityId}/ranks/delete/${id}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}/ranks/delete/${id}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    loadRanks();
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            alert(data.message || "Failed to delete rank.");
+            return;
+        }
+
+        loadRanks();
+    } catch (err) {
+        console.error("deleteRank error:", err);
+        alert("Error deleting rank.");
+    }
 }
 
 
@@ -733,79 +887,133 @@ async function deleteRank(id) {
    MEMBERS
 ============================================================ */
 async function loadMembers() {
-    const res = await fetch(`${API}/community/${communityId}/members`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}/members`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    const members = await res.json();
-    const list = document.getElementById("memberList");
-    list.innerHTML = "";
+        const members = await res.json();
 
-    members.forEach(m => {
-        const email = m.userEmail || m.email;
-        const perms = (m.permissions || []).join(", ") || "none";
+        if (!res.ok) {
+            alert(members.message || "Failed to load members.");
+            return;
+        }
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${email}</td>
-            <td>${m.role}</td>
-            <td>${perms}</td>
-            <td>
-                <button class="btn-small danger-btn" onclick="removeMember('${m.userId}')">Remove</button>
-            </td>
-        `;
-        list.appendChild(row);
-    });
+        const list = document.getElementById("memberList");
+        list.innerHTML = "";
+
+        members.forEach(m => {
+            const email = m.userEmail || m.email || m.user?.email || "Unknown";
+            const permsArr = m.permissions || [];
+            const permsHtml = permsArr.length
+                ? permsArr.map(p => `<span class="pill">${p}</span>`).join(" ")
+                : '<span style="opacity:0.7;">none</span>';
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${email}</td>
+                <td>${m.role}</td>
+                <td>${permsHtml}</td>
+                <td>
+                    <button class="btn-small danger-btn" onclick="removeMember('${m.userId}')">Remove</button>
+                </td>
+            `;
+            list.appendChild(row);
+        });
+    } catch (err) {
+        console.error("loadMembers error:", err);
+        alert("Error loading members.");
+    }
 }
 
 async function searchUser() {
-    const email = document.getElementById("memberSearch").value;
+    const email = document.getElementById("memberSearch").value.trim();
+    const resultBox = document.getElementById("memberSearchResult");
 
-    const res = await fetch(`${API}/auth/find`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        document.getElementById("memberSearchResult").innerText = "User not found.";
+    if (!email) {
+        resultBox.innerText = "Enter an email to search.";
+        resultBox.style.color = "red";
         return;
     }
 
-    document.getElementById("memberSearchResult").innerHTML = `
-        <p>User: ${data.email}</p>
-        <button class="btn-small" onclick="addMember('${data._id}')">Add to Community</button>
-    `;
+    try {
+        const res = await fetch(`${API}/auth/find`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            resultBox.innerText = data.message || "User not found.";
+            resultBox.style.color = "red";
+            return;
+        }
+
+        resultBox.style.color = "#fff";
+        resultBox.innerHTML = `
+            <p>User: ${data.email}</p>
+            <button class="btn-small" onclick="addMember('${data._id}')">Add to Community</button>
+        `;
+    } catch (err) {
+        console.error("searchUser error:", err);
+        resultBox.innerText = "Error searching user.";
+        resultBox.style.color = "red";
+    }
 }
 
 async function addMember(id) {
-    await fetch(`${API}/community/${communityId}/addUser`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ userId: id })
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}/addUser`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId: id })
+        });
 
-    alert("User added!");
-    loadMembers();
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to add member.");
+            return;
+        }
+
+        alert("User added!");
+        document.getElementById("memberSearchResult").innerText = "";
+        loadMembers();
+    } catch (err) {
+        console.error("addMember error:", err);
+        alert("Error adding member.");
+    }
 }
 
 async function removeMember(userId) {
     if (!confirm("Remove this member?")) return;
 
-    await fetch(`${API}/community/${communityId}/removeUser/${userId}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/${communityId}/removeUser/${userId}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    loadMembers();
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            alert(data.message || "Failed to remove member.");
+            return;
+        }
+
+        loadMembers();
+    } catch (err) {
+        console.error("removeMember error:", err);
+        alert("Error removing member.");
+    }
 }
 
 
@@ -822,27 +1030,33 @@ async function claimKey() {
         return;
     }
 
-    const res = await fetch(`${API}/community/permission/claim`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ communityId, key })
-    });
+    try {
+        const res = await fetch(`${API}/community/permission/claim`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ communityId, key })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (!res.ok) {
-        resBox.innerText = data.message || "Invalid key.";
+        if (!res.ok) {
+            resBox.innerText = data.message || "Invalid key.";
+            resBox.style.color = "red";
+            return;
+        }
+
+        resBox.innerText = `Access granted: ${data.granted?.toUpperCase?.() || data.granted}`;
+        resBox.style.color = "lime";
+
+        loadCommunity();
+    } catch (err) {
+        console.error("claimKey error:", err);
+        resBox.innerText = "Error claiming key.";
         resBox.style.color = "red";
-        return;
     }
-
-    resBox.innerText = `Access granted: ${data.granted.toUpperCase()}`;
-    resBox.style.color = "lime";
-
-    loadCommunity();
 }
 
 
@@ -850,11 +1064,13 @@ async function claimKey() {
    MODALS
 ============================================================ */
 function openModal(id) {
-    document.getElementById(id).style.display = "flex";
+    const el = document.getElementById(id);
+    if (el) el.style.display = "flex";
 }
 
 function closeModal(id) {
-    document.getElementById(id).style.display = "none";
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
 }
 
 
@@ -865,14 +1081,26 @@ async function deleteCommunity() {
     if (!confirm("This action cannot be undone. Delete community?"))
         return;
 
-    await fetch(`${API}/community/delete/${communityId}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
+    try {
+        const res = await fetch(`${API}/community/delete/${communityId}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-    localStorage.removeItem("selectedCommunity");
-    alert("Community deleted.");
-    window.location.href = "dashboard.html";
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            alert(data.message || "Failed to delete community.");
+            return;
+        }
+
+        localStorage.removeItem("selectedCommunity");
+        alert("Community deleted.");
+        window.location.href = "dashboard.html";
+    } catch (err) {
+        console.error("deleteCommunity error:", err);
+        alert("Error deleting community.");
+    }
 }
 
 
@@ -890,3 +1118,5 @@ function logout() {
 ============================================================ */
 loadCommunity();
 </script>
+</body>
+</html>
