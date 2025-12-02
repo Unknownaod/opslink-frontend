@@ -656,10 +656,11 @@ function applyPermissionLocks(member) {
         hide("#fireNav");
         hide('[data-panel="panel-fire"]');
     }
-    // Civilian Panel permissions
+
+    // Civilian Panel
     if (!permissions.includes("civ") && !permissions.includes("admin")) {
-    hide("#civNav");
-    hide('[data-panel="panel-civ"]');}
+        hide("#civNav");
+        hide('[data-panel="panel-civ"]');
     }
 }
 
