@@ -29,7 +29,7 @@
   --bg-main: #0b0f15;
   --bg-panel: #121820;
   --bg-elevated: #161e24;
-  --bg-carbon: #10151c url('https://i.imgur.com/sZy7qgG.png');
+  --bg-carbon: #10151c url("https://i.imgur.com/sZy7qgG.png");
 
   --border: #1e2733;
   --border-light: #2b3542;
@@ -54,9 +54,17 @@ body {
 }
 
 /* Scrollbars */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #0b0f15; }
-::-webkit-scrollbar-thumb { background: #1f2a38; border-radius: 4px; }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f15;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2a38;
+  border-radius: 4px;
+}
 
 /* -----------------------------
    TOP NAVIGATION BAR
@@ -70,7 +78,8 @@ body {
   padding: 0 20px;
   gap: 20px;
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 1000;
 }
@@ -121,8 +130,14 @@ body {
 }
 
 @keyframes fade {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0px); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 
 /* -----------------------------
@@ -217,13 +232,15 @@ body {
 }
 
 /* -----------------------------
-   MODALS (Traffic Stop / Unit Select)
+   MODALS (Traffic Stop / Unit Session)
    ----------------------------- */
 .modal {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.55);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
   display: none;
   justify-content: center;
@@ -245,7 +262,9 @@ body {
   margin-bottom: 15px;
 }
 
-.modal input, .modal select, .modal textarea {
+.modal input,
+.modal select,
+.modal textarea {
   width: 100%;
   padding: 12px;
   background: var(--bg-elevated);
@@ -289,7 +308,7 @@ body {
 }
 
 /* -----------------------------
-   MAP PANEL (Dark Leaflet)
+   MAP PANEL (LIVE UNIT TRACKING)
    ----------------------------- */
 #map {
   width: 100%;
@@ -327,10 +346,9 @@ body {
 </head>
 
 <body>
-
 <!-- ============================================================
      TOP NAVIGATION BAR
-     ============================================================ -->
+============================================================ -->
 <div id="topbar">
   <div class="top-tab active" data-target="panel-dashboard">Dashboard</div>
   <div class="top-tab" data-target="panel-calls">Calls</div>
@@ -342,25 +360,17 @@ body {
 
 <!-- ============================================================
      MAIN CONTENT
-     ============================================================ -->
+============================================================ -->
 <div id="main">
-
-  <!-- ============================================================
-       UNIT HEADER
-       ============================================================ -->
+  <!-- UNIT HEADER -->
   <div id="unit-header">
-    <div class="info" id="unit-info">Unit: Loading...</div>
-
+    <div class="info" id="unit-info">Unit: No active session</div>
     <button id="panic-btn">PANIC BUTTON</button>
   </div>
 
-  <!-- ============================================================
-       DASHBOARD PANEL
-       ============================================================ -->
+  <!-- DASHBOARD PANEL -->
   <div id="panel-dashboard" class="panel active">
-
     <h2>Status Controls</h2>
-
     <div class="status-grid">
       <div class="status-btn" data-status="10-8">10-8 (Available)</div>
       <div class="status-btn" data-status="10-7">10-7 (Unavailable)</div>
@@ -371,24 +381,16 @@ body {
       <div class="status-btn" data-status="TrafficStop">Traffic Stop</div>
       <div class="status-btn" data-status="LunchBreak">Lunch Break</div>
     </div>
-
   </div>
 
-
-  <!-- ============================================================
-       CALLS PANEL
-       ============================================================ -->
+  <!-- CALLS PANEL -->
   <div id="panel-calls" class="panel">
     <h2>Active Calls</h2>
     <div id="calls-list"></div>
   </div>
 
-
-  <!-- ============================================================
-       SEARCH PANEL
-       ============================================================ -->
+  <!-- SEARCH PANEL -->
   <div id="panel-search" class="panel">
-
     <h2>Search Database</h2>
 
     <h3 style="margin-top:20px;">Person Search</h3>
@@ -400,51 +402,47 @@ body {
     <input id="search-plate" placeholder="Enter plate number..." />
     <button class="btn" onclick="searchVehicle()">Search</button>
     <div id="search-vehicle-result" class="result-box"></div>
-
   </div>
 
-
-  <!-- ============================================================
-       BOLO PANEL
-       ============================================================ -->
+  <!-- BOLO PANEL -->
   <div id="panel-bolos" class="panel">
     <h2>BOLO List</h2>
     <div id="bolo-list">No BOLOs found.</div>
   </div>
 
-
-  <!-- ============================================================
-       MAP PANEL (LIVE UNIT TRACKING)
-       ============================================================ -->
+  <!-- MAP PANEL -->
   <div id="panel-map" class="panel">
     <h2>Live Unit Tracking</h2>
     <div id="map"></div>
   </div>
 
-
-  <!-- ============================================================
-       UNIT PROFILE PANEL
-       ============================================================ -->
+  <!-- UNIT PROFILE PANEL -->
   <div id="panel-profile" class="panel">
-
     <h2>Your Unit Profile</h2>
 
     <div class="profile-card">
-      <div class="profile-row"><span>Callsign:</span> <b id="profile-callsign">Loading...</b></div>
-      <div class="profile-row"><span>Rank:</span> <b id="profile-rank">Loading...</b></div>
-      <div class="profile-row"><span>Department:</span> <b id="profile-dept">Loading...</b></div>
-      <div class="profile-row"><span>Status:</span> <b id="profile-status">Loading...</b></div>
-      <div class="profile-row"><span>Last Updated:</span> <b id="profile-updated">Loading...</b></div>
+      <div class="profile-row">
+        <span>Callsign:</span> <b id="profile-callsign">N/A</b>
+      </div>
+      <div class="profile-row">
+        <span>Rank:</span> <b id="profile-rank">N/A</b>
+      </div>
+      <div class="profile-row">
+        <span>Department:</span> <b id="profile-dept">N/A</b>
+      </div>
+      <div class="profile-row">
+        <span>Status:</span> <b id="profile-status">Unknown</b>
+      </div>
+      <div class="profile-row">
+        <span>Last Updated:</span> <b id="profile-updated">N/A</b>
+      </div>
     </div>
-
   </div>
-
 </div>
-
 
 <!-- ============================================================
      TRAFFIC STOP MODAL
-     ============================================================ -->
+============================================================ -->
 <div id="trafficModal" class="modal">
   <div class="modal-content">
     <h2>Record Traffic Stop</h2>
@@ -459,24 +457,28 @@ body {
   </div>
 </div>
 
-
 <!-- ============================================================
-     UNIT CREATION MODAL (REPLACES OLD UNIT SELECT)
-     ============================================================ -->
-<div id="unitModal" class="modal" style="display:flex;">
+     UNIT SESSION MODAL (NO DB UNIT, SESSION-BASED)
+============================================================ -->
+<div id="unitModal" class="modal">
   <div class="modal-content">
-    <h2>Create Your Unit</h2>
+    <h2>Create Your Unit Session</h2>
 
     <input id="unitName" placeholder="Officer Name (e.g., J. Smith)" />
     <input id="unitCallsign" placeholder="Callsign (e.g., 2B-21)" />
-    <input id="unitDepartmentId" placeholder="Department (LEO, Fire, EMS, Dispatch)" />
+    <input
+      id="unitDepartment"
+      placeholder="Department (LEO, Fire, EMS, Dispatch)"
+    />
     <input id="unitRank" placeholder="Rank (Officer, Trooper, Deputy)" />
-    <input id="unitType" placeholder="Unit Type (Patrol, Traffic, Medic etc.)" />
+    <input
+      id="unitType"
+      placeholder="Unit Type (Patrol, Traffic, Medic, etc.)"
+    />
 
-    <button class="btn" onclick="createUnit()">Enter MDT</button>
+    <button class="btn" onclick="createUnitSession()">Enter MDT</button>
   </div>
 </div>
-
 
 <!-- Socket.io -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -491,22 +493,27 @@ const API = "https://opslink-api.onrender.com";
 const socket = io(API);
 
 const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const communityId = localStorage.getItem("selectedCommunity");
-const permissions = JSON.parse(localStorage.getItem("permissions")) || [];
+const permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
+const role = localStorage.getItem("communityRole") || "member";
 
-if (!token || !communityId) {
-    alert("Session expired.");
-    window.location.href = "login.html";
+if (!token || !communityId || !user) {
+  alert("Session expired.");
+  window.location.href = "login.html";
 }
 
-// LEO PERMISSION LOCK
-if (!permissions.includes("leo")) {
-    alert("You do not have permission to access the MDT.");
-    window.location.href = "community.html";
+// LEO / Admin / Owner permission lock
+if (
+  !permissions.includes("leo") &&
+  !permissions.includes("admin") &&
+  role !== "owner"
+) {
+  alert("You do not have permission to access the MDT.");
+  window.location.href = "community.html";
 }
 
-let currentUnit = null;
+let currentUnit = null; // session unit object (NOT a permanent DB document)
 let mapInstance = null;
 let userMarker = null;
 let autoLocationInterval = null;
@@ -514,330 +521,565 @@ let autoLocationInterval = null;
 /* ============================================================
    TAB SWITCHING (TOP NAV)
 ============================================================ */
-document.querySelectorAll(".top-tab").forEach(tab => {
-    tab.onclick = () => {
-        document.querySelectorAll(".top-tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
+document.querySelectorAll(".top-tab").forEach((tab) => {
+  tab.onclick = () => {
+    document
+      .querySelectorAll(".top-tab")
+      .forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
 
-        const target = tab.dataset.target;
+    const target = tab.dataset.target;
 
-        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-        document.getElementById(target).classList.add("active");
-    };
+    document
+      .querySelectorAll(".panel")
+      .forEach((p) => p.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+
+    if (target === "panel-map" && mapInstance === null) {
+      initMap();
+    }
+  };
 });
 
 /* ============================================================
-   UNIT SELECT MODAL — LOAD UNITS
+   UNIT SESSION HELPERS
 ============================================================ */
-/* ============================================================
-   UNIT CREATION (NEW)
-============================================================ */
+function openUnitModal() {
+  document.getElementById("unitModal").style.display = "flex";
+}
 
-async function createUnit() {
-    const name = document.getElementById("unitName").value.trim();
-    const callsign = document.getElementById("unitCallsign").value.trim();
-    const departmentId = document.getElementById("unitDepartmentId").value.trim();
-    const rank = document.getElementById("unitRank").value.trim();
-    const type = document.getElementById("unitType").value.trim();
+function closeUnitModal() {
+  document.getElementById("unitModal").style.display = "none";
+}
 
-    if (!name || !callsign || !departmentId) {
-        alert("Please enter at least Name, Callsign, and Department.");
-        return;
+/**
+ * Try to restore existing MDT session from backend.
+ * GET /mdt/session/me?communityId=...
+ */
+async function loadExistingSession() {
+  try {
+    const res = await fetch(
+      `${API}/mdt/session/me?communityId=${communityId}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
+
+    if (!res.ok) {
+      // No active session -> show unit modal
+      openUnitModal();
+      return;
     }
 
-    // Create unit in backend
-    const res = await fetch(`${API}/units/create`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            communityId,
-            name,
-            callsign,
-            departmentId,
-            rank,
-            type
-        })
+    const data = await res.json();
+    if (!data || !data.unit) {
+      openUnitModal();
+      return;
+    }
+
+    currentUnit = data.unit;
+    updateUnitHeader();
+    updateProfilePanel();
+
+    // Prepare MDT
+    initMap();
+    loadCalls();
+    loadBOLOs();
+    startAutoLocationUpdate();
+  } catch (err) {
+    console.error("loadExistingSession error:", err);
+    openUnitModal();
+  }
+}
+
+/**
+ * Create / start an MDT session for the logged in user.
+ * POST /mdt/session/start
+ * body: { communityId, name, callsign, department, rank, type }
+ * returns: { unit: { ... } }
+ */
+async function createUnitSession() {
+  const name = document.getElementById("unitName").value.trim();
+  const callsign = document.getElementById("unitCallsign").value.trim();
+  const department = document.getElementById("unitDepartment").value.trim();
+  const rank = document.getElementById("unitRank").value.trim();
+  const type = document.getElementById("unitType").value.trim();
+
+  if (!name || !callsign || !department) {
+    alert("Please enter at least Name, Callsign, and Department.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/mdt/session/start`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        communityId,
+        name,
+        callsign,
+        department,
+        rank,
+        type,
+      }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-        alert(data.message || "Error creating unit.");
-        return;
+      alert(data.message || "Error starting MDT session.");
+      return;
     }
 
-    // Save selected unit
-    currentUnit = data;
+    // Expecting { unit: {...} }
+    currentUnit = data.unit || data;
 
-    // Update UI header
-    document.getElementById("unit-info").innerText =
-        `Unit: ${currentUnit.callsign} — ${currentUnit.name || "Name"}`;
-
-    // Close modal
-    document.getElementById("unitModal").style.display = "none";
-
-    // Load UI features
+    updateUnitHeader();
     updateProfilePanel();
+    closeUnitModal();
+
+    // Prepare MDT stuff
     initMap();
     loadCalls();
     loadBOLOs();
     startAutoLocationUpdate();
+  } catch (err) {
+    console.error("createUnitSession error:", err);
+    alert("Error starting MDT session.");
+  }
+}
+
+function updateUnitHeader() {
+  const el = document.getElementById("unit-info");
+  if (!currentUnit) {
+    el.innerText = "Unit: No active session";
+    return;
+  }
+
+  el.innerText = `Unit: ${currentUnit.callsign} — ${
+    currentUnit.name || "Officer"
+  }`;
 }
 
 /* ============================================================
    UPDATE PROFILE PANEL
 ============================================================ */
 function updateProfilePanel() {
-    document.getElementById("profile-callsign").innerText = currentUnit.callsign;
-    document.getElementById("profile-rank").innerText = currentUnit.rank ?? "N/A";
-    document.getElementById("profile-dept").innerText = currentUnit.departmentName ?? "N/A";
-    document.getElementById("profile-status").innerText = currentUnit.status ?? "Unknown";
-    document.getElementById("profile-updated").innerText = new Date().toLocaleString();
+  if (!currentUnit) return;
+
+  document.getElementById("profile-callsign").innerText =
+    currentUnit.callsign || "N/A";
+  document.getElementById("profile-rank").innerText =
+    currentUnit.rank || "N/A";
+  document.getElementById("profile-dept").innerText =
+    currentUnit.department || "N/A";
+  document.getElementById("profile-status").innerText =
+    currentUnit.status || "Unknown";
+  document.getElementById("profile-updated").innerText =
+    new Date().toLocaleString();
 }
 
 /* ============================================================
-   STATUS BUTTONS
+   STATUS BUTTONS (SESSION-BASED)
+   POST /mdt/session/status { status }
 ============================================================ */
-document.querySelectorAll(".status-btn").forEach(btn => {
-    btn.onclick = async () => {
-        const status = btn.dataset.status;
-        await fetch(`${API}/units/${currentUnit._id}/status`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ status })
-        });
+document.querySelectorAll(".status-btn").forEach((btn) => {
+  btn.onclick = async () => {
+    if (!currentUnit) {
+      alert("You must start a unit session first.");
+      openUnitModal();
+      return;
+    }
 
-        socket.emit("unit:status", { unitId: currentUnit._id, status });
-        currentUnit.status = status;
-        updateProfilePanel();
+    const status = btn.dataset.status;
 
-        if (status === "TrafficStop") {
-            openTrafficModal();
-        }
-    };
+    try {
+      const res = await fetch(`${API}/mdt/session/status`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ communityId, status }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.message || "Failed to update status.");
+        return;
+      }
+
+      currentUnit.status = status;
+      updateProfilePanel();
+
+      socket.emit("unit:status", {
+        communityId,
+        userId: user._id,
+        callsign: currentUnit.callsign,
+        status,
+      });
+
+      if (status === "TrafficStop") {
+        openTrafficModal();
+      }
+    } catch (err) {
+      console.error("status update error:", err);
+      alert("Error updating status.");
+    }
+  };
 });
 
 /* ============================================================
    PANIC BUTTON
+   POST /mdt/session/panic
 ============================================================ */
 document.getElementById("panic-btn").onclick = async () => {
+  if (!currentUnit) {
+    alert("No active unit session.");
+    return;
+  }
+
+  try {
     socket.emit("panic:button", {
-        unitId: currentUnit._id,
-        callsign: currentUnit.callsign
+      communityId,
+      userId: user._id,
+      callsign: currentUnit.callsign,
     });
 
-    await fetch(`${API}/units/${currentUnit._id}/panic`, {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + token }
+    const res = await fetch(`${API}/mdt/session/panic`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+      body: JSON.stringify({ communityId }),
     });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert(data.message || "Failed to send panic.");
+      return;
+    }
 
     alert("PANIC SIGNAL SENT!");
+  } catch (err) {
+    console.error("panic error:", err);
+    alert("Error sending panic.");
+  }
 };
 
 /* ============================================================
    LOAD CALLS
+   GET /calls/:communityId
 ============================================================ */
 async function loadCalls() {
+  try {
     const res = await fetch(`${API}/calls/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
+      headers: { Authorization: "Bearer " + token },
     });
 
     const calls = await res.json();
+    if (!res.ok) {
+      alert(calls.message || "Failed to load calls.");
+      return;
+    }
+
     const list = document.getElementById("calls-list");
     list.innerHTML = "";
 
-    calls.forEach(call => {
-        const div = document.createElement("div");
-        div.className = "call-card";
+    if (!calls.length) {
+      list.innerHTML = "<p>No active calls.</p>";
+      return;
+    }
 
-        div.innerHTML = `
-            <h3>Call #${call.callNumber}</h3>
-            <p><b>Type:</b> ${call.type}</p>
-            <p><b>Location:</b> ${call.location}</p>
-            <p><b>Description:</b> ${call.description}</p>
-            <button class="btn" onclick="attachToCall('${call._id}')">
-                Attach to Call
-            </button>
-        `;
+    calls.forEach((call) => {
+      const div = document.createElement("div");
+      div.className = "call-card";
 
-        list.appendChild(div);
+      div.innerHTML = `
+        <h3>Call #${call.callNumber || call._id}</h3>
+        <p><b>Type:</b> ${call.type || "Unknown"}</p>
+        <p><b>Location:</b> ${call.location || "N/A"}</p>
+        <p><b>Description:</b> ${call.description || "N/A"}</p>
+        <button class="btn" onclick="attachToCall('${call._id}')">
+          Attach to Call
+        </button>
+      `;
+
+      list.appendChild(div);
     });
+  } catch (err) {
+    console.error("loadCalls error:", err);
+  }
 }
 
 /* ============================================================
    ATTACH TO CALL
+   PUT /calls/:callId/attach
 ============================================================ */
 async function attachToCall(callId) {
-    await fetch(`${API}/calls/attach/${callId}`, {
-        method: "PUT",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            unitId: currentUnit._id,
-            callsign: currentUnit.callsign
-        })
+  if (!currentUnit) {
+    alert("Start your unit session first.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/calls/${callId}/attach`, {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        communityId,
+        callsign: currentUnit.callsign,
+      }),
     });
 
-    socket.emit("call:update");
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert(data.message || "Failed to attach to call.");
+      return;
+    }
+
+    socket.emit("call:update", { communityId });
     loadCalls();
+  } catch (err) {
+    console.error("attachToCall error:", err);
+    alert("Error attaching to call.");
+  }
 }
 
 /* ============================================================
    PERSON SEARCH
+   GET /civilians/:communityId/search?q=...
 ============================================================ */
 async function searchPerson() {
-    const q = document.getElementById("search-person-name").value.trim();
-    if (!q) return;
+  const q = document.getElementById("search-person-name").value.trim();
+  if (!q) return;
 
-    const res = await fetch(`${API}/civilians/search/${communityId}?q=${q}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+  try {
+    const res = await fetch(
+      `${API}/civilians/${communityId}/search?q=${encodeURIComponent(q)}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
 
     const data = await res.json();
     document.getElementById("search-person-result").innerText =
-        JSON.stringify(data, null, 2);
+      JSON.stringify(data, null, 2);
+  } catch (err) {
+    console.error("searchPerson error:", err);
+    document.getElementById("search-person-result").innerText =
+      "Error performing person search.";
+  }
 }
 
 /* ============================================================
    VEHICLE SEARCH
+   GET /vehicles/:communityId/search?plate=...
 ============================================================ */
 async function searchVehicle() {
-    const plate = document.getElementById("search-plate").value.trim();
-    if (!plate) return;
+  const plate = document.getElementById("search-plate").value.trim();
+  if (!plate) return;
 
-    const res = await fetch(`${API}/vehicles/search/${communityId}?plate=${plate}`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+  try {
+    const res = await fetch(
+      `${API}/vehicles/${communityId}/search?plate=${encodeURIComponent(
+        plate
+      )}`,
+      {
+        headers: { Authorization: "Bearer " + token },
+      }
+    );
 
     const data = await res.json();
     document.getElementById("search-vehicle-result").innerText =
-        JSON.stringify(data, null, 2);
+      JSON.stringify(data, null, 2);
+  } catch (err) {
+    console.error("searchVehicle error:", err);
+    document.getElementById("search-vehicle-result").innerText =
+      "Error performing vehicle search.";
+  }
 }
 
 /* ============================================================
    BOLO LIST
+   GET /bolos/:communityId
 ============================================================ */
 async function loadBOLOs() {
+  try {
     const res = await fetch(`${API}/bolos/${communityId}`, {
-        headers: { "Authorization": "Bearer " + token }
+      headers: { Authorization: "Bearer " + token },
     });
 
     const bolos = await res.json();
     const list = document.getElementById("bolo-list");
 
+    if (!res.ok) {
+      list.innerHTML = "<p>Failed to load BOLOs.</p>";
+      return;
+    }
+
     if (!bolos.length) {
-        list.innerHTML = "<p>No active BOLOs.</p>";
-        return;
+      list.innerHTML = "<p>No active BOLOs.</p>";
+      return;
     }
 
     list.innerHTML = "";
-    bolos.forEach(b => {
-        const div = document.createElement("div");
-        div.className = "call-card";
+    bolos.forEach((b) => {
+      const div = document.createElement("div");
+      div.className = "call-card";
 
-        div.innerHTML = `
-            <h3>${b.type}</h3>
-            <p><b>Description:</b> ${b.description}</p>
-            <p><b>Plate:</b> ${b.plate || "N/A"}</p>
-        `;
+      div.innerHTML = `
+        <h3>${b.type || "BOLO"}</h3>
+        <p><b>Description:</b> ${b.description || "N/A"}</p>
+        <p><b>Plate:</b> ${b.plate || "N/A"}</p>
+      `;
 
-        list.appendChild(div);
+      list.appendChild(div);
     });
+  } catch (err) {
+    console.error("loadBOLOs error:", err);
+  }
 }
 
 /* ============================================================
    LIVE MAP SETUP
 ============================================================ */
 function initMap() {
-    mapInstance = L.map('map').setView([27.95, -82.46], 11);
+  if (mapInstance) return; // only once
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-        .addTo(mapInstance);
+  mapInstance = L.map("map").setView([27.95, -82.46], 11);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+    mapInstance
+  );
 }
 
 /* ============================================================
    AUTOMATIC LOCATION UPDATES (EVERY 8 SECONDS)
+   POST /mdt/session/location { lat, lng }
 ============================================================ */
 function startAutoLocationUpdate() {
-    if (autoLocationInterval) clearInterval(autoLocationInterval);
+  if (autoLocationInterval) clearInterval(autoLocationInterval);
 
-    autoLocationInterval = setInterval(() => {
-        if (!navigator.geolocation) return;
+  if (!navigator.geolocation) {
+    console.warn("Geolocation not supported.");
+    return;
+  }
 
-        navigator.geolocation.getCurrentPosition(async pos => {
-            const { latitude, longitude } = pos.coords;
+  autoLocationInterval = setInterval(() => {
+    if (!currentUnit) return;
 
-            if (!currentUnit) return;
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
 
-            await fetch(`${API}/units/${currentUnit._id}/location`, {
-                method: "POST",
-                headers: { "Authorization": "Bearer " + token,
-                           "Content-Type": "application/json" },
-                body: JSON.stringify({ lat: latitude, lng: longitude })
-            });
+        try {
+          await fetch(`${API}/mdt/session/location`, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              communityId,
+              lat: latitude,
+              lng: longitude,
+            }),
+          });
 
-            socket.emit("unit:location", {
-                unitId: currentUnit._id,
-                lat: latitude,
-                lng: longitude
-            });
+          socket.emit("unit:location", {
+            communityId,
+            userId: user._id,
+            callsign: currentUnit.callsign,
+            lat: latitude,
+            lng: longitude,
+          });
 
-            if (mapInstance) {
-                if (!userMarker) {
-                    userMarker = L.marker([latitude, longitude]).addTo(mapInstance);
-                } else {
-                    userMarker.setLatLng([latitude, longitude]);
-                }
+          if (mapInstance) {
+            if (!userMarker) {
+              userMarker = L.marker([latitude, longitude]).addTo(mapInstance);
+            } else {
+              userMarker.setLatLng([latitude, longitude]);
             }
-        });
-    }, 8000);
+          }
+        } catch (err) {
+          console.error("location update error:", err);
+        }
+      },
+      (err) => {
+        console.warn("Geolocation error:", err.message);
+      }
+    );
+  }, 8000);
 }
 
 /* ============================================================
-   TRAFFIC STOP MODAL
+   TRAFFIC STOP MODAL + ROUTE
+   POST /traffic/:communityId/create
 ============================================================ */
 function openTrafficModal() {
-    document.getElementById("trafficModal").style.display = "flex";
+  document.getElementById("trafficModal").style.display = "flex";
 }
 
 function closeTrafficModal() {
-    document.getElementById("trafficModal").style.display = "none";
+  document.getElementById("trafficModal").style.display = "none";
 }
 
 async function submitTrafficStop() {
-    const plate = document.getElementById("ts-plate").value;
-    const color = document.getElementById("ts-color").value;
-    const model = document.getElementById("ts-model").value;
-    const notes = document.getElementById("ts-notes").value;
+  if (!currentUnit) {
+    alert("No active unit session.");
+    return;
+  }
 
-    await fetch(`${API}/traffic/create`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            communityId,
-            unitId: currentUnit._id,
-            callsign: currentUnit.callsign,
-            plate,
-            color,
-            model,
-            notes
-        })
+  const plate = document.getElementById("ts-plate").value.trim();
+  const color = document.getElementById("ts-color").value.trim();
+  const model = document.getElementById("ts-model").value.trim();
+  const notes = document.getElementById("ts-notes").value.trim();
+
+  try {
+    const res = await fetch(`${API}/traffic/${communityId}/create`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        callsign: currentUnit.callsign,
+        officerName: currentUnit.name,
+        plate,
+        color,
+        model,
+        notes,
+      }),
     });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      alert(data.message || "Failed to record traffic stop.");
+      return;
+    }
 
     closeTrafficModal();
     alert("Traffic stop recorded.");
+  } catch (err) {
+    console.error("submitTrafficStop error:", err);
+    alert("Error recording traffic stop.");
+  }
 }
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadExistingSession();
+  loadBOLOs();
+  loadCalls();
+});
 </script>
 </body>
 </html>
