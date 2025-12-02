@@ -574,7 +574,7 @@ async function createUnit() {
 
     // Update UI header
     document.getElementById("unit-info").innerText =
-        `Unit: ${currentUnit.callsign} — ${currentUnit.type || "Unit"}`;
+        `Unit: ${currentUnit.callsign} — ${currentUnit.name || "Name"}`;
 
     // Close modal
     document.getElementById("unitModal").style.display = "none";
