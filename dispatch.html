@@ -218,7 +218,7 @@ button {
                         <tr>
                             <th>Unit</th>
                             <th>Status</th>
-                            <th>Type</th>
+                            <th>Name</th>
                         </tr>
                     </thead>
                     <tbody id="unitList"></tbody>
@@ -341,7 +341,7 @@ async function loadUnits() {
         tr.innerHTML = `
             <td>${u.callsign}</td>
             <td><span class="status-pill ${statusClass}">${u.status}</span></td>
-            <td>${u.type || "LEO"}</td>
+            <td>${u.name || "Name"}</td>
         `;
 
         list.appendChild(tr);
